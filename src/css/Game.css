@@ -1,0 +1,24 @@
+/**
+ * While I'm developing, I like to have a really visible border around the
+ * viewable game area. I'll usually eliminate the border when the game is
+ * finished. YMMV.
+ */
+html, body {
+    margin: 0px;
+    padding: 0px;
+    background-color: black;
+}
+
+div {
+    position: absolute;
+    top: 32px;
+    bottom: 32px;
+    left: 32px;
+    right: 32px;
+}
+
+#canvas {
+    width: 100%;
+    height: 100%;
+    border: solid 1px red;
+}

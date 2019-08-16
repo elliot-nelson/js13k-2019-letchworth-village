@@ -1,0 +1,13 @@
+# Node modules
+node_modules
+
+# Output
+dist
+
+# Misc files
+.DS_Store
+.vscode
+
+# No need to lock packages
+package-lock.json
+

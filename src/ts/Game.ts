@@ -9,6 +9,7 @@ import { Menu } from './Menu';
 import { Audio } from './Audio';
 import { Assets } from './Assets';
 import { Demon1 } from './Demon1';
+import { game } from './ambient';
 
 class Particle {
     x: number;
@@ -181,7 +182,7 @@ export class Game {
     }
 
     draw(ctx: CanvasRenderingContext2D) {
-        ctx.fillStyle = 'lime';
+        ctx.fillStyle = 'rgba(150, 128, 128, 1)';
         ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
         ctx.save();
@@ -194,108 +195,10 @@ export class Game {
 
         this.player.draw(ctx);
 
-        ctx.lineWidth = 3;
-        ctx.lineJoin = ctx.lineCap = 'round';
 
-        ctx.beginPath();
-
-        let size = 50;
-        function borg(x1: number, y1: number, x2: number, y2: number) {
-            ctx.moveTo(x1, y1);
-            //ctx.lineTo(x2, y2);
-            ctx.quadraticCurveTo(x2 + 10, y2, x2, y2);
-            ctx.stroke();
-        }
-
-        let lw1 = Math.ceil(size / 8);
-        let lw2 = lw1 - 2;
-        let borgo = (x1: number, y1: number, x2: number, y2: number) => {
-            ctx.strokeStyle = '#000000';
-        ctx.lineWidth = lw1;
-            borg(x1, y1, x2, y2);
-            borg(x1 - 1, y1 - 1, x2 - 1, y2 - 1);
-            borg(x1 + 1, y1 + 1, x2 + 1, y2 + 1);
-            /*borg(x1 - 4, y1 - 4, x2 - 4, y2 - 4);
-            borg(x1 - 2, y1 - 2, x2 - 2, y2 - 2);
-            borg(x1 + 2, y1 + 2, x2 + 2, y2 + 2);
-            borg(x1 + 4, y1 + 4, x2 + 4, y2 + 4);*/
-
-            ctx.strokeStyle = this.pattern;
-            //ctx.strokeStyle = 'red';
-        ctx.lineWidth = lw2;
-            borg(x1, y1, x2, y2);
-            borg(x1 - 1, y1 - 1, x2 - 1, y2 - 1);
-            borg(x1 + 1, y1 + 1, x2 + 1, y2 + 1);
-            /*borg(x1 - 3, y1 - 3, x2 - 3, y2 - 3);
-            borg(x1 - 1, y1 - 1, x2 - 1, y2 - 1);
-            borg(x1 + 1, y1 + 1, x2 + 1, y2 + 1);
-            borg(x1 + 3, y1 + 3, x2 + 3, y2 + 3);*/
-
-            /*borg(x1, y1, x2, y2);
-            borg(x1 - 4, y1 - 4, x2 - 4, y2 - 4);
-            borg(x1 - 2, y1 - 2, x2 - 2, y2 - 2);
-            borg(x1 + 2, y1 + 2, x2 + 2, y2 + 2);
-            borg(x1 + 4, y1 + 4, x2 + 4, y2 + 4);*/
-        }
-
-        function bonk(x:number, y:number, size:number, strokes: Array<Array<number>>) {
-            for(let stroke of strokes) {
-                borgo(x + stroke[0] * size, y - stroke[1] * size, x + stroke[2] * size, y - stroke[3] * size);
-            }
-        }
-//64
-        bonk(100, 100, size, [
-            [0.1, 0.1, 0.85, 1],
-            [0.85, 1, 1, 0],
-            [0.2, 0.5, 1.1, 0.5]
-        ]);
-        bonk(190, 100, size, [
-            [0, 0, 0, 1],
-            [0, 0, 0.5, 0.25],
-            [0.5, 0.25, 0, 0.5],
-            [0, 0.5, 0.5, 0.75],
-            [0.5, 0.75, 0, 1],
-        ]);
-
-        /*
-        let grd = ctx.createLinearGradient(100, 100, 100, 0);
-        grd.addColorStop(0, '#e02d10');
-        grd.addColorStop(1, '#f3ff00');
-        ctx.fillStyle = grd;
-        ctx.globalCompositeOperation = 'source-atop';*/
-
-        /*for(let i = 0; i < 300; i++) {
-            let v = Math.floor(Math.sin(i / 8) * 10);
-            v = Math.floor(Math.random() * 12) - 2;
-            ctx.translate(0, v);
-            ctx.fillRect(30+i, 30, 30+i, 160);
-            ctx.translate(0, -v);
-        }
-        for(let i = 0; i < 20; i++) {
-            let x = Math.floor(Math.random() * 100 + 30);
-            let y = Math.floor(Math.random() * 100 + 30);
-            ctx.fillStyle = '#000000';
-            ctx.fillRect(x, y, 1, 1);
-        }*/
-
-        //ctx.globalCompositeOperation = 'source-over';
-
-        /*
-        ```javascript
-let img = document.getElementById('image');
-let canvas = document.createElement('canvas');
-canvas.width = img.width;
-canvas.height = img.height;
-canvas.getContext('2d').drawImage(img, 0, 0, img.width, img.height);
-let blob = canvas.getContext('2d').getImageData(0, 0, img.width, img.height).data;
-
-// You now have "blob", the same stream of bytes you wrote originally.
-```
-*/
-
-        Text.renderText(ctx, 250, 120, 20, 'THE ELEPHANTS, OK ROAM AT MIDNIGHT');
-        Text.renderText(ctx, 100, 200, 64, 'AB0123456789');
-        Text.renderText(ctx, 100, 150, 30, 'AB0123456789');
+        Text.renderText(ctx, 250, 120, 20, 'THE ELEPHANTS');
+        //Text.renderText(ctx, 100, 200, 64, 'AB0123456789');
+        //Text.renderText(ctx, 100, 150, 30, 'AB0123456789');
 
         for (let particle of this.particles) particle.draw(ctx);
 
@@ -329,6 +232,10 @@ let blob = canvas.getContext('2d').getImageData(0, 0, img.width, img.height).dat
 
     fragglerock() {
         if (this.monsters.length < 1) {
+            let monster = new Demon1(200, 100);
+            this.monsters.push(monster);
+        }
+        if (this.input.pressed[Input.Action.ATTACK]) {
             let monster = new Demon1(200, 100);
             this.monsters.push(monster);
         }

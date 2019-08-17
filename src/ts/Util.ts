@@ -65,6 +65,10 @@ export function angleStep(r1: number, r2: number, maxStep: number): number {
   return r1 + clamp(diff, -maxStep, maxStep);
 }
 
+export function distance(p1: Point, p2: Point): number {
+  return Math.sqrt((p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y));
+}
+
 export function rgba(r:number, g:number, b:number, a:number) {
   r = Math.floor(r);
   g = Math.floor(g);

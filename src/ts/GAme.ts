@@ -8,6 +8,7 @@ import { PauseMenu } from './PauseMenu';
 import { Menu } from './Menu';
 import { Audio } from './Audio';
 import { Assets } from './Assets';
+import { Demon1 } from './Demon1';
 
 class Particle {
     x: number;
@@ -70,6 +71,8 @@ export class Game {
     screenshakes: ScreenShake[];
     audio: Audio;
 
+    monsters: Demon1[];
+
     async init() {
         this.canvas = document.getElementById('canvas') as HTMLCanvasElement;
         this.ctx = this.canvas.getContext('2d');
@@ -88,6 +91,8 @@ export class Game {
         this.particles = [];
         this.screenshakes = [];
         this.menuStack = [];
+
+        this.monsters = [];
 
         this.audio = new Audio();
         await this.audio.init();
@@ -148,6 +153,8 @@ export class Game {
             this.audio.spirit.play(472, this.audio.ctx.currentTime + 0.5);
         }
 
+        this.fragglerock();
+
         this.player.update();
 
         this.particles = this.particles.filter(particle => particle.update());
@@ -167,6 +174,8 @@ export class Game {
         */
 
         this.screenshakes = this.screenshakes.filter(shake => shake.update());
+
+        this.monsters = this.monsters.filter(monster => monster.update());
 
         this.hud.update(); // TODO: update hud??
     }
@@ -290,6 +299,8 @@ let blob = canvas.getContext('2d').getImageData(0, 0, img.width, img.height).dat
 
         for (let particle of this.particles) particle.draw(ctx);
 
+        for (let monster of this.monsters) monster.draw(ctx);
+
         this.hud.draw(ctx);
 
   //      var bubble = ctx.createLinearGradient(
@@ -313,6 +324,13 @@ let blob = canvas.getContext('2d').getImageData(0, 0, img.width, img.height).dat
         if (this.canvas.width !== width || this.canvas.height !== height) {
             this.canvas.width = width;
             this.canvas.height = height;
+        }
+    }
+
+    fragglerock() {
+        if (this.monsters.length < 1) {
+            let monster = new Demon1(200, 100);
+            this.monsters.push(monster);
         }
     }
 }

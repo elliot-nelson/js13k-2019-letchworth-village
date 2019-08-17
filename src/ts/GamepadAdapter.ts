@@ -77,7 +77,7 @@ export class GamepadAdapter {
     if (this.connected()) {
       let gp = this.getGamepad();
 
-      this.direction = normalizeVector(gp.axes[0], gp.axes[1]);
+      this.direction = normalizeVector({ x: gp.axes[0], y: gp.axes[1] });
       if (this.direction.m < MIN_STICK_THRESHOLD) {
         this.direction.m = 0;
       } else if (this.direction.m > MAX_STICK_THRESHOLD) {

@@ -45,20 +45,21 @@ export class Player {
       }
 
       if (game.input.pressed[Input.Action.DODGE]) {
-        this.frameQ.push({ move: { ...this.facing, m: 1 }, invuln: true });
-        this.frameQ.push({ move: { ...this.facing, m: 5 }, invuln: true });
-        this.frameQ.push({ move: { ...this.facing, m: 5 }, invuln: true });
-        this.frameQ.push({ move: { ...this.facing, m: 5 }, invuln: true });
-        this.frameQ.push({ move: { ...this.facing, m: 5 }, invuln: true });
+        this.frameQ.push({ move: { ...this.facing, m: 2 }, invuln: false });
+        this.frameQ.push({ move: { ...this.facing, m: 4 }, invuln: true });
+        this.frameQ.push({ move: { ...this.facing, m: 6 }, invuln: true });
+        this.frameQ.push({ move: { ...this.facing, m: 7 }, invuln: true });
+        this.frameQ.push({ move: { ...this.facing, m: 7 }, invuln: true });
+        this.frameQ.push({ move: { ...this.facing, m: 2 }, invuln: false });  // 6*4 = 24, ~28
 
         // For debugging
+        /*this.frameQ.push({ move: { ...this.facing, m: 5 }, invuln: true });
         this.frameQ.push({ move: { ...this.facing, m: 5 }, invuln: true });
         this.frameQ.push({ move: { ...this.facing, m: 5 }, invuln: true });
         this.frameQ.push({ move: { ...this.facing, m: 5 }, invuln: true });
         this.frameQ.push({ move: { ...this.facing, m: 5 }, invuln: true });
         this.frameQ.push({ move: { ...this.facing, m: 5 }, invuln: true });
-        this.frameQ.push({ move: { ...this.facing, m: 5 }, invuln: true });
-        this.frameQ.push({ move: { ...this.facing, m: 5 }, invuln: true });
+        this.frameQ.push({ move: { ...this.facing, m: 5 }, invuln: true });*/
         // End debugging
 
         this.frame = this.frameQ.shift();
@@ -68,8 +69,8 @@ export class Player {
     }
 
     if (this.frame.move) {
-      this.x += this.frame.move.x * this.frame.move.m;
-      this.y += this.frame.move.y * this.frame.move.m;
+      this.x += this.frame.move.x * this.frame.move.m * 4;
+      this.y += this.frame.move.y * this.frame.move.m * 4;
     }
   }
 
@@ -87,10 +88,10 @@ export class Player {
       ctx.globalAlpha = 0.5;
     }
     ctx.drawImage(Assets.player, 0, 0, 32, 32, -64, -64, 128, 128);
-    ctx.beginPath();
+    /*ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.lineTo(0, -50);
-    ctx.stroke();
+    ctx.stroke();*/
 
     ctx.translate(70, 0);
     ctx.rotate(RAD45 + RAD90);

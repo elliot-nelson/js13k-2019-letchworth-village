@@ -7,10 +7,14 @@
 export class Assets {
   static sword: HTMLImageElement;
   static player: HTMLImageElement;
+  static demon1: HTMLImageElement;
+  static demon1b: HTMLImageElement;
 
   static async init() {
     this.sword = await this.loadImage('sword.png');
     this.player = await this.loadImage('player_stand_00.png');
+    this.demon1 = await this.loadImage('demon1.png');
+    this.demon1b = await this.loadImage('demon1b.png');
   }
 
   static async loadImage(uri: string): Promise<HTMLImageElement> {

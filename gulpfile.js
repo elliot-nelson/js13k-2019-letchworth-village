@@ -5,6 +5,10 @@ const advpng            = require('imagemin-advpng');
 const fs                = require('fs');
 const glob              = require('glob');
 const gulp              = require('gulp');
+const log               = require('fancy-log');
+const chalk = require('chalk');
+const readline = require('readline');
+const childProcess = require('child_process');
 
 const buildFont         = require('./tools/build-font');
 
@@ -128,7 +132,11 @@ task('build:html:prod', () => {
         .pipe(htmlmin({ collapseWhitespace: true }))
         .pipe(gulp.dest('dist/prod'));
 });
-task('build:html', parallel('build:html:dev', 'build:html:prod'));
+task('build:html:dev:finished', async () => {
+    console.log(chalk.green('\u2714   OK   \u2714 dev build is ready'));
+    childProcess.exec('say go');
+});
+task('build:html', parallel(series('build:html:dev', 'build:html:dev:finished'), 'build:html:prod'));
 
 // -----------------------------------------------------------------------------
 // ZIP Build
@@ -154,8 +162,14 @@ task('build', series(
 // -----------------------------------------------------------------------------
 // Watch
 // -----------------------------------------------------------------------------
+task('clear', async () => {
+    readline.cursorTo(process.stdout, 0, 0);
+    readline.clearScreenDown(process.stdout);
+    readline.cursorTo(process.stdout, 0, 0);
+});
+
 task('watch', () => {
-    gulp.watch('src/**', series('build'));
+    gulp.watch('src/**', series('clear', 'build'));
 });
 
 // -----------------------------------------------------------------------------

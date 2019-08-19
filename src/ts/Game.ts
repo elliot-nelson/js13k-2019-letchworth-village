@@ -10,6 +10,7 @@ import { Audio } from './Audio';
 import { Assets } from './Assets';
 import { Demon1 } from './Demon1';
 import { game } from './ambient';
+import { distance, Point } from './Util';
 
 class Particle {
     x: number;
@@ -157,6 +158,8 @@ export class Game {
         this.fragglerock();
 
         this.player.update();
+        this.monsters = this.monsters.filter(monster => monster.update());
+        this.updateEntityPositions();
 
         this.particles = this.particles.filter(particle => particle.update());
         this.particles.push(new Particle(105, 100));
@@ -176,7 +179,6 @@ export class Game {
 
         this.screenshakes = this.screenshakes.filter(shake => shake.update());
 
-        this.monsters = this.monsters.filter(monster => monster.update());
 
         this.hud.update(); // TODO: update hud??
     }
@@ -195,8 +197,7 @@ export class Game {
 
         this.player.draw(ctx);
 
-
-        Text.renderText(ctx, 250, 120, 20, 'THE ELEPHANTS');
+        //Text.renderText(ctx, 250, 120, 20, 'THE ELEPHANTS');
         //Text.renderText(ctx, 100, 200, 64, 'AB0123456789');
         //Text.renderText(ctx, 100, 150, 30, 'AB0123456789');
 
@@ -235,9 +236,47 @@ export class Game {
             let monster = new Demon1(200, 100);
             this.monsters.push(monster);
         }
-        if (this.input.pressed[Input.Action.ATTACK]) {
+        if (this.input.pressed[Input.Action.DEFLECT]) {
             let monster = new Demon1(200, 100);
             this.monsters.push(monster);
+        }
+    }
+
+    colliding(p1: Point, p2: Point): boolean {
+        return distance(p1, p2) < 32;
+    }
+
+    updateEntityPositions() {
+        let entities: any[] = this.monsters.concat([this.player] as any[]);
+        for (let i = 0; i < entities.length; i++) {
+            for (let j = 0; j < entities.length; j++) {
+                if (i === j) continue;
+                let suggestion = entities[i].next;
+                if (!this.colliding(suggestion, entities[j])) {
+                    continue;
+                }
+                suggestion = { x: entities[i].next.x, y: entities[i].y };
+                if (!this.colliding(suggestion, entities[j])) {
+                    entities[i].next = suggestion;
+                    continue;
+                }
+                suggestion = { x: entities[i].x, y: entities[i].next.y };
+                if (!this.colliding(suggestion, entities[j])) {
+                    entities[i].next = suggestion;
+                    continue;
+                }
+
+                // at this point it appears blah blah blah
+                if (this.colliding(entities[i], entities[j])) {
+                    continue;
+                }
+
+                // at this point we've prevented any movement from this object,
+                // so there's no longer any point in checking further collisions
+                entities[i].next = { x: entities[i].x, y: entities[i].y };
+                break;
+            }
+            Object.assign(entities[i], entities[i].next);
         }
     }
 }

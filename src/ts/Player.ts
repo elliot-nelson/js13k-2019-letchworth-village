@@ -1,7 +1,7 @@
 import { game } from './ambient';
 import { Input } from './input';
 import { Assets } from './Assets';
-import { NormalVector, RAD90, RAD45 } from './Util';
+import { NormalVector, RAD90, RAD45, RAD, Point } from './Util';
 
 interface Frame {
   sprite?: HTMLImageElement;
@@ -18,6 +18,7 @@ export class Player {
   state: Player.State;
   x: number;
   y: number;
+  next: Point;
   facing: NormalVector;
   facingAngle: number;
 
@@ -69,8 +70,12 @@ export class Player {
     }
 
     if (this.frame.move) {
-      this.x += this.frame.move.x * this.frame.move.m * 4;
-      this.y += this.frame.move.y * this.frame.move.m * 4;
+      this.next = {
+        x: this.x + this.frame.move.x * this.frame.move.m * 4,
+        y: this.y + this.frame.move.y * this.frame.move.m * 4
+      };
+    } else {
+      this.next = { x: this.x, y: this.y };
     }
   }
 
@@ -92,6 +97,13 @@ export class Player {
     ctx.moveTo(0, 0);
     ctx.lineTo(0, -50);
     ctx.stroke();*/
+
+    /// #if DEBUG
+    ctx.beginPath();
+    ctx.strokeStyle = 'rgba(255, 255, 0, 1)';
+    ctx.arc(0, 0, 16, 0, RAD[360]);
+    ctx.stroke();
+    /// #endif
 
     ctx.translate(70, 0);
     ctx.rotate(RAD45 + RAD90);

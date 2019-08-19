@@ -17,6 +17,7 @@ interface Frame {
 export class Demon1 {
   x: number;
   y: number;
+  next: Point;
   facing: NormalVector;
   facingAngle: number;
 
@@ -58,17 +59,20 @@ export class Demon1 {
         this.target = { x: game.player.x + v.x * v.m * 50, y: game.player.y + v.y * v.m * 50 };
       }
       currentTarget = this.target;
-      if (distance(this, currentTarget) < 5) this.mode = 'chase';
+      if (distance(this, currentTarget) < 5 || Math.random() < 0.05) this.mode = 'chase';
     }
 
     console.log(currentTarget);
     let diff = vectorBetween(this, currentTarget);
     let angle = Math.atan2(diff.y, diff.x);
     this.facingAngle = angleStep(this.facingAngle, angle, RAD[7]);
+    console.log(this.facingAngle);
 
     let v = vectorFromAngle(this.facingAngle);
-    this.x += v.x * v.m * 4;
-    this.y += v.y * v.m * 4;
+    this.next = {
+      x: this.x + v.x * v.m * 4,
+      y: this.y + v.y * v.m * 4
+    };
 
     return true;
   }
@@ -96,6 +100,14 @@ export class Demon1 {
     ctx.moveTo(0, 0);
     ctx.lineTo(0, -50);
     ctx.stroke();*/
+
+    /// #if DEBUG
+    ctx.beginPath();
+    ctx.strokeStyle = 'rgba(255, 255, 0, 1)';
+    ctx.arc(0, 0, 16, 0, RAD[360]);
+    ctx.stroke();
+    /// #endif
+
     ctx.restore();
   }
 }

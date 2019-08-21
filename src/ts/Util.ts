@@ -5,6 +5,18 @@
  * stuff live here.
  */
 
+export const RAD = ((): number[] => {
+  let radianTable = [];
+  for (let i = 0; i <= 360; i++) {
+    radianTable[i] = Math.PI * 2 * i / 360;
+  }
+  return radianTable;
+})();
+export const RAD45  = Math.PI / 4;
+export const RAD90  = Math.PI / 2;
+export const RAD180 = Math.PI;
+export const RAD360 = Math.PI * 2;
+
 /**
  * A "point" is a nice, generic way to express a thing with X,Y values. This
  * could be an entity's location on screen or it could represent a vector
@@ -24,6 +36,29 @@ export interface NormalVector {
   x: number;
   y: number;
   m: number;
+}
+
+export interface Frame {
+  sprite?: CanvasImageSource;
+  invuln?: boolean;
+  input?: boolean;
+  move?: NormalVector;
+  tag?: string;
+  hitbox?: Hitbox;
+}
+
+export interface Boundbox {
+  x?: number;
+  y?: number;
+  r: number;
+}
+
+export interface Hitbox {
+  x?: number;
+  y?: number;
+  r: number;
+  a1: number;
+  a2: number;
 }
 
 export function normalizeVector(p: Point): NormalVector {
@@ -65,6 +100,12 @@ export function angleStep(r1: number, r2: number, maxStep: number): number {
   return r1 + clamp(diff, -maxStep, maxStep);
 }
 
+export function normalizeAngle(r: number): number {
+  while (r < 0) r += RAD360;
+  while (r > RAD360) r -= RAD360;
+  return r;
+}
+
 export function distance(p1: Point, p2: Point): number {
   return Math.sqrt((p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y));
 }
@@ -76,15 +117,3 @@ export function rgba(r:number, g:number, b:number, a:number) {
   a = Math.floor(a * 100) / 100;
   return `rgba(${r},${g},${b},${a})`;
 }
-
-export const RAD = ((): number[] => {
-  let radianTable = [];
-  for (let i = 0; i <= 360; i++) {
-    radianTable[i] = Math.PI * 2 * i / 360;
-  }
-  return radianTable;
-})();
-export const RAD45  = Math.PI / 4;
-export const RAD90  = Math.PI / 2;
-export const RAD180 = Math.PI;
-export const RAD360 = Math.PI * 2;

@@ -161,6 +161,11 @@ export class Game {
         this.monsters = this.monsters.filter(monster => monster.update());
         this.updateEntityPositions();
 
+        if (this.player.frame && this.player.frame.hitbox) {
+            this.monsters.forEach(monster => monster.hitBy(this.player));
+        }
+
+
         this.particles = this.particles.filter(particle => particle.update());
         this.particles.push(new Particle(105, 100));
         //console.log(this.particles.length);

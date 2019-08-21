@@ -1,15 +1,7 @@
 import { game } from './ambient';
 import { Input } from './input';
 import { Assets } from './Assets';
-import { NormalVector, RAD90, RAD45, RAD, Point } from './Util';
-
-interface Frame {
-  sprite?: HTMLImageElement;
-  invuln?: boolean;
-  input?: boolean;
-  move?: NormalVector;
-  tag?: string;
-}
+import { NormalVector, RAD90, RAD45, RAD, Point, Frame } from './Util';
 
 /**
  * Player
@@ -64,6 +56,16 @@ export class Player {
         // End debugging
 
         this.frame = this.frameQ.shift();
+      } else if (game.input.pressed[Input.Action.ATTACK]) {
+        let hitbox = { r: 64, a1: this.facingAngle - RAD[55], a2: this.facingAngle + RAD[55] };
+        this.frameQ.push({ move: { ...this.facing, m: 4 } });
+        this.frameQ.push({ move: { ...this.facing, m: 2 }, hitbox });
+        this.frameQ.push({ move: { ...this.facing, m: 0 }, hitbox });
+        this.frameQ.push({ move: { ...this.facing, m: 0 }, hitbox });
+        this.frameQ.push({ move: { ...this.facing, m: 0 }, hitbox });
+        this.frameQ.push({ move: { ...this.facing, m: 0 } });
+
+        this.frame = this.frameQ.shift();
       } else {
         this.frame.move = game.input.direction.m > 0 ? this.facing : undefined;
       }
@@ -105,10 +107,21 @@ export class Player {
     ctx.stroke();
     /// #endif
 
+
     ctx.translate(70, 0);
     ctx.rotate(RAD45 + RAD90);
     ctx.drawImage(Assets.sword, 0, 0, 32, 32, -64, -64, 128, 128);
     ctx.restore();
+
+    // Hitbox
+    if (this.frame.hitbox) {
+      ctx.beginPath();
+      ctx.fillStyle = 'rgba(255, 0, 0, 0.75)';
+      ctx.arc(this.x, this.y, this.frame.hitbox.r, this.frame.hitbox.a1, this.frame.hitbox.a2, false);
+      ctx.lineTo(this.x, this.y);
+      ctx.fill();
+      console.log(this.frame.hitbox);
+    }
 
     ctx.globalAlpha = 1;
   }

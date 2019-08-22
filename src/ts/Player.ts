@@ -120,7 +120,7 @@ export class Player {
       ctx.arc(this.x, this.y, this.frame.hitbox.r, this.frame.hitbox.a1, this.frame.hitbox.a2, false);
       ctx.lineTo(this.x, this.y);
       ctx.fill();
-      console.log(this.frame.hitbox);
+      //console.log(this.frame.hitbox);
     }
 
     ctx.globalAlpha = 1;

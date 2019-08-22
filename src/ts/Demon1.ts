@@ -2,6 +2,8 @@ import { game } from './ambient';
 import { Input } from './input';
 import { Assets } from './Assets';
 import { NormalVector, RAD90, RAD45, normalizeVector, vectorBetween, angleStep, RAD, vectorFromAngle, Point, Frame, distance } from './Util';
+import { Particle } from './Particle';
+import { Tween } from './Tween';
 
 /**
  * Player demon1
@@ -125,11 +127,24 @@ export class Demon1 {
       { sprite: Assets.demon1, input: true, move: { ...impactVector, m: 1 } },
     ];
 
-    let numDrops = Math.floor(Math.random() * 4 + 4);
+/*    let numDrops = Math.floor(Math.random() * 4 + 4);
     for (let i = 0; i < numDrops; i++) {
       let x = Math.floor(Math.random() * 70 - 35) + this.x;
       let y = Math.floor(Math.random() * 70 - 35) + this.y;
       game.bloodplane.ctx.drawImage(Assets.blood_droplet, x, y);
+    }*/
+
+    let numParticles = Math.floor(Math.random() * 4 + 4);
+    for (let i = 0; i < numParticles; i++) {
+      let x = Math.floor(Math.random() * 70 - 35) + this.x;
+      let y = Math.floor(Math.random() * 70 - 35) + this.y;
+      let time = Math.floor(Math.random() * 5 + 10);
+      let sprite = Math.random() < 0.4 ? Assets.blood_droplet3 : Assets.blood_droplet2;
+      game.particles.push(new Particle(this, { x, y }, Tween.easeOut4, sprite, time, saveSplatter));
     }
   }
+}
+
+function saveSplatter(particle: Particle) {
+  game.bloodplane.ctx.drawImage(particle.sprite, particle.x, particle.y);
 }

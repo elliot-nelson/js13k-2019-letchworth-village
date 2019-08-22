@@ -14,7 +14,8 @@ export class Assets {
   static demon1_hit: CanvasImageSource;
   static demon1b: CanvasImageSource;
 
-  static blood_droplet: CanvasImageSource;
+  static blood_droplet2: CanvasImageSource;
+  static blood_droplet3: CanvasImageSource;
 
   static async init() {
     // Single PNGs
@@ -26,7 +27,8 @@ export class Assets {
     // Tinted sprites
     this.demon1_hit = this.tint(this.demon1, 255, 0, 0, 0.5);
 
-    this.blood_droplet = this.createBloodDroplet();
+    this.blood_droplet2 = this.createBloodDroplet(2);
+    this.blood_droplet3 = this.createBloodDroplet(3);
   }
 
   static async loadImage(uri: string): Promise<CanvasImageSource> {
@@ -50,12 +52,12 @@ export class Assets {
     return canvas.canvas;
   }
 
-  static createBloodDroplet() {
-    const canvas = new Canvas(2, 2);
+  static createBloodDroplet(size: number) {
+    const canvas = new Canvas(size, size);
     const ctx = canvas.ctx;
 
     ctx.fillStyle = 'rgba(255, 0, 0, 0.9)';
-    ctx.fillRect(0, 0, 2, 2);
+    ctx.fillRect(0, 0, size, size);
 
     return canvas.canvas;
   }

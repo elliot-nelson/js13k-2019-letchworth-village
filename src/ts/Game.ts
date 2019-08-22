@@ -12,50 +12,7 @@ import { Demon1 } from './Demon1';
 import { game } from './ambient';
 import { distance, Point, collideHitboxCircle } from './Util';
 import { Canvas } from './Canvas';
-
-class Particle {
-    x: number;
-    y: number;
-    radius: number;
-    rgba: [number, number, number, number];
-    speed: number;
-    ttl: number;
-
-    constructor(x:number,y:number) {
-        let r = Math.floor(Math.random() * 128) + 128;
-        let b = r * 0.9;
-        this.spawn(x + Math.random() * 10, y, Math.random() * 15, [r,0,b,0.4], Math.random() * 2, 20);
-    }
-
-    spawn(x: number, y: number, radius: number, rgba: [number, number, number, number], speed: number, ttl: number) {
-        this.x = x;
-        this.y = y;
-        this.radius = radius;
-        this.rgba = rgba;
-        this.speed = speed;
-        this.ttl = ttl;
-    }
-
-    update() {
-        if (this.ttl > 0) {
-            this.y--;
-            this.ttl--;
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    draw(ctx: CanvasRenderingContext2D) {
-        if (this.ttl > 0) {
-            ctx.beginPath();
-            ctx.arc(this.x, this.y, this.radius, 0, 2 * Math.PI, false);
-            ctx.fillStyle = `rgba(${this.rgba.join(',')})`;
-            ctx.fill();
-            ctx.closePath();
-        }
-    }
-}
+import { Particle } from './Particle';
 
 /**
  * Game state.
@@ -174,7 +131,7 @@ export class Game {
         }
 
         this.particles = this.particles.filter(particle => particle.update());
-        this.particles.push(new Particle(105, 100));
+        //this.particles.push(new Particle(105, 100));
         //console.log(this.particles.length);
 
         // Example screenshake calls
@@ -215,9 +172,8 @@ export class Game {
         //Text.renderText(ctx, 100, 200, 64, 'AB0123456789');
         //Text.renderText(ctx, 100, 150, 30, 'AB0123456789');
 
-        for (let particle of this.particles) particle.draw(ctx);
-
         for (let monster of this.monsters) monster.draw(ctx);
+        for (let particle of this.particles) particle.draw(ctx);
 
         this.hud.draw(ctx);
 

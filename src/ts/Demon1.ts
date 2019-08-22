@@ -115,10 +115,21 @@ export class Demon1 {
     this.frameQ = [
       { sprite: Assets.demon1_hit, input: false, move: { ...impactVector, m: 3 } },
       { sprite: Assets.demon1_hit, input: false, move: { ...impactVector, m: 2 } },
+      { sprite: Assets.demon1, input: false, move: { ...impactVector, m: 1 } },
+      { sprite: Assets.demon1, input: false, move: { ...impactVector, m: 1 } },
+      { sprite: Assets.demon1, input: false, move: { ...impactVector, m: 1 } },
+      { sprite: Assets.demon1, input: false, move: { ...impactVector, m: 1 } },
       { sprite: Assets.demon1_hit, input: false, move: { ...impactVector, m: 1 } },
       { sprite: Assets.demon1_hit, input: false, move: { ...impactVector, m: 1 } },
-      { sprite: Assets.demon1b, input: false, move: { ...impactVector, m: 1 } },
-      { sprite: Assets.demon1, input: false, move: { ...impactVector, m: 1 } }
+      { sprite: Assets.demon1, input: false, move: { ...impactVector, m: 1 } },
+      { sprite: Assets.demon1, input: true, move: { ...impactVector, m: 1 } },
     ];
+
+    let numDrops = Math.floor(Math.random() * 4 + 4);
+    for (let i = 0; i < numDrops; i++) {
+      let x = Math.floor(Math.random() * 70 - 35) + this.x;
+      let y = Math.floor(Math.random() * 70 - 35) + this.y;
+      game.bloodplane.ctx.drawImage(Assets.blood_droplet, x, y);
+    }
   }
 }

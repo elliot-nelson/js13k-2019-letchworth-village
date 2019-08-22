@@ -10,7 +10,8 @@ import { Audio } from './Audio';
 import { Assets } from './Assets';
 import { Demon1 } from './Demon1';
 import { game } from './ambient';
-import { distance, Point } from './Util';
+import { distance, Point, collideHitboxCircle } from './Util';
+import { Canvas } from './Canvas';
 
 class Particle {
     x: number;
@@ -62,6 +63,7 @@ class Particle {
 export class Game {
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
+    bloodplane: Canvas;
     input: Input;
     player: Player;
     pattern: CanvasPattern;
@@ -78,6 +80,8 @@ export class Game {
     async init() {
         this.canvas = document.getElementById('canvas') as HTMLCanvasElement;
         this.ctx = this.canvas.getContext('2d');
+
+        this.bloodplane = new Canvas(this.canvas.width, this.canvas.height);
 
         await Assets.init();
 
@@ -162,9 +166,12 @@ export class Game {
         this.updateEntityPositions();
 
         if (this.player.frame && this.player.frame.hitbox) {
-            this.monsters.forEach(monster => monster.hitBy(this.player));
+            this.monsters.forEach(monster => {
+                if (collideHitboxCircle({ ...this.player.frame.hitbox, x: this.player.x, y: this.player.y }, monster, 16)) {
+                    monster.hitBy(this.player);
+                }
+            });
         }
-
 
         this.particles = this.particles.filter(particle => particle.update());
         this.particles.push(new Particle(105, 100));
@@ -191,6 +198,8 @@ export class Game {
     draw(ctx: CanvasRenderingContext2D) {
         ctx.fillStyle = 'rgba(150, 128, 128, 1)';
         ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+        ctx.drawImage(this.bloodplane.canvas, 0, 0, this.canvas.width, this.canvas.height);
 
         ctx.save();
         let shakeX = 0, shakeY = 0;
@@ -233,6 +242,9 @@ export class Game {
         if (this.canvas.width !== width || this.canvas.height !== height) {
             this.canvas.width = width;
             this.canvas.height = height;
+
+            this.bloodplane.canvas.width = width;
+            this.bloodplane.canvas.height = height;
         }
     }
 

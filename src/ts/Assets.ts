@@ -14,6 +14,8 @@ export class Assets {
   static demon1_hit: CanvasImageSource;
   static demon1b: CanvasImageSource;
 
+  static blood_droplet: CanvasImageSource;
+
   static async init() {
     // Single PNGs
     this.sword = await this.loadImage('sword.png');
@@ -23,6 +25,8 @@ export class Assets {
 
     // Tinted sprites
     this.demon1_hit = this.tint(this.demon1, 255, 0, 0, 0.5);
+
+    this.blood_droplet = this.createBloodDroplet();
   }
 
   static async loadImage(uri: string): Promise<CanvasImageSource> {
@@ -42,6 +46,16 @@ export class Assets {
     ctx.globalCompositeOperation = 'source-in';
     ctx.fillStyle = rgba(r, g, b, a);
     ctx.fillRect(0, 0, source.width as number, source.height as number);
+
+    return canvas.canvas;
+  }
+
+  static createBloodDroplet() {
+    const canvas = new Canvas(2, 2);
+    const ctx = canvas.ctx;
+
+    ctx.fillStyle = 'rgba(255, 0, 0, 0.9)';
+    ctx.fillRect(0, 0, 2, 2);
 
     return canvas.canvas;
   }

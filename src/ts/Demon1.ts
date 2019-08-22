@@ -14,6 +14,7 @@ export class Demon1 {
   next: Point;
   facing: NormalVector;
   facingAngle: number;
+  hp: number;
 
   frame: Frame;
   frameQ: Frame[];
@@ -31,6 +32,7 @@ export class Demon1 {
     this.frameNumber = 0;
     this.mode = 'chase';
     this.frameQ = [];
+    this.hp = 24;
   }
 
   update(): boolean {
@@ -48,7 +50,19 @@ export class Demon1 {
     }
     this.frame = this.frameQ.shift();
 
-    if (this.frame.input) {
+    if (this.frame.despawn) {
+      return false;
+    } else if (this.hp <= 0 && this.mode !== 'dying') {
+      this.mode = 'dying';
+      this.frameQ = [
+        { sprite: Assets.demon1_hit, input: false },
+        { sprite: Assets.demon1_hit, input: false },
+        { sprite: Assets.demon1_hit, input: false },
+        { sprite: Assets.demon1_hit, input: false },
+        { sprite: Assets.demon1_hit, input: false, despawn: true }
+      ];
+      this.frame = this.frameQ.shift();
+    } else if (this.frame.input) {
       let currentTarget: Point;
 
       if (this.mode === 'chase') {
@@ -112,17 +126,21 @@ export class Demon1 {
   }
 
   hitBy(impactSource: Point) {
+    if (this.mode === 'dying' || this.frame.invuln) return;
+
+    this.hp -= 10;
+
     let impactVector = vectorBetween(impactSource, this);
 
     this.frameQ = [
-      { sprite: Assets.demon1_hit, input: false, move: { ...impactVector, m: 3 } },
-      { sprite: Assets.demon1_hit, input: false, move: { ...impactVector, m: 2 } },
-      { sprite: Assets.demon1, input: false, move: { ...impactVector, m: 1 } },
-      { sprite: Assets.demon1, input: false, move: { ...impactVector, m: 1 } },
-      { sprite: Assets.demon1, input: false, move: { ...impactVector, m: 1 } },
-      { sprite: Assets.demon1, input: false, move: { ...impactVector, m: 1 } },
-      { sprite: Assets.demon1_hit, input: false, move: { ...impactVector, m: 1 } },
-      { sprite: Assets.demon1_hit, input: false, move: { ...impactVector, m: 1 } },
+      { sprite: Assets.demon1_hit, input: false, invuln: true, move: { ...impactVector, m: 3 } },
+      { sprite: Assets.demon1_hit, input: false, invuln: true, move: { ...impactVector, m: 2 } },
+      { sprite: Assets.demon1, input: false, invuln: true, move: { ...impactVector, m: 1 } },
+      { sprite: Assets.demon1, input: false, invuln: true, move: { ...impactVector, m: 1 } },
+      { sprite: Assets.demon1, input: false, invuln: true, move: { ...impactVector, m: 1 } },
+      { sprite: Assets.demon1, input: false, invuln: true, move: { ...impactVector, m: 1 } },
+      { sprite: Assets.demon1_hit, input: false, invuln: true, move: { ...impactVector, m: 1 } },
+      { sprite: Assets.demon1_hit, input: false, invuln: true, move: { ...impactVector, m: 1 } },
       { sprite: Assets.demon1, input: false, move: { ...impactVector, m: 1 } },
       { sprite: Assets.demon1, input: true, move: { ...impactVector, m: 1 } },
     ];

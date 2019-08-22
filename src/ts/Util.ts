@@ -45,6 +45,7 @@ export interface Frame {
   move?: NormalVector;
   tag?: string;
   hitbox?: Hitbox;
+  despawn?: boolean;
 }
 
 export interface Boundbox {

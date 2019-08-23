@@ -77,7 +77,7 @@ export class GibParticle extends Particle {
     ctx.save();
     ctx.translate(this.x, this.y);
     ctx.rotate(this.r);
-    ctx.drawImage(this.sprite, -w * 1.5, -h * 1.5, w * 3, h * 3);
+    ctx.drawImage(this.sprite, -w / 2, -h / 2, w, h);
     ctx.restore();
   }
 }

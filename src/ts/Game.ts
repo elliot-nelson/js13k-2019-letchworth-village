@@ -36,6 +36,8 @@ export class Game {
 
     async init() {
         this.canvas = document.getElementById('canvas') as HTMLCanvasElement;
+        this.canvas.width = 640;
+        this.canvas.height = 360;
         this.ctx = this.canvas.getContext('2d');
 
         this.bloodplane = new Canvas(this.canvas.width, this.canvas.height);
@@ -198,13 +200,13 @@ export class Game {
     resize() {
         let width = this.canvas.clientWidth;
         let height = this.canvas.clientHeight;
-        if (this.canvas.width !== width || this.canvas.height !== height) {
+        /*if (this.canvas.width !== width || this.canvas.height !== height) {
             this.canvas.width = width;
             this.canvas.height = height;
 
             this.bloodplane.canvas.width = width;
             this.bloodplane.canvas.height = height;
-        }
+        }*/
     }
 
     fragglerock() {

@@ -120,7 +120,7 @@ export class Demon1 {
     ctx.save();
     ctx.translate(this.x, this.y);
     ctx.rotate(this.facingAngle + RAD90);
-    ctx.drawImage(this.frame.sprite, 0, 0, 32, 32, -64, -64, 128, 128);
+    ctx.drawImage(this.frame.sprite, 0, 0, 32, 32, -16, -16, 32, 32);
     /*ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.lineTo(0, -50);

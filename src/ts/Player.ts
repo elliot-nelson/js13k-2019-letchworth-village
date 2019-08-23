@@ -94,7 +94,7 @@ export class Player {
     if (this.frame.invuln) {
       ctx.globalAlpha = 0.5;
     }
-    ctx.drawImage(Assets.player, 0, 0, 32, 32, -64, -64, 128, 128);
+    ctx.drawImage(Assets.player, 0, 0, 32, 32, -16, -16, 32, 32);
     /*ctx.beginPath();
     ctx.moveTo(0, 0);
     ctx.lineTo(0, -50);
@@ -110,7 +110,7 @@ export class Player {
 
     ctx.translate(70, 0);
     ctx.rotate(RAD45 + RAD90);
-    ctx.drawImage(Assets.sword, 0, 0, 32, 32, -64, -64, 128, 128);
+    ctx.drawImage(Assets.sword, 0, 0, 32, 32, -16, -16, 32, 32);
     ctx.restore();
 
     // Hitbox

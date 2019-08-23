@@ -130,7 +130,10 @@ export class Game {
             });
         }
 
-        this.particles = this.particles.filter(particle => particle.update());
+        for (let i = 0; i < this.particles.length; i++) {
+            if (!this.particles[i].update()) this.particles.splice(i--, 1);
+        }
+        //this.particles = this.particles.filter(particle => particle.update());
         //this.particles.push(new Particle(105, 100));
         //console.log(this.particles.length);
 

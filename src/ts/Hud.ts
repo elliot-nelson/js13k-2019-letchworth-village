@@ -46,6 +46,8 @@ export class Hud {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
+    return;
+
     const hpctx0 = this.hpcanvas0.ctx;
     const hpctx1 = this.hpcanvas1.ctx;
 

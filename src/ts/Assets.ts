@@ -1,5 +1,5 @@
 import { Canvas } from "./Canvas";
-import { rgba } from "./Util";
+import { rgba, RAD } from "./Util";
 
 /**
  * Assets
@@ -12,6 +12,8 @@ export class Assets {
   static player: CanvasImageSource;
   static demon1: CanvasImageSource;
   static demon1_hit: CanvasImageSource;
+  static demon1_chunk_a: CanvasImageSource;
+  static demon1_chunk_b: CanvasImageSource;
   static demon1b: CanvasImageSource;
 
   static blood_droplet2: CanvasImageSource;
@@ -26,6 +28,12 @@ export class Assets {
 
     // Tinted sprites
     this.demon1_hit = this.tint(this.demon1, 255, 0, 0, 0.5);
+
+    // Chunks
+    let chunk1, chunk2;
+    [ chunk1, chunk2 ] = this.cutIntoChunks(this.demon1b, RAD[24]);
+    this.demon1_chunk_a = chunk1;
+    this.demon1_chunk_b = chunk2;
 
     this.blood_droplet2 = this.createBloodDroplet(2);
     this.blood_droplet3 = this.createBloodDroplet(3);
@@ -60,5 +68,41 @@ export class Assets {
     ctx.fillRect(0, 0, size, size);
 
     return canvas.canvas;
+  }
+
+  static cutIntoChunks(source: CanvasImageSource, angle: number): CanvasImageSource[] {
+    let width = source.width as number, height = source.height as number;
+    const canvas = [
+      new Canvas(width, height),
+      new Canvas(width, height)
+    ];
+    const ctx = [canvas[0].ctx, canvas[1].ctx];
+    angle = angle % RAD[180];
+
+    let cutLength = width + height;
+    let cut = [
+      { x: width / 2 + Math.cos(angle) * cutLength, y: height / 2 - Math.sin(angle) * cutLength },
+      { x: width / 2 - Math.cos(angle) * cutLength, y: height / 2 + Math.sin(angle) * cutLength }
+    ];
+
+    ctx[0].drawImage(source, 0, 0);
+    ctx[0].globalCompositeOperation = 'destination-in';
+    ctx[0].moveTo(cut[0].x, cut[0].y);
+    ctx[0].lineTo(cut[1].x, cut[1].y);
+    ctx[0].lineTo(width, height);
+    ctx[0].lineTo(width, 0);
+    ctx[0].closePath();
+    ctx[0].fill();
+
+    ctx[1].drawImage(source, 0, 0);
+    ctx[1].globalCompositeOperation = 'destination-out';
+    ctx[1].moveTo(cut[0].x, cut[0].y);
+    ctx[1].lineTo(cut[1].x, cut[1].y);
+    ctx[1].lineTo(width, height);
+    ctx[1].lineTo(width, 0);
+    ctx[1].closePath();
+    ctx[1].fill();
+
+    return [canvas[0].canvas, canvas[1].canvas];
   }
 }

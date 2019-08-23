@@ -1,5 +1,7 @@
-import { Point } from './Util';
-import { TweenFn } from './Tween';
+import { Point, bakeSplatter, RAD } from './Util';
+import { TweenFn, Tween } from './Tween';
+import { Assets } from './Assets';
+import { game } from './ambient';
 
 export type ParticleCallback = (particle: Particle) => void;
 
@@ -22,11 +24,13 @@ export class Particle {
     this.t = -1;
     this.d = frames;
     this.complete = complete;
+    console.log("constructed ", this);
   }
 
   update(): boolean {
     if (++this.t > this.d) {
       if (this.complete) this.complete(this);
+      console.log("finishing " + this.sprite);
       return false;
     }
 
@@ -38,6 +42,43 @@ export class Particle {
 
   draw(ctx: CanvasRenderingContext2D) {
     ctx.drawImage(this.sprite, this.x, this.y);
+  }
+}
+
+export class GibParticle extends Particle {
+  r: number;
+  vr: number;
+
+  constructor(p1: Point, p2: Point, tweenFn: TweenFn, sprite: CanvasImageSource, frames: number, complete?: ParticleCallback) {
+    super(p1, p2, tweenFn, sprite, frames, complete);
+    this.r = Math.random() * RAD[360];
+    this.vr = (Math.random() * RAD[5] + RAD[2]) * (Math.random() < 0.5 ? 1 : -1);
+  }
+
+  update(): boolean {
+    if (!super.update()) return false;
+
+    this.r += this.vr;
+
+    if (this.t % 2 === 0) {
+      let x = Math.floor(Math.random() * 60 - 30) + this.x;
+      let y = Math.floor(Math.random() * 60 - 30) + this.y;
+      let time = Math.floor(Math.random() * 5 + 6);
+      let sprite = Math.random() < 0.4 ? Assets.blood_droplet3 : Assets.blood_droplet2;
+      game.particles.push(new Particle(this, { x, y }, Tween.easeOut4, sprite, time, bakeSplatter));
+    }
+
+    return true;
+  }
+
+  draw(ctx: CanvasRenderingContext2D) {
+    let w = this.sprite.width as number, h = this.sprite.height as number;
+
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.r);
+    ctx.drawImage(this.sprite, -w * 1.5, -h * 1.5, w * 3, h * 3);
+    ctx.restore();
   }
 }
 

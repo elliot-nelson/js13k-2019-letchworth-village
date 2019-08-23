@@ -1,3 +1,6 @@
+import { game } from "./ambient";
+import { Particle } from "./Particle";
+
 /**
  * Util
  *
@@ -110,6 +113,15 @@ export function normalizeAngle(r: number): number {
   return r;
 }
 
+export function rotateVector(v: NormalVector, r: number) {
+  r += Math.atan2(v.y, v.x);
+  return {
+    x: Math.cos(r),
+    y: Math.sin(r),
+    m: v.m
+  };
+}
+
 export function distance(p1: Point, p2: Point): number {
   return Math.sqrt((p2.x - p1.x) * (p2.x - p1.x) + (p2.y - p1.y) * (p2.y - p1.y));
 }
@@ -190,4 +202,8 @@ export function rgba(r:number, g:number, b:number, a:number) {
   b = Math.floor(b);
   a = Math.floor(a * 100) / 100;
   return `rgba(${r},${g},${b},${a})`;
+}
+
+export function bakeSplatter(particle: Particle) {
+  game.bloodplane.ctx.drawImage(particle.sprite, particle.x, particle.y);
 }

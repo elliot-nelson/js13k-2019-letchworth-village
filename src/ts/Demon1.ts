@@ -1,8 +1,8 @@
 import { game } from './ambient';
 import { Input } from './input';
 import { Assets } from './Assets';
-import { NormalVector, RAD90, RAD45, normalizeVector, vectorBetween, angleStep, RAD, vectorFromAngle, Point, Frame, distance } from './Util';
-import { Particle } from './Particle';
+import { NormalVector, RAD90, RAD45, normalizeVector, vectorBetween, angleStep, RAD, vectorFromAngle, Point, Frame, distance, bakeSplatter, rotateVector } from './Util';
+import { Particle, GibParticle } from './Particle';
 import { Tween } from './Tween';
 
 /**
@@ -23,6 +23,8 @@ export class Demon1 {
 
   mode: string;
   target?: Point;
+
+  lastImpact: NormalVector;
 
   constructor(x: number, y: number) {
     this.x = x;
@@ -51,6 +53,15 @@ export class Demon1 {
     this.frame = this.frameQ.shift();
 
     if (this.frame.despawn) {
+      let gib1 = rotateVector(this.lastImpact, Math.random() * RAD[45]);
+      let gib2 = rotateVector(this.lastImpact, -(Math.random() * RAD[45]));
+      let time1 = Math.floor(Math.random() * 12) + 8;
+      let time2 = Math.floor(Math.random() * 12) + 8;
+      let m1 = Math.random() * 60 + 30;
+      let m2 = Math.random() * 60 + 30;
+      game.particles.push(new GibParticle(this, { x: this.x + gib1.x * m1, y: this.y + gib1.y * m1 }, Tween.easeOut2, Assets.demon1_chunk_a, time1));
+      game.particles.push(new GibParticle(this, { x: this.x + gib2.x * m2, y: this.y + gib2.y * m2 }, Tween.easeOut2, Assets.demon1_chunk_b, time2));
+
       return false;
     } else if (this.hp <= 0 && this.mode !== 'dying') {
       this.mode = 'dying';
@@ -131,16 +142,23 @@ export class Demon1 {
     this.hp -= 10;
 
     let impactVector = vectorBetween(impactSource, this);
+    this.lastImpact = impactVector;
 
     this.frameQ = [
       { sprite: Assets.demon1_hit, input: false, invuln: true, move: { ...impactVector, m: 3 } },
+      { sprite: Assets.demon1_hit, input: false, invuln: true, move: { ...impactVector, m: 3 } },
+      { sprite: Assets.demon1_hit, input: false, invuln: true, move: { ...impactVector, m: 3 } },
       { sprite: Assets.demon1_hit, input: false, invuln: true, move: { ...impactVector, m: 2 } },
-      { sprite: Assets.demon1, input: false, invuln: true, move: { ...impactVector, m: 1 } },
-      { sprite: Assets.demon1, input: false, invuln: true, move: { ...impactVector, m: 1 } },
+      { sprite: Assets.demon1, input: false, invuln: true, move: { ...impactVector, m: 2 } },
+      { sprite: Assets.demon1, input: false, invuln: true, move: { ...impactVector, m: 2 } },
       { sprite: Assets.demon1, input: false, invuln: true, move: { ...impactVector, m: 1 } },
       { sprite: Assets.demon1, input: false, invuln: true, move: { ...impactVector, m: 1 } },
       { sprite: Assets.demon1_hit, input: false, invuln: true, move: { ...impactVector, m: 1 } },
       { sprite: Assets.demon1_hit, input: false, invuln: true, move: { ...impactVector, m: 1 } },
+      { sprite: Assets.demon1_hit, input: false, invuln: true, move: { ...impactVector, m: 1 } },
+      { sprite: Assets.demon1_hit, input: false, invuln: true, move: { ...impactVector, m: 1 } },
+      { sprite: Assets.demon1, input: false, move: { ...impactVector, m: 1 } },
+      { sprite: Assets.demon1, input: false, move: { ...impactVector, m: 1 } },
       { sprite: Assets.demon1, input: false, move: { ...impactVector, m: 1 } },
       { sprite: Assets.demon1, input: true, move: { ...impactVector, m: 1 } },
     ];
@@ -158,11 +176,7 @@ export class Demon1 {
       let y = Math.floor(Math.random() * 70 - 35) + this.y;
       let time = Math.floor(Math.random() * 5 + 10);
       let sprite = Math.random() < 0.4 ? Assets.blood_droplet3 : Assets.blood_droplet2;
-      game.particles.push(new Particle(this, { x, y }, Tween.easeOut4, sprite, time, saveSplatter));
+      game.particles.push(new Particle(this, { x, y }, Tween.easeOut4, sprite, time, bakeSplatter));
     }
   }
-}
-
-function saveSplatter(particle: Particle) {
-  game.bloodplane.ctx.drawImage(particle.sprite, particle.x, particle.y);
 }

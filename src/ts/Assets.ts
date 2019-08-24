@@ -1,6 +1,8 @@
 import { Canvas } from "./Canvas";
 import { rgba, RAD } from "./Util";
 
+type SpriteDef = { x: number, y: number, w: number, h: number };
+
 /**
  * Assets
  *
@@ -18,6 +20,10 @@ export class Assets {
 
   static blood_droplet2: CanvasImageSource;
   static blood_droplet3: CanvasImageSource;
+
+  static world1: CanvasImageSource;
+  static world2: CanvasImageSource;
+  static world3: CanvasImageSource;
 
   static async init() {
     // Single PNGs
@@ -37,6 +43,14 @@ export class Assets {
 
     this.blood_droplet2 = this.createBloodDroplet(2);
     this.blood_droplet3 = this.createBloodDroplet(3);
+
+    // More stuff
+    let [ world1, world2, world3 ] = await this.loadSpriteSheet('worldheartbeat2.png', [
+      { x: 0, y: 0, w: 23, h: 23 },
+      { x: 23, y: 0, w: 23, h: 23 },
+      { x: 46, y: 0, w: 23, h: 23 }
+    ]);
+    Object.assign(this, { world1, world2, world3 });
   }
 
   static async loadImage(uri: string): Promise<CanvasImageSource> {
@@ -45,6 +59,15 @@ export class Assets {
       image.onload = () => resolve(image);
       image.onerror = (err) => reject(err);
       image.src = uri;
+    });
+  }
+
+  static async loadSpriteSheet(uri: string, sprites: SpriteDef[]): Promise<CanvasImageSource[]> {
+    const source = await this.loadImage(uri);
+    return sprites.map(sprite => {
+      let spriteCanvas = new Canvas(sprite.w, sprite.h);
+      spriteCanvas.ctx.drawImage(source, sprite.x, sprite.y, sprite.w, sprite.h, 0, 0, sprite.w, sprite.h);
+      return spriteCanvas.canvas;
     });
   }
 

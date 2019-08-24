@@ -36,8 +36,8 @@ export class Game {
 
     async init() {
         this.canvas = document.getElementById('canvas') as HTMLCanvasElement;
-        this.canvas.width = 640;
-        this.canvas.height = 360;
+        this.canvas.width = 480;
+        this.canvas.height = 270;
         this.ctx = this.canvas.getContext('2d');
 
         this.bloodplane = new Canvas(this.canvas.width, this.canvas.height);

@@ -1,5 +1,7 @@
 import { Canvas } from "./Canvas";
 import { game } from "./ambient";
+import { Assets } from "./Assets";
+import { RAD } from "./Util";
 
 export class Hud {
   hpcanvas0: Canvas;
@@ -8,6 +10,7 @@ export class Hud {
   pattern: Canvas;
   hpgradient: CanvasGradient;
   frame: number;
+  heartbeatFrames: CanvasImageSource[];
 
   constructor() {
     this.hpcanvas0 = new Canvas(220, 30);
@@ -38,6 +41,48 @@ export class Hud {
         pctx.fillRect(Math.floor(i+Math.random()*8 - 4), Math.floor(j+Math.random()*8-4), 1, 1);
       }
     }
+
+    // A heartbeat is 32 frames
+    this.heartbeatFrames = [
+      // 10 frames
+      Assets.world3,
+      Assets.world2,
+      Assets.world2,
+      Assets.world3,
+      Assets.world2,
+      Assets.world2,
+      Assets.world3,
+      Assets.world2,
+      Assets.world2,
+      Assets.world3,
+      // 22 frames
+      Assets.world1,
+      Assets.world1,
+      Assets.world1,
+      Assets.world1,
+      Assets.world1,
+
+      Assets.world1,
+      Assets.world1,
+      Assets.world1,
+      Assets.world1,
+      Assets.world1,
+
+      Assets.world1,
+      Assets.world1,
+      Assets.world1,
+      Assets.world1,
+      Assets.world1,
+
+      Assets.world1,
+      Assets.world1,
+      Assets.world1,
+      Assets.world1,
+      Assets.world1,
+
+      Assets.world1,
+      Assets.world1
+    ];
   }
 
   update() {
@@ -46,6 +91,18 @@ export class Hud {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
+    let heartbeatSprite = this.heartbeatFrames[this.frame % this.heartbeatFrames.length];
+
+    heartbeatSprite = Assets.world1;
+    ctx.save();
+    ctx.translate(10, 10);
+    ctx.rotate(this.frame * RAD[1]);
+    ctx.globalAlpha = 0.5;
+    ctx.drawImage(heartbeatSprite, -heartbeatSprite.width / 2, -heartbeatSprite.height / 2);
+    ctx.rotate(-this.frame * RAD[1] * 2);
+    ctx.drawImage(heartbeatSprite, -heartbeatSprite.width / 2, -heartbeatSprite.height / 2);
+    ctx.restore();
+
     return;
 
     const hpctx0 = this.hpcanvas0.ctx;

@@ -1,0 +1,42 @@
+{ "frames": {
+   "worldheartbeat 0.aseprite": {
+    "frame": { "x": 0, "y": 0, "w": 23, "h": 23 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 23, "h": 23 },
+    "sourceSize": { "w": 23, "h": 23 },
+    "duration": 100
+   },
+   "worldheartbeat 1.aseprite": {
+    "frame": { "x": 23, "y": 0, "w": 23, "h": 23 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 23, "h": 23 },
+    "sourceSize": { "w": 23, "h": 23 },
+    "duration": 100
+   },
+   "worldheartbeat 2.aseprite": {
+    "frame": { "x": 46, "y": 0, "w": 23, "h": 23 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 23, "h": 23 },
+    "sourceSize": { "w": 23, "h": 23 },
+    "duration": 100
+   }
+ },
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.2.13",
+  "image": "worldheartbeat2.png",
+  "format": "RGBA8888",
+  "size": { "w": 69, "h": 23 },
+  "scale": "1",
+  "frameTags": [
+  ],
+  "layers": [
+   { "name": "Layer 2 Copy", "opacity": 255, "blendMode": "normal" }
+  ],
+  "slices": [
+  ]
+ }
+}

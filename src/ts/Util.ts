@@ -1,5 +1,7 @@
 import { game } from "./ambient";
 import { Particle } from "./Particle";
+import { Assets } from "./Assets";
+import { Tween } from "./Tween";
 
 /**
  * Util
@@ -206,4 +208,19 @@ export function rgba(r:number, g:number, b:number, a:number) {
 
 export function bakeSplatter(particle: Particle) {
   game.bloodplane.ctx.drawImage(particle.sprite, particle.x, particle.y);
+}
+
+export function spawnBloodSplatter(p: Point, impact: NormalVector, numParticles: number, width: number, force: number) {
+  for (let i = 0; i < numParticles; i++) {
+    let r = Math.random() * 2 - 1;
+    let source = {
+      x: p.x + impact.y * width * r,
+      y: p.y + impact.x * width * r
+    };
+    let direction = rotateVector(impact, r * RAD[90]);
+    let sprite = Math.random() < 0.3 ? Assets.blood_droplet3 : Assets.blood_droplet2;
+    let time = 12 + Math.random() * 4;
+    let f = (Math.random() + 0.5) * force;
+    game.particles.push(new Particle(source, { x: source.x + direction.x * f, y: source.y + direction.y * f }, Tween.easeOut4, sprite, time, bakeSplatter));
+  }
 }

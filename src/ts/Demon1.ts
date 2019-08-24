@@ -1,7 +1,7 @@
 import { game } from './ambient';
 import { Input } from './input';
 import { Assets } from './Assets';
-import { NormalVector, RAD90, RAD45, normalizeVector, vectorBetween, angleStep, RAD, vectorFromAngle, Point, Frame, distance, bakeSplatter, rotateVector } from './Util';
+import { NormalVector, RAD90, RAD45, normalizeVector, vectorBetween, angleStep, RAD, vectorFromAngle, Point, Frame, distance, bakeSplatter, rotateVector, spawnBloodSplatter } from './Util';
 import { Particle, GibParticle } from './Particle';
 import { Tween } from './Tween';
 
@@ -55,8 +55,8 @@ export class Demon1 {
     if (this.frame.despawn) {
       let gib1 = rotateVector(this.lastImpact, Math.random() * RAD[45]);
       let gib2 = rotateVector(this.lastImpact, -(Math.random() * RAD[45]));
-      let time1 = Math.floor(Math.random() * 12) + 8;
-      let time2 = Math.floor(Math.random() * 12) + 8;
+      let time1 = Math.floor(Math.random() * 4) + 16;
+      let time2 = Math.floor(Math.random() * 4) + 16;
       let m1 = Math.random() * 60 + 30;
       let m2 = Math.random() * 60 + 30;
       game.particles.push(new GibParticle(this, { x: this.x + gib1.x * m1, y: this.y + gib1.y * m1 }, Tween.easeOut2, Assets.demon1_chunk_a, time1));
@@ -170,13 +170,6 @@ export class Demon1 {
       game.bloodplane.ctx.drawImage(Assets.blood_droplet, x, y);
     }*/
 
-    let numParticles = Math.floor(Math.random() * 4 + 4);
-    for (let i = 0; i < numParticles; i++) {
-      let x = Math.floor(Math.random() * 70 - 35) + this.x;
-      let y = Math.floor(Math.random() * 70 - 35) + this.y;
-      let time = Math.floor(Math.random() * 5 + 10);
-      let sprite = Math.random() < 0.4 ? Assets.blood_droplet3 : Assets.blood_droplet2;
-      game.particles.push(new Particle(this, { x, y }, Tween.easeOut4, sprite, time, bakeSplatter));
-    }
+    spawnBloodSplatter(this, impactVector, 10, 4, 20);
   }
 }

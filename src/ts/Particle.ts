@@ -1,4 +1,4 @@
-import { Point, bakeSplatter, RAD } from './Util';
+import { Point, bakeSplatter, RAD, spawnBloodSplatter, rotateVector } from './Util';
 import { TweenFn, Tween } from './Tween';
 import { Assets } from './Assets';
 import { game } from './ambient';
@@ -52,7 +52,7 @@ export class GibParticle extends Particle {
   constructor(p1: Point, p2: Point, tweenFn: TweenFn, sprite: CanvasImageSource, frames: number, complete?: ParticleCallback) {
     super(p1, p2, tweenFn, sprite, frames, complete);
     this.r = Math.random() * RAD[360];
-    this.vr = (Math.random() * RAD[5] + RAD[2]) * (Math.random() < 0.5 ? 1 : -1);
+    this.vr = (Math.random() * RAD[4] + RAD[2]) * (Math.random() < 0.5 ? 1 : -1);
   }
 
   update(): boolean {
@@ -60,13 +60,7 @@ export class GibParticle extends Particle {
 
     this.r += this.vr;
 
-    if (this.t % 2 === 0) {
-      let x = Math.floor(Math.random() * 60 - 30) + this.x;
-      let y = Math.floor(Math.random() * 60 - 30) + this.y;
-      let time = Math.floor(Math.random() * 5 + 6);
-      let sprite = Math.random() < 0.4 ? Assets.blood_droplet3 : Assets.blood_droplet2;
-      game.particles.push(new Particle(this, { x, y }, Tween.easeOut4, sprite, time, bakeSplatter));
-    }
+    spawnBloodSplatter(this, rotateVector({ x: 1, y: 0, m: 1 }, this.r), 1, 1, 16);
 
     return true;
   }

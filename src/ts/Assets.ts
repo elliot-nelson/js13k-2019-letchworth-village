@@ -33,7 +33,7 @@ export class Assets {
     this.demon1b = await this.loadImage('demon1b.png');
 
     // Tinted sprites
-    this.demon1_hit = this.tint(this.demon1, 255, 0, 0, 0.5);
+    this.demon1_hit = this.tint(this.demon1, 255, 255, 255, 0.3);
 
     // Chunks
     let chunk1, chunk2;

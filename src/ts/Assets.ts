@@ -12,11 +12,15 @@ type SpriteDef = { x: number, y: number, w: number, h: number };
 export class Assets {
   static sword: CanvasImageSource;
   static player: CanvasImageSource;
-  static demon1: CanvasImageSource;
+
+  static demon1a: CanvasImageSource;
+  static demon1b: CanvasImageSource;
+  static demon1c: CanvasImageSource;
+  static demon1_chomp1: CanvasImageSource;
+  static demon1_chomp2: CanvasImageSource;
   static demon1_hit: CanvasImageSource;
   static demon1_chunk_a: CanvasImageSource;
   static demon1_chunk_b: CanvasImageSource;
-  static demon1b: CanvasImageSource;
 
   static blood_droplet2: CanvasImageSource;
   static blood_droplet3: CanvasImageSource;
@@ -29,11 +33,22 @@ export class Assets {
     // Single PNGs
     this.sword = await this.loadImage('sword.png');
     this.player = await this.loadImage('player_stand_00.png');
-    this.demon1 = await this.loadImage('demon1.png');
-    this.demon1b = await this.loadImage('demon1b.png');
+
+    let [ demon1a, demon1b, demon1c, demon1_chomp1, demon1_chomp2 ] = await this.loadSpriteSheet('demon1.png', [
+      { x: 0, y: 0, w: 16, h: 22 },
+      { x: 16, y: 0, w: 16, h: 22 },
+      { x: 32, y: 0, w: 16, h: 22 },
+      { x: 48, y: 0, w: 16, h: 22 },
+      { x: 64, y: 0, w: 16, h: 22 },
+    ]);
+    this.demon1a = demon1a;
+    this.demon1b = demon1b;
+    this.demon1c = demon1c;
+    this.demon1_chomp1 = demon1_chomp1;
+    this.demon1_chomp2 = demon1_chomp2;
 
     // Tinted sprites
-    this.demon1_hit = this.tint(this.demon1, 255, 255, 255, 0.3);
+    this.demon1_hit = this.tint(this.demon1a, 255, 255, 255, 0.6);
 
     // Chunks
     let chunk1, chunk2;
@@ -76,8 +91,9 @@ export class Assets {
     const ctx = canvas.ctx;
 
     ctx.drawImage(source, 0, 0);
-    ctx.globalCompositeOperation = 'source-in';
-    ctx.fillStyle = rgba(r, g, b, a);
+    ctx.globalCompositeOperation = 'source-atop';
+    ctx.globalAlpha = a;
+    ctx.fillStyle = rgba(r, g, b, 1);
     ctx.fillRect(0, 0, source.width as number, source.height as number);
 
     return canvas.canvas;

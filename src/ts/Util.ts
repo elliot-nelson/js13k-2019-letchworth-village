@@ -91,6 +91,10 @@ export function vectorBetween(p1: Point, p2: Point): NormalVector {
   return normalizeVector({ x: p2.x - p1.x, y: p2.y - p1.y });
 }
 
+export function angleFromVector(v: NormalVector): number {
+  return Math.atan2(v.y, v.x);
+}
+
 export function closestAngleTo(r1: number, r2: number): number {
   let ccw = (r1 < r2) ? r2 - r1 : (r2 + RAD360 - r1);
   let cw = ccw - RAD360;
@@ -207,7 +211,7 @@ export function rgba(r:number, g:number, b:number, a:number) {
 }
 
 export function bakeSplatter(particle: Particle) {
-  game.bloodplane.ctx.drawImage(particle.sprite, particle.x, particle.y);
+  game.bloodplanes[0][0].ctx.drawImage(particle.sprite, particle.x, particle.y);
 }
 
 export function spawnBloodSplatter(p: Point, impact: NormalVector, numParticles: number, width: number, force: number) {

@@ -83,9 +83,10 @@ export class Player {
 
   draw(ctx: CanvasRenderingContext2D) {
     ctx.fillStyle = 'rgba(255, 255, 255, 255)';
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, 16, 0, 2 * Math.PI);
-    ctx.fill();
+
+    // draw bbox
+    ctx.strokeStyle = 'rgba(255, 255, 0, 0.7)';
+    ctx.strokeRect(this.x - this.bbox(), this.y - this.bbox(), this.bbox() * 2, this.bbox() * 2);
 
     ctx.imageSmoothingEnabled = false;
     ctx.save();
@@ -100,15 +101,7 @@ export class Player {
     ctx.lineTo(0, -50);
     ctx.stroke();*/
 
-    /// #if DEBUG
-    ctx.beginPath();
-    ctx.strokeStyle = 'rgba(255, 255, 0, 1)';
-    ctx.arc(0, 0, 16, 0, RAD[360]);
-    ctx.stroke();
-    /// #endif
-
-
-    ctx.translate(70, 0);
+    ctx.translate(30, 0);
     ctx.rotate(RAD45 + RAD90);
     ctx.drawImage(Assets.sword, 0, 0, 32, 32, -16, -16, 32, 32);
     ctx.restore();
@@ -124,6 +117,10 @@ export class Player {
     }
 
     ctx.globalAlpha = 1;
+  }
+
+  bbox(): number {
+    return 10;
   }
 }
 

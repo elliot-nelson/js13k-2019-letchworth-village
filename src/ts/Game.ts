@@ -13,6 +13,7 @@ import { game } from './ambient';
 import { distance, Point, collideHitboxCircle } from './Util';
 import { Canvas } from './Canvas';
 import { Particle } from './Particle';
+import { Hive } from './Hive';
 
 /**
  * Game state.
@@ -20,7 +21,6 @@ import { Particle } from './Particle';
 export class Game {
     canvas: HTMLCanvasElement;
     ctx: CanvasRenderingContext2D;
-    bloodplane: Canvas;
     input: Input;
     player: Player;
     pattern: CanvasPattern;
@@ -34,13 +34,23 @@ export class Game {
 
     monsters: Demon1[];
 
+    bloodplanes: Array<[Canvas, number, number]>;
+
+    score: number;
+
+    hive: Hive;
+
     async init() {
         this.canvas = document.getElementById('canvas') as HTMLCanvasElement;
         this.canvas.width = 480;
         this.canvas.height = 270;
         this.ctx = this.canvas.getContext('2d');
 
-        this.bloodplane = new Canvas(this.canvas.width, this.canvas.height);
+        this.bloodplanes = [
+            [new Canvas(this.canvas.width, this.canvas.height), 0, 240],
+            [new Canvas(this.canvas.width, this.canvas.height), 120, 240],
+            [new Canvas(this.canvas.width, this.canvas.height), 240, 240]
+        ];
 
         await Assets.init();
 
@@ -61,6 +71,10 @@ export class Game {
 
         this.audio = new Audio();
         await this.audio.init();
+
+        this.score = 0;
+
+        this.hive = new Hive();
     }
 
     start() {
@@ -118,6 +132,8 @@ export class Game {
             this.audio.spirit.play(472, this.audio.ctx.currentTime + 0.5);
         }
 
+        this.hive.update();
+
         this.fragglerock();
 
         this.player.update();
@@ -153,15 +169,30 @@ export class Game {
 
         this.screenshakes = this.screenshakes.filter(shake => shake.update());
 
-
         this.hud.update(); // TODO: update hud??
+
+        // update bloodplanes
+        /*this.bloodplanes[0][1]++;
+        this.bloodplanes[1][1]++;
+        this.bloodplanes[2][1]++;
+        if (this.bloodplanes[2][1] > this.bloodplanes[2][2]) {
+            this.bloodplanes.unshift(this.bloodplanes.pop());
+            this.bloodplanes[0][1] = 0;
+            this.bloodplanes[0][0].ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        }*/
     }
 
     draw(ctx: CanvasRenderingContext2D) {
         ctx.fillStyle = 'rgba(150, 128, 128, 1)';
         ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-        ctx.drawImage(this.bloodplane.canvas, 0, 0, this.canvas.width, this.canvas.height);
+        ctx.globalAlpha = 1 - this.bloodplanes[0][1] / this.bloodplanes[0][2];
+        ctx.drawImage(this.bloodplanes[0][0].canvas, 0, 0);
+        ctx.globalAlpha = 1 - this.bloodplanes[1][1] / this.bloodplanes[1][2];
+        ctx.drawImage(this.bloodplanes[1][0].canvas, 0, 0);
+        ctx.globalAlpha = 1 - this.bloodplanes[2][1] / this.bloodplanes[2][2];
+        ctx.drawImage(this.bloodplanes[2][0].canvas, 0, 0);
+        ctx.globalAlpha = 1;
 
         ctx.save();
         let shakeX = 0, shakeY = 0;
@@ -194,6 +225,8 @@ export class Game {
 
         ctx.restore();
 
+        this.hive.draw(ctx);
+
         for (let menu of this.menuStack) menu.draw(ctx);
     }
 
@@ -220,8 +253,15 @@ export class Game {
         }
     }
 
-    colliding(p1: Point, p2: Point): boolean {
-        return distance(p1, p2) < 32;
+    // sphere method
+    /*colliding(p1: Point, r1: number, p2: Point, r2: number): boolean {
+        return distance(p1, p2) < r1 + r2;
+    }*/
+
+    // AABB method
+    colliding(p1: Point, r1: number, p2: Point, r2: number): boolean {
+        return (Math.abs(p1.x - p2.x) <= r1 + r2) &&
+               (Math.abs(p1.y - p2.y) <= r1 + r2);
     }
 
     updateEntityPositions() {
@@ -229,23 +269,25 @@ export class Game {
         for (let i = 0; i < entities.length; i++) {
             for (let j = 0; j < entities.length; j++) {
                 if (i === j) continue;
+                let bboxi = entities[i].bbox();
+                let bboxj = entities[j].bbox();
                 let suggestion = entities[i].next;
-                if (!this.colliding(suggestion, entities[j])) {
+                if (!this.colliding(suggestion, bboxi, entities[j], bboxj)) {
                     continue;
                 }
                 suggestion = { x: entities[i].next.x, y: entities[i].y };
-                if (!this.colliding(suggestion, entities[j])) {
+                if (!this.colliding(suggestion, bboxi, entities[j], bboxj)) {
                     entities[i].next = suggestion;
                     continue;
                 }
                 suggestion = { x: entities[i].x, y: entities[i].next.y };
-                if (!this.colliding(suggestion, entities[j])) {
+                if (!this.colliding(suggestion, bboxi, entities[j], bboxj)) {
                     entities[i].next = suggestion;
                     continue;
                 }
 
                 // at this point it appears blah blah blah
-                if (this.colliding(entities[i], entities[j])) {
+                if (this.colliding(entities[i], bboxi, entities[j], bboxj)) {
                     continue;
                 }
 

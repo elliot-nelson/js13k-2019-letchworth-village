@@ -103,6 +103,8 @@ export class Hud {
     ctx.drawImage(heartbeatSprite, -heartbeatSprite.width / 2, -heartbeatSprite.height / 2);
     ctx.restore();
 
+    ctx.fillStyle = 'rgba(255,255,255,1)';
+    ctx.fillText(String(game.score), 300, 10);
     return;
 
     const hpctx0 = this.hpcanvas0.ctx;

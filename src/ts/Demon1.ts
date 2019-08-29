@@ -1,7 +1,7 @@
 import { game } from './ambient';
 import { Input } from './input';
 import { Assets } from './Assets';
-import { NormalVector, RAD90, RAD45, normalizeVector, vectorBetween, angleStep, RAD, vectorFromAngle, Point, Frame, distance, bakeSplatter, rotateVector, spawnBloodSplatter, angleFromVector, clamp } from './Util';
+import { NormalVector, RAD90, RAD45, normalizeVector, vectorBetween, angleStep, RAD, vectorFromAngle, Point, Frame, distance, bakeSplatter, rotateVector, spawnBloodSplatter, angleFromVector, clamp, nextHeartbeatAfter, HEARTBEAT, Behavior } from './Util';
 import { Particle, GibParticle } from './Particle';
 import { Tween } from './Tween';
 
@@ -20,6 +20,7 @@ export class Demon1 {
   frameQ: Frame[];
 
   frameNumber: number;
+  framesLeft: number;
 
   mode: string;
   target?: Point;
@@ -38,22 +39,15 @@ export class Demon1 {
   }
 
   update(): boolean {
-    if (this.frameQ.length === 0) {
-      this.frameQ = [
-        { sprite: Assets.demon1a, input: true },
-        { sprite: Assets.demon1a, input: true },
-        { sprite: Assets.demon1a, input: true },
-        { sprite: Assets.demon1b, input: true },
-        { sprite: Assets.demon1b, input: true },
-        { sprite: Assets.demon1b, input: true },
-        { sprite: Assets.demon1c, input: true },
-        { sprite: Assets.demon1c, input: true },
-        { sprite: Assets.demon1c, input: true }
-      ];
-    }
-    this.frame = this.frameQ.shift();
+    this.frame = this.frameQ.shift() || { behavior: Behavior.DEFAULT };
 
-    if (this.mode === 'hover') {
+    if (this.frame.behavior === Behavior.DEFAULT) {
+      this.frame.sprite = [
+        Assets.demon1a,
+        Assets.demon1b,
+        Assets.demon1c
+      ][Math.floor(game.frame / 4) % 3];
+
       let diff = vectorBetween(this, game.player);
       this.facingAngle = angleFromVector(diff);
       let currentTarget = {
@@ -66,10 +60,66 @@ export class Demon1 {
       this.next = {
         x: this.x + move.x * speed,
         y: this.y + move.y * speed
-      }
+      };
+    } else if (this.frame.behavior === Behavior.WINDUP) {
+      let v = vectorBetween(this, game.player);
+      let speed = -0.5;
+      this.facingAngle = angleFromVector(v);
+      this.next = {
+        x: this.x + v.x * speed,
+        y: this.y + v.y * speed
+      };
+    } else if (this.frame.behavior === Behavior.ATTACK) {
+      let v = vectorFromAngle(this.facingAngle);
+      let speed = 4;
+      this.next = {
+        x: this.x + v.x * speed,
+        y: this.y + v.y * speed
+      };
+    } else if (this.frame.behavior === Behavior.COOLDOWN) {
     }
 
     return true;
+  }
+
+  readyToAttack() {
+    let when = HEARTBEAT + 8 - 26;
+    return (distance(this, game.player) <= 60 && game.frame % when === 0);
+  }
+
+  attack() {
+    this.frameQ = [
+      // 10
+      { behavior: Behavior.WINDUP, sprite: Assets.demon1_chomp1 },
+      { behavior: Behavior.WINDUP, sprite: Assets.demon1_chomp1 },
+      { behavior: Behavior.WINDUP, sprite: Assets.demon1_chomp1 },
+      { behavior: Behavior.WINDUP, sprite: Assets.demon1_chomp1 },
+      { behavior: Behavior.WINDUP, sprite: Assets.demon1_chomp1 },
+      { behavior: Behavior.WINDUP, sprite: Assets.demon1_chomp1 },
+      { behavior: Behavior.WINDUP, sprite: Assets.demon1_chomp1 },
+      { behavior: Behavior.WINDUP, sprite: Assets.demon1_chomp1 },
+      { behavior: Behavior.WINDUP, sprite: Assets.demon1_chomp1 },
+      { behavior: Behavior.WINDUP, sprite: Assets.demon1_chomp1 },
+      // 10
+      { behavior: Behavior.ATTACK, sprite: Assets.demon1_chomp1 },
+      { behavior: Behavior.ATTACK, sprite: Assets.demon1_chomp1 },
+      { behavior: Behavior.ATTACK, sprite: Assets.demon1_chomp1 },
+      { behavior: Behavior.ATTACK, sprite: Assets.demon1_chomp1 },
+      { behavior: Behavior.ATTACK, sprite: Assets.demon1_chomp1 },
+      { behavior: Behavior.ATTACK, sprite: Assets.demon1_chomp1 },
+      { behavior: Behavior.ATTACK, sprite: Assets.demon1_chomp1 },
+      { behavior: Behavior.ATTACK, sprite: Assets.demon1_chomp1 },
+      { behavior: Behavior.ATTACK, sprite: Assets.demon1_chomp1 },
+      { behavior: Behavior.ATTACK, sprite: Assets.demon1_chomp1 }
+    ];
+  }
+
+  startAttack() {
+    let attackFrame = nextHeartbeatAfter(game.frame + 24) + 8;
+
+    let windupFrames = 14;
+    let motionFrames = 12;
+    let attackFrames = 10;
   }
 
   draw(ctx: CanvasRenderingContext2D) {

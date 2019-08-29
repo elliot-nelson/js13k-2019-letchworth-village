@@ -10,7 +10,7 @@ import { Audio } from './Audio';
 import { Assets } from './Assets';
 import { Demon1 } from './Demon1';
 import { game } from './ambient';
-import { distance, Point, collideHitboxCircle } from './Util';
+import { distance, Point, collideHitboxCircle, HEARTBEAT } from './Util';
 import { Canvas } from './Canvas';
 import { Particle } from './Particle';
 import { Hive } from './Hive';
@@ -140,9 +140,10 @@ export class Game {
         this.monsters = this.monsters.filter(monster => monster.update());
         this.updateEntityPositions();
 
-        if (this.player.frame && this.player.frame.hitbox) {
+        let hitbox = this.player.getFixedRBB();
+        if (hitbox) {
             this.monsters.forEach(monster => {
-                if (collideHitboxCircle({ ...this.player.frame.hitbox, x: this.player.x, y: this.player.y }, monster, 16)) {
+                if (collideHitboxCircle(hitbox, monster, 16)) {
                     monster.hitBy(this.player);
                 }
             });
@@ -226,6 +227,11 @@ export class Game {
         ctx.restore();
 
         this.hive.draw(ctx);
+
+        if (this.frame % HEARTBEAT === 0 || (this.frame - 1) % HEARTBEAT === 0 || (this.frame - 2) % HEARTBEAT === 0) {
+            ctx.fillStyle = 'rgba(255, 255, 30, 0.3)';
+            ctx.fillRect(100, 0, 100, 10);
+        }
 
         for (let menu of this.menuStack) menu.draw(ctx);
     }

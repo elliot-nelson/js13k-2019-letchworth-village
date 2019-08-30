@@ -1,7 +1,8 @@
-import { Point, bakeSplatter, RAD, spawnBloodSplatter, rotateVector } from './Util';
 import { TweenFn, Tween } from './Tween';
-import { Assets } from './Assets';
+import { Assets, Sprite } from './Assets';
 import { game } from './ambient';
+import { Point, RAD, rotateVector } from './Geometry';
+import { spawnBloodSplatter } from './Util';
 
 export type ParticleCallback = (particle: Particle) => void;
 
@@ -9,14 +10,14 @@ export class Particle {
   p1: Point;
   p2: Point;
   tweenFn: TweenFn;
-  sprite: CanvasImageSource;
+  sprite: Sprite;
   complete: ParticleCallback;
   x: number;
   y: number;
   t: number;
   d: number;
 
-  constructor(p1: Point, p2: Point, tweenFn: TweenFn, sprite: CanvasImageSource, frames: number, complete?: ParticleCallback) {
+  constructor(p1: Point, p2: Point, tweenFn: TweenFn, sprite: Sprite, frames: number, complete?: ParticleCallback) {
     this.p1 = { x: p1.x, y: p1.y };
     this.p2 = { x: p2.x, y: p2.y };
     this.tweenFn = tweenFn;
@@ -41,7 +42,7 @@ export class Particle {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    ctx.drawImage(this.sprite, this.x, this.y);
+    Sprite.drawSprite(ctx, this.sprite, this.x, this.y);
   }
 }
 
@@ -49,7 +50,7 @@ export class GibParticle extends Particle {
   r: number;
   vr: number;
 
-  constructor(p1: Point, p2: Point, tweenFn: TweenFn, sprite: CanvasImageSource, frames: number, complete?: ParticleCallback) {
+  constructor(p1: Point, p2: Point, tweenFn: TweenFn, sprite: Sprite, frames: number, complete?: ParticleCallback) {
     super(p1, p2, tweenFn, sprite, frames, complete);
     this.r = Math.random() * RAD[360];
     this.vr = (Math.random() * RAD[4] + RAD[2]) * (Math.random() < 0.5 ? 1 : -1);
@@ -66,12 +67,10 @@ export class GibParticle extends Particle {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    let w = this.sprite.width as number, h = this.sprite.height as number;
-
     ctx.save();
     ctx.translate(this.x, this.y);
     ctx.rotate(this.r);
-    ctx.drawImage(this.sprite, -w / 2, -h / 2, w, h);
+    Sprite.drawSprite(ctx, this.sprite, 0, 0);
     ctx.restore();
   }
 }

@@ -1,7 +1,7 @@
 import { Canvas } from "./Canvas";
 import { game } from "./ambient";
 import { Assets } from "./Assets";
-import { RAD } from "./Util";
+import { RAD } from "./Geometry";
 
 export class Hud {
   hpcanvas0: Canvas;
@@ -43,7 +43,7 @@ export class Hud {
     }
 
     // A heartbeat is 32 frames
-    this.heartbeatFrames = [
+    /*this.heartbeatFrames = [
       // 10 frames
       Assets.world3,
       Assets.world2,
@@ -82,7 +82,7 @@ export class Hud {
 
       Assets.world1,
       Assets.world1
-    ];
+    ];*/
   }
 
   update() {
@@ -91,9 +91,11 @@ export class Hud {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
+    return;
+
     let heartbeatSprite = this.heartbeatFrames[this.frame % this.heartbeatFrames.length];
 
-    heartbeatSprite = Assets.world1;
+//    heartbeatSprite = Assets.world1;
     ctx.save();
     ctx.translate(10, 10);
     ctx.rotate(this.frame * RAD[1]);

@@ -86,7 +86,7 @@ export class Player {
     return rotatePolygon(Sprite.getBoundingBoxPolygon(this.frame.sprite, this.x, this.y), this.facingAngle);
   }
 
-  getHitboxPolygon(): Polygon|undefined {
+  getHitPolygon(): Polygon|undefined {
     if (this.frame.sprite.hbox) {
       return rotatePolygon(Sprite.getBoundingBoxPolygon(this.frame.sprite, this.x, this.y), this.facingAngle);
     }

@@ -1,5 +1,5 @@
 import { Input } from './input';
-import { NormalVector } from './Util';
+import { NormalVector } from './Geometry';
 
 // Just some quick constants
 const A00 = 0;

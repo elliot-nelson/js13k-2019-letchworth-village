@@ -10,10 +10,11 @@ import { Audio } from './Audio';
 import { Assets } from './Assets';
 import { Demon1 } from './Demon1';
 import { game } from './ambient';
-import { distance, Point, collideHitboxCircle, HEARTBEAT } from './Util';
 import { Canvas } from './Canvas';
 import { Particle } from './Particle';
 import { Hive } from './Hive';
+import { Point, intersectingPolygons } from './Geometry';
+import { HEARTBEAT } from './Util';
 
 /**
  * Game state.
@@ -140,10 +141,10 @@ export class Game {
         this.monsters = this.monsters.filter(monster => monster.update());
         this.updateEntityPositions();
 
-        let hitbox = this.player.getFixedRBB();
+        let hitbox = this.player.getHitPolygon();
         if (hitbox) {
             this.monsters.forEach(monster => {
-                if (collideHitboxCircle(hitbox, monster, 16)) {
+                if (intersectingPolygons(hitbox, monster.getBoundingPolygon())) {
                     monster.hitBy(this.player);
                 }
             });
@@ -275,25 +276,31 @@ export class Game {
         for (let i = 0; i < entities.length; i++) {
             for (let j = 0; j < entities.length; j++) {
                 if (i === j) continue;
-                let bboxi = entities[i].bbox();
-                let bboxj = entities[j].bbox();
-                let suggestion = entities[i].next;
-                if (!this.colliding(suggestion, bboxi, entities[j], bboxj)) {
+                let polygoni = entities[i].getBoundingPolygon();
+                let polygonj = entities[j].getBoundingPolygon();
+
+                Object.assign(polygoni, entities[i].next);
+                if (!intersectingPolygons(polygoni, polygonj)) {
                     continue;
                 }
-                suggestion = { x: entities[i].next.x, y: entities[i].y };
-                if (!this.colliding(suggestion, bboxi, entities[j], bboxj)) {
-                    entities[i].next = suggestion;
+
+                polygoni.x = entities[i].x;
+                if (!intersectingPolygons(polygoni, polygonj)) {
+                    entities[i].next = { x: polygoni.x, y: polygoni.y };
                     continue;
                 }
-                suggestion = { x: entities[i].x, y: entities[i].next.y };
-                if (!this.colliding(suggestion, bboxi, entities[j], bboxj)) {
-                    entities[i].next = suggestion;
+
+                polygoni.x = entities[i].next.x;
+                polygoni.y = entities[i].y;
+                if (!intersectingPolygons(polygoni, polygonj)) {
+                    entities[i].next = { x: polygoni.x, y: polygoni.y };
                     continue;
                 }
 
                 // at this point it appears blah blah blah
-                if (this.colliding(entities[i], bboxi, entities[j], bboxj)) {
+                polygoni.x = entities[i].x;
+                polygoni.y = entities[i].y;
+                if (this.colliding(entities[i], polygoni, entities[j], polygonj)) {
                     continue;
                 }
 

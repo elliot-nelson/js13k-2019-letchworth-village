@@ -1,9 +1,10 @@
 import { game } from './ambient';
 import { Input } from './input';
-import { Assets } from './Assets';
-import { NormalVector, RAD90, RAD45, normalizeVector, vectorBetween, angleStep, RAD, vectorFromAngle, Point, Frame, distance, bakeSplatter, rotateVector, spawnBloodSplatter, angleFromVector, clamp, nextHeartbeatAfter, HEARTBEAT, Behavior } from './Util';
+import { Assets, Sprite, Behavior, Frame } from './Assets';
 import { Particle, GibParticle } from './Particle';
 import { Tween } from './Tween';
+import { Point, NormalVector, vectorBetween, angleFromVector, clamp, vectorFromAngle, distance, RAD, Polygon, rotatePolygon } from './Geometry';
+import { HEARTBEAT, nextHeartbeatAfter, spawnBloodSplatter } from './Util';
 
 /**
  * Player demon1
@@ -31,7 +32,7 @@ export class Demon1 {
     this.x = x;
     this.y = y;
     this.facing = { x: 0, y: -1, m: 0 };
-    this.facingAngle = RAD45;
+    this.facingAngle = RAD[45];
     this.frameNumber = 0;
     this.mode = 'hover';
     this.frameQ = [];
@@ -43,9 +44,9 @@ export class Demon1 {
 
     if (this.frame.behavior === Behavior.DEFAULT) {
       this.frame.sprite = [
-        Assets.demon1a,
-        Assets.demon1b,
-        Assets.demon1c
+        Sprite.demon1_walk1,
+        Sprite.demon1_walk2,
+        Sprite.demon1_walk3
       ][Math.floor(game.frame / 4) % 3];
 
       let diff = vectorBetween(this, game.player);
@@ -90,27 +91,27 @@ export class Demon1 {
   attack() {
     this.frameQ = [
       // 10
-      { behavior: Behavior.WINDUP, sprite: Assets.demon1_chomp1 },
-      { behavior: Behavior.WINDUP, sprite: Assets.demon1_chomp1 },
-      { behavior: Behavior.WINDUP, sprite: Assets.demon1_chomp1 },
-      { behavior: Behavior.WINDUP, sprite: Assets.demon1_chomp1 },
-      { behavior: Behavior.WINDUP, sprite: Assets.demon1_chomp1 },
-      { behavior: Behavior.WINDUP, sprite: Assets.demon1_chomp1 },
-      { behavior: Behavior.WINDUP, sprite: Assets.demon1_chomp1 },
-      { behavior: Behavior.WINDUP, sprite: Assets.demon1_chomp1 },
-      { behavior: Behavior.WINDUP, sprite: Assets.demon1_chomp1 },
-      { behavior: Behavior.WINDUP, sprite: Assets.demon1_chomp1 },
+      { behavior: Behavior.WINDUP, sprite: Sprite.demon1_attack1 },
+      { behavior: Behavior.WINDUP, sprite: Sprite.demon1_attack1 },
+      { behavior: Behavior.WINDUP, sprite: Sprite.demon1_attack1 },
+      { behavior: Behavior.WINDUP, sprite: Sprite.demon1_attack1 },
+      { behavior: Behavior.WINDUP, sprite: Sprite.demon1_attack1 },
+      { behavior: Behavior.WINDUP, sprite: Sprite.demon1_attack1 },
+      { behavior: Behavior.WINDUP, sprite: Sprite.demon1_attack1 },
+      { behavior: Behavior.WINDUP, sprite: Sprite.demon1_attack1 },
+      { behavior: Behavior.WINDUP, sprite: Sprite.demon1_attack1 },
+      { behavior: Behavior.WINDUP, sprite: Sprite.demon1_attack1 },
       // 10
-      { behavior: Behavior.ATTACK, sprite: Assets.demon1_chomp1 },
-      { behavior: Behavior.ATTACK, sprite: Assets.demon1_chomp1 },
-      { behavior: Behavior.ATTACK, sprite: Assets.demon1_chomp1 },
-      { behavior: Behavior.ATTACK, sprite: Assets.demon1_chomp1 },
-      { behavior: Behavior.ATTACK, sprite: Assets.demon1_chomp1 },
-      { behavior: Behavior.ATTACK, sprite: Assets.demon1_chomp1 },
-      { behavior: Behavior.ATTACK, sprite: Assets.demon1_chomp1 },
-      { behavior: Behavior.ATTACK, sprite: Assets.demon1_chomp1 },
-      { behavior: Behavior.ATTACK, sprite: Assets.demon1_chomp1 },
-      { behavior: Behavior.ATTACK, sprite: Assets.demon1_chomp1 }
+      { behavior: Behavior.ATTACK, sprite: Sprite.demon1_attack1 },
+      { behavior: Behavior.ATTACK, sprite: Sprite.demon1_attack1 },
+      { behavior: Behavior.ATTACK, sprite: Sprite.demon1_attack1 },
+      { behavior: Behavior.ATTACK, sprite: Sprite.demon1_attack1 },
+      { behavior: Behavior.ATTACK, sprite: Sprite.demon1_attack1 },
+      { behavior: Behavior.ATTACK, sprite: Sprite.demon1_attack1 },
+      { behavior: Behavior.ATTACK, sprite: Sprite.demon1_attack1 },
+      { behavior: Behavior.ATTACK, sprite: Sprite.demon1_attack1 },
+      { behavior: Behavior.ATTACK, sprite: Sprite.demon1_attack1 },
+      { behavior: Behavior.ATTACK, sprite: Sprite.demon1_attack1 }
     ];
   }
 
@@ -126,8 +127,10 @@ export class Demon1 {
     ctx.imageSmoothingEnabled = false;
     ctx.save();
     ctx.translate(this.x, this.y);
-    ctx.rotate(this.facingAngle + RAD90);
-    ctx.drawImage(this.frame.sprite, -this.frame.sprite.width / 2, -this.frame.sprite.height / 2);
+    ctx.rotate(this.facingAngle + RAD[90]);
+    Sprite.drawSprite(ctx, this.frame.sprite, 0, 0);
+    Sprite.drawBoundingBox(ctx, this.frame.sprite, 0, 0);
+    Sprite.drawHitBox(ctx, this.frame.sprite, 0, 0);
 
     ctx.restore();
     /// #if DEBUG
@@ -145,22 +148,22 @@ export class Demon1 {
     this.lastImpact = impactVector;
 
     this.frameQ = [
-      { sprite: Assets.demon1_hit, input: false, invuln: true, move: { ...impactVector, m: 3 } },
-      { sprite: Assets.demon1_hit, input: false, invuln: true, move: { ...impactVector, m: 3 } },
-      { sprite: Assets.demon1_hit, input: false, invuln: true, move: { ...impactVector, m: 3 } },
-      { sprite: Assets.demon1_hit, input: false, invuln: true, move: { ...impactVector, m: 2 } },
-      { sprite: Assets.demon1_hit, input: false, invuln: true, move: { ...impactVector, m: 2 } },
-      { sprite: Assets.demon1_hit, input: false, invuln: true, move: { ...impactVector, m: 2 } },
-      { sprite: Assets.demon1_hit, input: false, invuln: true, move: { ...impactVector, m: 1 } },
-      { sprite: Assets.demon1_hit, input: false, invuln: true, move: { ...impactVector, m: 1 } },
-      { sprite: Assets.demon1_hit, input: false, invuln: true, move: { ...impactVector, m: 1 } },
-      { sprite: Assets.demon1_hit, input: false, invuln: true, move: { ...impactVector, m: 1 } },
-      { sprite: Assets.demon1_hit, input: false, invuln: true, move: { ...impactVector, m: 1 } },
-      { sprite: Assets.demon1_hit, input: false, invuln: true, move: { ...impactVector, m: 1 } },
-      { sprite: Assets.demon1a, input: false, move: { ...impactVector, m: 1 } },
-      { sprite: Assets.demon1a, input: false, move: { ...impactVector, m: 1 } },
-      { sprite: Assets.demon1a, input: false, move: { ...impactVector, m: 1 } },
-      { sprite: Assets.demon1a, input: true, move: { ...impactVector, m: 1 } },
+      { sprite: Sprite.demon1_stun, input: false, invuln: true, move: { ...impactVector, m: 3 } },
+      { sprite: Sprite.demon1_stun, input: false, invuln: true, move: { ...impactVector, m: 3 } },
+      { sprite: Sprite.demon1_stun, input: false, invuln: true, move: { ...impactVector, m: 3 } },
+      { sprite: Sprite.demon1_stun, input: false, invuln: true, move: { ...impactVector, m: 2 } },
+      { sprite: Sprite.demon1_stun, input: false, invuln: true, move: { ...impactVector, m: 2 } },
+      { sprite: Sprite.demon1_stun, input: false, invuln: true, move: { ...impactVector, m: 2 } },
+      { sprite: Sprite.demon1_stun, input: false, invuln: true, move: { ...impactVector, m: 1 } },
+      { sprite: Sprite.demon1_stun, input: false, invuln: true, move: { ...impactVector, m: 1 } },
+      { sprite: Sprite.demon1_stun, input: false, invuln: true, move: { ...impactVector, m: 1 } },
+      { sprite: Sprite.demon1_stun, input: false, invuln: true, move: { ...impactVector, m: 1 } },
+      { sprite: Sprite.demon1_stun, input: false, invuln: true, move: { ...impactVector, m: 1 } },
+      { sprite: Sprite.demon1_stun, input: false, invuln: true, move: { ...impactVector, m: 1 } },
+      { sprite: Sprite.demon1_walk1, input: false, move: { ...impactVector, m: 1 } },
+      { sprite: Sprite.demon1_walk1, input: false, move: { ...impactVector, m: 1 } },
+      { sprite: Sprite.demon1_walk1, input: false, move: { ...impactVector, m: 1 } },
+      { sprite: Sprite.demon1_walk1, input: true, move: { ...impactVector, m: 1 } },
     ];
 
 /*    let numDrops = Math.floor(Math.random() * 4 + 4);
@@ -176,21 +179,31 @@ export class Demon1 {
   bbox(): number {
     return 11;
   }
+
+  getBoundingPolygon(): Polygon {
+    return rotatePolygon(Sprite.getBoundingBoxPolygon(this.frame.sprite, this.x, this.y), this.facingAngle);
+  }
+
+  getHitPolygon(): Polygon|undefined {
+    if (this.frame.sprite.hbox) {
+      return rotatePolygon(Sprite.getBoundingBoxPolygon(this.frame.sprite, this.x, this.y), this.facingAngle);
+    }
+  }
 }
 
 /*
 
     if (this.frameQ.length === 0) {
       this.frameQ = [
-        { sprite: Assets.demon1a, input: true },
-        { sprite: Assets.demon1a, input: true },
-        { sprite: Assets.demon1a, input: true },
-        { sprite: Assets.demon1b, input: true },
-        { sprite: Assets.demon1b, input: true },
-        { sprite: Assets.demon1b, input: true },
-        { sprite: Assets.demon1c, input: true },
-        { sprite: Assets.demon1c, input: true },
-        { sprite: Assets.demon1c, input: true }
+        { sprite: Sprite.demon1a, input: true },
+        { sprite: Sprite.demon1a, input: true },
+        { sprite: Sprite.demon1a, input: true },
+        { sprite: Sprite.demon1b, input: true },
+        { sprite: Sprite.demon1b, input: true },
+        { sprite: Sprite.demon1b, input: true },
+        { sprite: Sprite.demon1c, input: true },
+        { sprite: Sprite.demon1c, input: true },
+        { sprite: Sprite.demon1c, input: true }
       ];
     }
     this.frame = this.frameQ.shift();
@@ -202,19 +215,19 @@ export class Demon1 {
       let time2 = Math.floor(Math.random() * 4) + 16;
       let m1 = Math.random() * 60 + 30;
       let m2 = Math.random() * 60 + 30;
-      game.particles.push(new GibParticle(this, { x: this.x + gib1.x * m1, y: this.y + gib1.y * m1 }, Tween.easeOut2, Assets.demon1_chunk_a, time1));
-      game.particles.push(new GibParticle(this, { x: this.x + gib2.x * m2, y: this.y + gib2.y * m2 }, Tween.easeOut2, Assets.demon1_chunk_b, time2));
+      game.particles.push(new GibParticle(this, { x: this.x + gib1.x * m1, y: this.y + gib1.y * m1 }, Tween.easeOut2, Sprite.demon1_chunk_a, time1));
+      game.particles.push(new GibParticle(this, { x: this.x + gib2.x * m2, y: this.y + gib2.y * m2 }, Tween.easeOut2, Sprite.demon1_chunk_b, time2));
 
       game.score += 1;
       return false;
     } else if (this.hp <= 0 && this.mode !== 'dying') {
       this.mode = 'dying';
       this.frameQ = [
-        { sprite: Assets.demon1_hit, input: false },
-        { sprite: Assets.demon1_hit, input: false },
-        { sprite: Assets.demon1_hit, input: false },
-        { sprite: Assets.demon1_hit, input: false },
-        { sprite: Assets.demon1_hit, input: false, despawn: true }
+        { sprite: Sprite.demon1_hit, input: false },
+        { sprite: Sprite.demon1_hit, input: false },
+        { sprite: Sprite.demon1_hit, input: false },
+        { sprite: Sprite.demon1_hit, input: false },
+        { sprite: Sprite.demon1_hit, input: false, despawn: true }
       ];
       this.frame = this.frameQ.shift();
     } else if (this.frame.input) {
@@ -252,22 +265,22 @@ export class Demon1 {
 
       if (distance(this, currentTarget) < 40 && currentTarget === game.player) {
         this.frameQ = [
-          { sprite: Assets.demon1_chomp1, input: false },
-          { sprite: Assets.demon1_chomp1, input: false },
-          { sprite: Assets.demon1_chomp1, input: false },
-          { sprite: Assets.demon1_chomp1, input: false },
-          { sprite: Assets.demon1_chomp1, input: false },
-          { sprite: Assets.demon1_chomp1, input: false },
-          { sprite: Assets.demon1_chomp1, input: false },
-          { sprite: Assets.demon1_chomp1, input: false },
-          { sprite: Assets.demon1_chomp2, input: false },
-          { sprite: Assets.demon1_chomp2, input: false },
-          { sprite: Assets.demon1_chomp2, input: false },
-          { sprite: Assets.demon1_chomp2, input: false },
-          { sprite: Assets.demon1_chomp2, input: false },
-          { sprite: Assets.demon1_chomp2, input: false },
-          { sprite: Assets.demon1_chomp2, input: false },
-          { sprite: Assets.demon1_chomp2, input: false }
+          { sprite: Sprite.demon1_attack1, input: false },
+          { sprite: Sprite.demon1_attack1, input: false },
+          { sprite: Sprite.demon1_attack1, input: false },
+          { sprite: Sprite.demon1_attack1, input: false },
+          { sprite: Sprite.demon1_attack1, input: false },
+          { sprite: Sprite.demon1_attack1, input: false },
+          { sprite: Sprite.demon1_attack1, input: false },
+          { sprite: Sprite.demon1_attack1, input: false },
+          { sprite: Sprite.demon1_chomp2, input: false },
+          { sprite: Sprite.demon1_chomp2, input: false },
+          { sprite: Sprite.demon1_chomp2, input: false },
+          { sprite: Sprite.demon1_chomp2, input: false },
+          { sprite: Sprite.demon1_chomp2, input: false },
+          { sprite: Sprite.demon1_chomp2, input: false },
+          { sprite: Sprite.demon1_chomp2, input: false },
+          { sprite: Sprite.demon1_chomp2, input: false }
         ];
       }
     } else if (this.frame.move) {

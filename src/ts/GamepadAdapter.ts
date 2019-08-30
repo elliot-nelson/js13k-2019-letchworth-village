@@ -1,4 +1,4 @@
-import { normalizeVector, NormalVector } from './Util';
+import { normalizeVector, NormalVector } from './Geometry';
 import { Input } from './Input';
 
 // TODO: Should these thresholds represent scale points instead of clamps?

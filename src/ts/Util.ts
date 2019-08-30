@@ -2,7 +2,7 @@ import { game } from "./ambient";
 import { Particle } from "./Particle";
 import { Assets, Sprite } from "./Assets";
 import { Tween } from "./Tween";
-import { NormalVector, Point } from "./Geometry";
+import { NormalVector, Point, rotateVector, RAD } from "./Geometry";
 
 /**
  * Util
@@ -23,7 +23,7 @@ export function rgba(r:number, g:number, b:number, a:number) {
 }
 
 export function bakeSplatter(particle: Particle) {
-  game.bloodplanes[0][0].ctx.drawImage(particle.sprite, particle.x, particle.y);
+  Sprite.drawSprite(game.bloodplanes[0][0].ctx, particle.sprite, particle.x, particle.y);
 }
 
 export function spawnBloodSplatter(p: Point, impact: NormalVector, numParticles: number, width: number, force: number) {
@@ -34,7 +34,7 @@ export function spawnBloodSplatter(p: Point, impact: NormalVector, numParticles:
       y: p.y + impact.x * width * r
     };
     let direction = rotateVector(impact, r * RAD[90]);
-    let sprite = Math.random() < 0.3 ? Assets.blood_droplet3 : Assets.blood_droplet2;
+    let sprite = Math.random() < 0.3 ? Sprite.blood_droplet3 : Sprite.blood_droplet2;
     let time = 12 + Math.random() * 4;
     let f = (Math.random() + 0.5) * force;
     game.particles.push(new Particle(source, { x: source.x + direction.x * f, y: source.y + direction.y * f }, Tween.easeOut4, sprite, time, bakeSplatter));

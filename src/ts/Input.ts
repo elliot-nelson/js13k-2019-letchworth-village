@@ -1,6 +1,6 @@
 import { KeyboardAdapter } from './KeyboardAdapter';
 import { GamepadAdapter } from './GamepadAdapter';
-import { NormalVector } from './Util';
+import { NormalVector } from './Geometry';
 
 /**
  * This is our primary game input handler. Every frame, we'll be asking it for an update,

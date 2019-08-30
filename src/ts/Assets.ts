@@ -257,6 +257,7 @@ export class Assets {
    */
   static async loadSlice(uri: string, x: number, y: number, w: number, h: number): Promise<CanvasImageSource> {
     const source = await this.loadImage(uri);
+    console.log(source);
     const sliceCanvas = new Canvas(w, h);
     sliceCanvas.ctx.drawImage(source, x, y, w, h, 0, 0, w, h);
     return sliceCanvas.canvas;
@@ -266,9 +267,10 @@ export class Assets {
    * This helper method loads the specified image, caching it for future use.
    */
   static async loadImage(uri: string): Promise<HTMLImageElement> {
+    console.log(["loadImage", uri, this.images[uri]]);
     if (this.images[uri]) return this.images[uri];
 
-    let img = await new Promise((resolve, reject) => {
+    return await new Promise((resolve, reject) => {
       let image = new Image();
       image.onload = () => resolve(image);
       image.onerror = (err) => reject(err);

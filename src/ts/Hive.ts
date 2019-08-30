@@ -1,5 +1,5 @@
 import { game } from "./ambient";
-import { RAD, NormalVector } from "./Util";
+import { RAD, NormalVector } from "./Geometry";
 
 export class Hive {
   frame: number;

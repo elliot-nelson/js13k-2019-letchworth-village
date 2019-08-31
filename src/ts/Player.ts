@@ -1,8 +1,9 @@
-import { game } from './ambient';
+import { game } from './Globals';
 import { Input } from './input';
 import { Assets, Behavior, Animation2, Sprite } from './Assets';
-import { Point, NormalVector, RAD, rotatePolygon, Polygon } from './Geometry';
+import { Point, NormalVector, RAD, rotatePolygon, Polygon, Circle } from './Geometry';
 import { Frame } from './Assets';
+import { PLAYER_WALK_SPEED } from './Config';
 
 /**
  * Player
@@ -49,6 +50,8 @@ export class Player {
       if (game.input.direction.m > 0) {
         this.facing = game.input.direction;
         this.facingAngle = Math.atan2(this.facing.y, this.facing.x);
+      } else {
+        this.frame = Animation2.player_stand.frames[0];
       }
 
       if (game.input.pressed[Input.Action.DODGE]) {
@@ -59,7 +62,7 @@ export class Player {
     }
 
     // If only we had "this.frame.m ?? blah" :)
-    let motion = this.frame.m === undefined ? (game.input.direction.m * 4) : this.frame.m;
+    let motion = this.frame.m === undefined ? (game.input.direction.m * PLAYER_WALK_SPEED) : this.frame.m;
 
     this.next = {
       x: this.x + this.facing.x * motion,
@@ -76,19 +79,45 @@ export class Player {
       ctx.globalAlpha = 0.5;
     }
     Sprite.drawSprite(ctx, this.frame.sprite, 0, 0);
-    Sprite.drawBoundingBox(ctx, this.frame.sprite, 0, 0);
-    Sprite.drawHitBox(ctx, this.frame.sprite, 0, 0);
+//    Sprite.drawBoundingBox(ctx, this.frame.sprite, 0, 0);
+//    Sprite.drawHitBox(ctx, this.frame.sprite, 0, 0);
     ctx.globalAlpha = 1;
     ctx.restore();
+
+    let poly = this.getBoundingPolygon();
+    ctx.beginPath();
+    for (let i = 0; i < poly.p.length; i++) {
+      let [ a, b ] = [ poly.p[i], poly.p[(i+1)%poly.p.length] ];
+      ctx.moveTo(poly.x + a.x, poly.y + a.y);
+      ctx.lineTo(poly.x + b.x, poly.y + b.y);
+    }
+    ctx.strokeStyle = 'rgba(0, 255, 0, 1)';
+    ctx.stroke();
+    poly = this.getHitPolygon();
+    if (poly) {
+      ctx.beginPath();
+      for (let i = 0; i < poly.p.length; i++) {
+        let [ a, b ] = [ poly.p[i], poly.p[(i+1)%poly.p.length] ];
+        ctx.moveTo(poly.x + a.x, poly.y + a.y);
+        ctx.lineTo(poly.x + b.x, poly.y + b.y);
+      }
+      ctx.strokeStyle = 'rgba(255, 0, 0, 1)';
+      ctx.stroke();
+    }
+
   }
 
   getBoundingPolygon(): Polygon {
-    return rotatePolygon(Sprite.getBoundingBoxPolygon(this.frame.sprite, this.x, this.y), this.facingAngle);
+    return rotatePolygon(Sprite.getBoundingBoxPolygon(this.frame.sprite, this.x, this.y), this.facingAngle + RAD[90]);
+  }
+
+  getBoundingCircle(): Circle {
+    return Sprite.getBoundingCircle(this.frame.sprite, this.x, this.y);
   }
 
   getHitPolygon(): Polygon|undefined {
     if (this.frame.sprite.hbox) {
-      return rotatePolygon(Sprite.getBoundingBoxPolygon(this.frame.sprite, this.x, this.y), this.facingAngle);
+      return rotatePolygon(Sprite.getHitBoxPolygon(this.frame.sprite, this.x, this.y), this.facingAngle + RAD[90]);
     }
   }
 }

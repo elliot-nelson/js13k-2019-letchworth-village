@@ -40,9 +40,13 @@ module.exports = task.exports;
 // JS Build
 // -----------------------------------------------------------------------------
 const sources = glob.sync('src/ts/**/*.ts').sort((a, b) => {
-    // We put ambient typedefs at the top of the source list
-    if (a === 'src/ts/ambient.d.ts') return -1;
-    if (b === 'src/ts/ambient.d.ts') return 1;
+    // We put Globals typedefs at the top of the source list
+    if (a === 'src/ts/Globals.d.ts') return -1;
+    if (b === 'src/ts/Globals.d.ts') return 1;
+
+    // We put Config typedefs at the top of the source list
+    if (a === 'src/ts/Config.ts') return -1;
+    if (b === 'src/ts/Config.ts') return 1;
 
     // The game loader goes at the bottom of the source list
     if (a === 'src/ts/index.ts') return 1;

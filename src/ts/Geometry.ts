@@ -21,6 +21,10 @@ export interface Point {
  */
 export type Box = [Point, Point];
 
+export interface Circle extends Point {
+  r: number;
+}
+
 // https://gamedevelopment.tutsplus.com/tutorials/collision-detection-using-the-separating-axis-theorem--gamedev-169
 // https://github.com/jriecken/sat-js/blob/master/SAT.js
 // https://github.com/urgn/SAT-collisions
@@ -136,7 +140,7 @@ function projectedPolygonMinMax(poly: Polygon, plane: NormalVector): number[] {
     y = poly.y + point.y;
     proj = (x * plane.x + y * plane.y);
     min = proj < min ? proj : min;
-    max = proj > max  ? proj : proj;
+    max = proj > max ? proj : max;
   }
 
   return [min, max];
@@ -162,6 +166,23 @@ function getPolygonNormals(poly: Polygon): NormalVector[] {
 }
 
 export function intersectingPolygons(a: Polygon, b: Polygon) {
+  let normals = getPolygonNormals(a).concat(getPolygonNormals(b));
+  console.log(normals);
+  for (let normal of normals) {
+    let p1 = projectedPolygonMinMax(a, normal);
+    let p2 = projectedPolygonMinMax(b, normal);
+
+    if ( ! (
+      (((p1[0] <= p2[1]) && (p1[1] >= p2[0])) ||
+      (p2[0] >= p1[1]) && (p2[1] >= p1[0]))
+    )) {
+      console.log("not insecting", p1, p2);
+      return false;
+    }
+  }
+  return true;
+
+  /*
   let normals = getPolygonNormals(a);
   for (let normal of normals) {
     let ap = projectedPolygonMinMax(a, normal);
@@ -176,10 +197,14 @@ export function intersectingPolygons(a: Polygon, b: Polygon) {
     let bp = projectedPolygonMinMax(b, normal);
 
     if ((ap[0] >= bp[1] || ap[1] <= bp[0]) && (bp[0] <= ap[1] || bp[1] >= ap[0])) return false;
-  }
+  }*/
 }
 
 export function intersectingBoxes(a: Box, b: Box) {
   return (a[0].x <= b[1].x && a[1].x >= b[0].x) &&
          (a[0].y <= b[1].y && a[1].y >= b[0].y);
+}
+
+export function intersectingCircles(a: Circle, b: Circle) {
+  return distance(a, b) <= a.r + b.r;
 }

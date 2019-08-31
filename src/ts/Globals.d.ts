@@ -2,7 +2,7 @@ import { Game } from './Game';
 import { CharacterMap } from './Text';
 
 /**
- * Ambient declarations / type definitions.
+ * Globals declarations / type definitions.
  */
 declare let game: Game;
 

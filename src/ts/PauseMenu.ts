@@ -4,7 +4,7 @@ import { createSplashPattern } from './Pattern';
 import { Text } from './Text';
 import { ScreenShake } from './ScreenShake';
 import { Hud } from './Hud';
-import { game } from './ambient';
+import { game } from './Globals';
 import { rgba } from './Util';
 import { Menu } from './Menu';
 

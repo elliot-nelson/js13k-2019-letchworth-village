@@ -1,4 +1,4 @@
-import { game } from "./ambient";
+import { game } from "./Globals";
 import { RAD, NormalVector } from "./Geometry";
 
 export class Hive {
@@ -9,7 +9,7 @@ export class Hive {
   constructor() {
     this.frame = 0;
     this.innerRingOffset = 0;
-    this.innerRingRadius = 72;
+    this.innerRingRadius = 5; // 72
   }
 
   update() {

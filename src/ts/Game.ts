@@ -7,14 +7,14 @@ import { Hud } from './Hud';
 import { PauseMenu } from './PauseMenu';
 import { Menu } from './Menu';
 import { Audio } from './Audio';
-import { Assets } from './Assets';
+import { Assets, Sprite, drawPoly } from './Assets';
 import { Demon1 } from './Demon1';
-import { game } from './ambient';
+import { game } from './Globals';
 import { Canvas } from './Canvas';
 import { Particle } from './Particle';
 import { Hive } from './Hive';
-import { Point, intersectingPolygons } from './Geometry';
-import { HEARTBEAT } from './Util';
+import { Point, intersectingPolygons, intersectingCircles } from './Geometry';
+import { HEARTBEAT } from './Config';
 
 /**
  * Game state.
@@ -144,6 +144,8 @@ export class Game {
         let hitbox = this.player.getHitPolygon();
         if (hitbox) {
             this.monsters.forEach(monster => {
+                console.log(intersectingPolygons(hitbox, monster.getBoundingPolygon()));
+
                 if (intersectingPolygons(hitbox, monster.getBoundingPolygon())) {
                     monster.hitBy(this.player);
                 }
@@ -260,24 +262,49 @@ export class Game {
         }
     }
 
-    // sphere method
-    /*colliding(p1: Point, r1: number, p2: Point, r2: number): boolean {
-        return distance(p1, p2) < r1 + r2;
-    }*/
-
-    // AABB method
-    colliding(p1: Point, r1: number, p2: Point, r2: number): boolean {
-        return (Math.abs(p1.x - p2.x) <= r1 + r2) &&
-               (Math.abs(p1.y - p2.y) <= r1 + r2);
-    }
-
     updateEntityPositions() {
         let entities: any[] = this.monsters.concat([this.player] as any[]);
         for (let i = 0; i < entities.length; i++) {
             for (let j = 0; j < entities.length; j++) {
                 if (i === j) continue;
+                let circlei = entities[i].getBoundingCircle();
+                let circlej = entities[j].getBoundingCircle();
+
+                Object.assign(circlei, entities[i].next);
+                if (!intersectingCircles(circlei, circlej)) {
+                    continue;
+                }
+
+                circlei.x = entities[i].x;
+                if (!intersectingCircles(circlei, circlej)) {
+                    entities[i].next = { x: circlei.x, y: circlei.y };
+                    continue;
+                }
+
+                circlei.x = entities[i].next.x;
+                circlei.y = entities[i].y;
+                if (!intersectingCircles(circlei, circlej)) {
+                    entities[i].next = { x: circlei.x, y: circlei.y };
+                    continue;
+                }
+
+                // at this point it appears blah blah blah
+                circlei.x = entities[i].x;
+                circlei.y = entities[i].y;
+                if (intersectingCircles(circlei, circlej)) {
+                    continue;
+                }
+
+                // at this point we've prevented any movement from this object,
+                // so there's no longer any point in checking further collisions
+                entities[i].next = { x: entities[i].x, y: entities[i].y };
+                break;
+
+                /*
                 let polygoni = entities[i].getBoundingPolygon();
                 let polygonj = entities[j].getBoundingPolygon();
+
+                console.log(intersectingPolygons(polygoni, polygonj));
 
                 Object.assign(polygoni, entities[i].next);
                 if (!intersectingPolygons(polygoni, polygonj)) {
@@ -308,6 +335,7 @@ export class Game {
                 // so there's no longer any point in checking further collisions
                 entities[i].next = { x: entities[i].x, y: entities[i].y };
                 break;
+                */
             }
             Object.assign(entities[i], entities[i].next);
         }

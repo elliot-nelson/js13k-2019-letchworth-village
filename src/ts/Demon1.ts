@@ -1,10 +1,11 @@
-import { game } from './ambient';
+import { game } from './Globals';
 import { Input } from './input';
-import { Assets, Sprite, Behavior, Frame } from './Assets';
+import { Assets, Sprite, Behavior, Frame, Animation2 } from './Assets';
 import { Particle, GibParticle } from './Particle';
 import { Tween } from './Tween';
-import { Point, NormalVector, vectorBetween, angleFromVector, clamp, vectorFromAngle, distance, RAD, Polygon, rotatePolygon } from './Geometry';
-import { HEARTBEAT, nextHeartbeatAfter, spawnBloodSplatter } from './Util';
+import { Point, NormalVector, vectorBetween, angleFromVector, clamp, vectorFromAngle, distance, RAD, Polygon, rotatePolygon, Circle, rotateVector } from './Geometry';
+import { nextHeartbeatAfter, spawnBloodSplatter } from './Util';
+import { HEARTBEAT } from './Config';
 
 /**
  * Player demon1
@@ -39,9 +40,31 @@ export class Demon1 {
     this.hp = 24;
   }
 
+  startAnimation(animation: Animation2) {
+    this.frameQ = animation.frames.slice();
+    this.frame = this.frameQ.shift();
+  }
+
   update(): boolean {
     this.frame = this.frameQ.shift() || { behavior: Behavior.DEFAULT };
 
+    if (this.frame.behavior !== Behavior.DYING && this.frame.behavior !== Behavior.DEAD && this.hp <= 0) {
+      this.startAnimation(Animation2.demon1_death);
+    }
+
+    if (this.frame.behavior === Behavior.DYING) {
+      // x?
+    } else if (this.frame.behavior === Behavior.DEAD) {
+      let gib1 = rotateVector(this.lastImpact, Math.random() * RAD[45]);
+      let gib2 = rotateVector(this.lastImpact, -(Math.random() * RAD[45]));
+      let time1 = Math.floor(Math.random() * 4) + 16;
+      let time2 = Math.floor(Math.random() * 4) + 16;
+      let m1 = Math.random() * 60 + 30;
+      let m2 = Math.random() * 60 + 30;
+      game.particles.push(new GibParticle(this, { x: this.x + gib1.x * m1, y: this.y + gib1.y * m1 }, Tween.easeOut2, Sprite.demon1_chunk_a, time1));
+      game.particles.push(new GibParticle(this, { x: this.x + gib2.x * m2, y: this.y + gib2.y * m2 }, Tween.easeOut2, Sprite.demon1_chunk_b, time2));
+      return false;
+    } else
     if (this.frame.behavior === Behavior.DEFAULT) {
       this.frame.sprite = [
         Sprite.demon1_walk1,
@@ -133,10 +156,16 @@ export class Demon1 {
     Sprite.drawHitBox(ctx, this.frame.sprite, 0, 0);
 
     ctx.restore();
-    /// #if DEBUG
-    ctx.strokeStyle = 'rgba(255, 255, 0, 0.7)';
-    ctx.strokeRect(this.x - this.bbox(), this.y - this.bbox(), this.bbox() * 2, this.bbox() * 2);
-    /// #endif
+
+    let poly = this.getBoundingPolygon();
+    ctx.beginPath();
+    for (let i = 0; i < poly.p.length; i++) {
+      let [ a, b ] = [ poly.p[i], poly.p[(i+1)%poly.p.length] ];
+      ctx.moveTo(poly.x + a.x, poly.y + a.y);
+      ctx.lineTo(poly.x + b.x, poly.y + b.y);
+    }
+    ctx.strokeStyle = 'rgba(0, 255, 0, 1)';
+    ctx.stroke();
   }
 
   hitBy(impactSource: Point) {
@@ -176,17 +205,17 @@ export class Demon1 {
     spawnBloodSplatter(this, impactVector, 10, 4, 20);
   }
 
-  bbox(): number {
-    return 11;
+  getBoundingPolygon(): Polygon {
+    return rotatePolygon(Sprite.getBoundingBoxPolygon(this.frame.sprite, this.x, this.y), this.facingAngle + RAD[90]);
   }
 
-  getBoundingPolygon(): Polygon {
-    return rotatePolygon(Sprite.getBoundingBoxPolygon(this.frame.sprite, this.x, this.y), this.facingAngle);
+  getBoundingCircle(): Circle {
+    return Sprite.getBoundingCircle(this.frame.sprite, this.x, this.y);
   }
 
   getHitPolygon(): Polygon|undefined {
     if (this.frame.sprite.hbox) {
-      return rotatePolygon(Sprite.getBoundingBoxPolygon(this.frame.sprite, this.x, this.y), this.facingAngle);
+      return rotatePolygon(Sprite.getHitBoxPolygon(this.frame.sprite, this.x, this.y), this.facingAngle + RAD[90]);
     }
   }
 }

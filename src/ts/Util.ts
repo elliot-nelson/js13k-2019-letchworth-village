@@ -1,8 +1,9 @@
-import { game } from "./ambient";
+import { game } from "./Globals";
 import { Particle } from "./Particle";
 import { Assets, Sprite } from "./Assets";
 import { Tween } from "./Tween";
 import { NormalVector, Point, rotateVector, RAD } from "./Geometry";
+import { HEARTBEAT } from './Config';
 
 /**
  * Util
@@ -10,9 +11,6 @@ import { NormalVector, Point, rotateVector, RAD } from "./Geometry";
  * A grab bag of exports used by other modules. Common interfaces and math
  * stuff live here.
  */
-
-export const HEARTBEAT = 36;
-
 
 export function rgba(r:number, g:number, b:number, a:number) {
   r = Math.floor(r);

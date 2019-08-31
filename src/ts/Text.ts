@@ -1,6 +1,6 @@
 import { Input } from './input';
 import { Player } from './player';
-import { Font } from './ambient';
+import { Font } from './Globals';
 
 export type Character = { width: number, glyph: string[] };
 export type CharacterMap = { [key: string]: Character };

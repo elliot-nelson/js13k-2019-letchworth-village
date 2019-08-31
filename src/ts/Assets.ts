@@ -1,6 +1,7 @@
 import { Canvas } from "./Canvas";
-import { rgba } from "./Util";
-import { Box, RAD, Point, NormalVector, Polygon } from "./Geometry";
+import { rgba} from "./Util";
+import { Box, RAD, Point, NormalVector, Polygon, Circle } from "./Geometry";
+import { PLAYER_WALK_SPEED } from "./Config";
 
 /**
  * Sprites!
@@ -23,6 +24,7 @@ export class Sprite {
   hbox?: Box;
 
   // Player
+  static player_stand = {} as Sprite;
   static player_walk1 = {} as Sprite;
   static player_walk2 = {} as Sprite;
   static player_walk3 = {} as Sprite;
@@ -74,6 +76,7 @@ export class Sprite {
    */
   static drawHitBox(ctx: CanvasRenderingContext2D, sprite: Sprite, x: number, y: number) {
     if (sprite.hbox) {
+      console.log(sprite.hbox);
       ctx.strokeStyle = 'rgba(255, 0, 0, 0.7)';
       ctx.strokeRect(
         x - sprite.anchor.x + sprite.hbox[0].x,
@@ -82,6 +85,17 @@ export class Sprite {
         sprite.hbox[1].y - sprite.hbox[0].y
       );
     }
+  }
+
+  static getBoundingCircle(sprite: Sprite, x: number, y: number): Circle {
+    let dx = sprite.bbox[1].x - sprite.bbox[0].x;
+    let dy = sprite.bbox[1].y - sprite.bbox[0].y;
+    let r = (dx > dy ? dx : dy) / 2;
+    return {
+      x,
+      y,
+      r
+    };
   }
 
   static getBoundingBoxPolygon(sprite: Sprite, x: number, y: number): Polygon {
@@ -120,7 +134,9 @@ export const enum Behavior {
   WINDUP,
   ATTACK,
   COOLDOWN,
-  DODGE
+  DODGE,
+  DYING,
+  DEAD
 }
 
 /**
@@ -150,25 +166,38 @@ export interface Frame {
 export class Animation2 {
   frames: Frame[];
 
+  static player_stand: Animation2 = { frames: [
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_stand }
+  ] };
   static player_walk: Animation2 = { frames: [
-    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk1, m: 4 },
-    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk1, m: 4 },
-    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk1, m: 4 },
-    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk2, m: 4 },
-    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk2, m: 4 },
-    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk2, m: 4 }
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk1 }, // m: 4
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk1 },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk1 },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk1 }, // m: 4
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk1 },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk1 },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk1 },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk1 },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk2 },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk2 },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk2 },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk2 },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk2 },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk2 },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk2 },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk2 }
   ] };
   static player_attack: Animation2 = { frames: [
-    { behavior: Behavior.WINDUP, sprite: Sprite.player_attack1, m: 4 },
-    { behavior: Behavior.WINDUP, sprite: Sprite.player_attack1, m: 4 },
-    { behavior: Behavior.ATTACK, sprite: Sprite.player_attack2, m: 4 },
-    { behavior: Behavior.ATTACK, sprite: Sprite.player_attack2, m: 6 },
-    { behavior: Behavior.ATTACK, sprite: Sprite.player_attack2, m: 6, hit: true },
-    { behavior: Behavior.ATTACK, sprite: Sprite.player_attack2, m: 6 },
-    { behavior: Behavior.ATTACK, sprite: Sprite.player_attack2, m: 4 },
-    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_walk3, m: 2 },
-    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_walk3, m: 2 },
-    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_walk3, m: 2 }
+    { behavior: Behavior.WINDUP, sprite: Sprite.player_attack1, m: PLAYER_WALK_SPEED },
+    { behavior: Behavior.WINDUP, sprite: Sprite.player_attack1, m: PLAYER_WALK_SPEED },
+    { behavior: Behavior.ATTACK, sprite: Sprite.player_attack2, m: PLAYER_WALK_SPEED },
+    { behavior: Behavior.ATTACK, sprite: Sprite.player_attack2, m: PLAYER_WALK_SPEED * 3 },
+    { behavior: Behavior.ATTACK, sprite: Sprite.player_attack2, m: PLAYER_WALK_SPEED * 2, hit: true },
+    { behavior: Behavior.ATTACK, sprite: Sprite.player_attack2, m: PLAYER_WALK_SPEED * 2 },
+    { behavior: Behavior.ATTACK, sprite: Sprite.player_attack2, m: PLAYER_WALK_SPEED },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_walk3, m: PLAYER_WALK_SPEED / 3 },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_walk3, m: PLAYER_WALK_SPEED / 3 },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_walk3, m: PLAYER_WALK_SPEED / 3 }
   ] };
   static player_dodge: Animation2 = { frames: [
     { behavior: Behavior.DODGE, sprite: Sprite.player_walk1, m: 4 },
@@ -179,6 +208,14 @@ export class Animation2 {
     { behavior: Behavior.DODGE, sprite: Sprite.player_walk1, m: 8, invuln: true },
     { behavior: Behavior.DODGE, sprite: Sprite.player_walk1, m: 8, invuln: true },
     { behavior: Behavior.DODGE, sprite: Sprite.player_walk1, m: 2 }
+  ] };
+
+  static demon1_death: Animation2 = { frames: [
+    { behavior: Behavior.DYING, sprite: Sprite.demon1_walk1 },
+    { behavior: Behavior.DYING, sprite: Sprite.demon1_walk1 },
+    { behavior: Behavior.DYING, sprite: Sprite.demon1_walk1 },
+    { behavior: Behavior.DYING, sprite: Sprite.demon1_walk1 },
+    { behavior: Behavior.DEAD, sprite: Sprite.demon1_walk1 }
   ] };
 }
 
@@ -192,20 +229,23 @@ export class Assets {
   static images: { [key: string]: HTMLImageElement } = {};
 
   static async init() {
-    await this.initSprite(Sprite.player_walk1,     'player.png', 0, 0, 64, 64, {
+    await this.initSprite(Sprite.player_stand,     'player.png', 0, 0, 64, 64, {
       bbox: [{ x: 21, y: 25 }, { x: 42, y: 38 }]
     });
-    await this.initSprite(Sprite.player_walk2,     'player.png', 64, 0, 64, 64, {
+    await this.initSprite(Sprite.player_walk1,     'player.png', 64, 0, 64, 64, {
       bbox: [{ x: 21, y: 25 }, { x: 42, y: 38 }]
     });
-    await this.initSprite(Sprite.player_attack1,   'player.png', 128, 0, 64, 64, {
+    await this.initSprite(Sprite.player_walk2,     'player.png', 128, 0, 64, 64, {
       bbox: [{ x: 21, y: 25 }, { x: 42, y: 38 }]
     });
-    await this.initSprite(Sprite.player_attack2,   'player.png', 192, 0, 64, 64, {
+    await this.initSprite(Sprite.player_attack1,   'player.png', 192, 0, 64, 64, {
+      bbox: [{ x: 21, y: 25 }, { x: 42, y: 38 }]
+    });
+    await this.initSprite(Sprite.player_attack2,   'player.png', 256, 0, 64, 64, {
       bbox: [{ x: 21, y: 25 }, { x: 42, y: 38 }],
       hbox: [{ x: 16, y: 9 }, { x: 48, y: 33 }]
     });
-    await this.initSprite(Sprite.player_walk3,     'player.png', 256, 0, 64, 64, {
+    await this.initSprite(Sprite.player_walk3,     'player.png', 320, 0, 64, 64, {
       bbox: [{ x: 21, y: 25 }, { x: 42, y: 38 }]
     });
 
@@ -250,6 +290,7 @@ export class Assets {
     sprite.img = source;
     sprite.anchor = (opts && opts.anchor) || { x: Math.floor(w / 2), y: Math.floor(h / 2) };
     sprite.bbox = (opts && opts.bbox) || [{ x: 0, y: 0 }, { x: w, y: h }];
+    sprite.hbox = opts && opts.hbox;
   }
 
   /**
@@ -257,7 +298,6 @@ export class Assets {
    */
   static async loadSlice(uri: string, x: number, y: number, w: number, h: number): Promise<CanvasImageSource> {
     const source = await this.loadImage(uri);
-    console.log(source);
     const sliceCanvas = new Canvas(w, h);
     sliceCanvas.ctx.drawImage(source, x, y, w, h, 0, 0, w, h);
     return sliceCanvas.canvas;
@@ -347,4 +387,14 @@ export class Assets {
 
     return [canvas[0].canvas, canvas[1].canvas];
   }
+}
+
+export function drawPoly(ctx: CanvasRenderingContext2D, poly: Polygon) {
+    ctx.beginPath();
+    for (let i = 0; i < poly.p.length; i++) {
+      let [ a, b ] = [ poly.p[i], poly.p[(i+1)%poly.p.length] ];
+      ctx.moveTo(poly.x + a.x, poly.y + a.y);
+      ctx.lineTo(poly.x + b.x, poly.y + b.y);
+    }
+    ctx.stroke();
 }

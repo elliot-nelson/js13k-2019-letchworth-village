@@ -1,5 +1,5 @@
 import { Canvas } from "./Canvas";
-import { game } from "./ambient";
+import { game } from "./Globals";
 import { Assets } from "./Assets";
 import { RAD } from "./Geometry";
 

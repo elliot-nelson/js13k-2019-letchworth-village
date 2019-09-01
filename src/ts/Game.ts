@@ -144,8 +144,6 @@ export class Game {
         let hitbox = this.player.getHitPolygon();
         if (hitbox) {
             this.monsters.forEach(monster => {
-                console.log(intersectingPolygons(hitbox, monster.getBoundingPolygon()));
-
                 if (intersectingPolygons(hitbox, monster.getBoundingPolygon())) {
                     monster.hitBy(this.player);
                 }

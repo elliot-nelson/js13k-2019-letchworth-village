@@ -5,7 +5,7 @@ import { Particle, GibParticle } from './Particle';
 import { Tween } from './Tween';
 import { Point, NormalVector, vectorBetween, angleFromVector, clamp, vectorFromAngle, distance, RAD, Polygon, rotatePolygon, Circle, rotateVector } from './Geometry';
 import { nextHeartbeatAfter, spawnBloodSplatter } from './Util';
-import { HEARTBEAT } from './Config';
+import { HEARTBEAT, DEMON1_WALK_SPEED } from './Config';
 
 /**
  * Player demon1
@@ -45,8 +45,16 @@ export class Demon1 {
     this.frame = this.frameQ.shift();
   }
 
+  nextAnimationFrame(defaultAnimation?: Animation2) {
+    if (this.frameQ.length === 0) {
+      this.startAnimation(defaultAnimation);
+    } else {
+      this.frame = this.frameQ.shift();
+    }
+  }
+
   update(): boolean {
-    this.frame = this.frameQ.shift() || { behavior: Behavior.DEFAULT };
+    this.nextAnimationFrame(Animation2.demon1_walk);
 
     if (this.frame.behavior !== Behavior.DYING && this.frame.behavior !== Behavior.DEAD && this.hp <= 0) {
       this.startAnimation(Animation2.demon1_death);
@@ -85,6 +93,10 @@ export class Demon1 {
         x: this.x + move.x * speed,
         y: this.y + move.y * speed
       };
+
+      if (Math.random() < 1/60) {
+        this.frameQ = Animation2.demon1_attack.frames.slice();
+      }
     } else if (this.frame.behavior === Behavior.WINDUP) {
       let v = vectorBetween(this, game.player);
       let speed = -0.5;
@@ -95,12 +107,23 @@ export class Demon1 {
       };
     } else if (this.frame.behavior === Behavior.ATTACK) {
       let v = vectorFromAngle(this.facingAngle);
-      let speed = 4;
+      let speed = 5;
       this.next = {
         x: this.x + v.x * speed,
         y: this.y + v.y * speed
       };
     } else if (this.frame.behavior === Behavior.COOLDOWN) {
+      let v = vectorFromAngle(this.facingAngle);
+      let speed = 1;
+      this.next = {
+        x: this.x + v.x * speed,
+        y: this.y + v.y * speed
+      };
+    } else if (this.frame.behavior === Behavior.STUN) {
+      this.next = {
+        x: this.x + this.lastImpact.x * (this.frame.m || 0),
+        y: this.y + this.lastImpact.y * (this.frame.m || 0)
+      };
     }
 
     return true;
@@ -169,39 +192,13 @@ export class Demon1 {
   }
 
   hitBy(impactSource: Point) {
-    if (this.mode === 'dying' || this.frame.invuln) return;
+    if (this.frame.invuln) return;
 
     this.hp -= 10;
 
     let impactVector = vectorBetween(impactSource, this);
     this.lastImpact = impactVector;
-
-    this.frameQ = [
-      { sprite: Sprite.demon1_stun, input: false, invuln: true, move: { ...impactVector, m: 3 } },
-      { sprite: Sprite.demon1_stun, input: false, invuln: true, move: { ...impactVector, m: 3 } },
-      { sprite: Sprite.demon1_stun, input: false, invuln: true, move: { ...impactVector, m: 3 } },
-      { sprite: Sprite.demon1_stun, input: false, invuln: true, move: { ...impactVector, m: 2 } },
-      { sprite: Sprite.demon1_stun, input: false, invuln: true, move: { ...impactVector, m: 2 } },
-      { sprite: Sprite.demon1_stun, input: false, invuln: true, move: { ...impactVector, m: 2 } },
-      { sprite: Sprite.demon1_stun, input: false, invuln: true, move: { ...impactVector, m: 1 } },
-      { sprite: Sprite.demon1_stun, input: false, invuln: true, move: { ...impactVector, m: 1 } },
-      { sprite: Sprite.demon1_stun, input: false, invuln: true, move: { ...impactVector, m: 1 } },
-      { sprite: Sprite.demon1_stun, input: false, invuln: true, move: { ...impactVector, m: 1 } },
-      { sprite: Sprite.demon1_stun, input: false, invuln: true, move: { ...impactVector, m: 1 } },
-      { sprite: Sprite.demon1_stun, input: false, invuln: true, move: { ...impactVector, m: 1 } },
-      { sprite: Sprite.demon1_walk1, input: false, move: { ...impactVector, m: 1 } },
-      { sprite: Sprite.demon1_walk1, input: false, move: { ...impactVector, m: 1 } },
-      { sprite: Sprite.demon1_walk1, input: false, move: { ...impactVector, m: 1 } },
-      { sprite: Sprite.demon1_walk1, input: true, move: { ...impactVector, m: 1 } },
-    ];
-
-/*    let numDrops = Math.floor(Math.random() * 4 + 4);
-    for (let i = 0; i < numDrops; i++) {
-      let x = Math.floor(Math.random() * 70 - 35) + this.x;
-      let y = Math.floor(Math.random() * 70 - 35) + this.y;
-      game.bloodplane.ctx.drawImage(Assets.blood_droplet, x, y);
-    }*/
-
+    this.frameQ = Animation2.demon1_stun.frames.slice();
     spawnBloodSplatter(this, impactVector, 10, 4, 20);
   }
 

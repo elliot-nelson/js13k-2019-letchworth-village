@@ -9,7 +9,7 @@ export class Hive {
   constructor() {
     this.frame = 0;
     this.innerRingOffset = 0;
-    this.innerRingRadius = 5; // 72
+    this.innerRingRadius = 60; // 72
   }
 
   update() {

@@ -1,7 +1,7 @@
 import { Canvas } from "./Canvas";
 import { rgba} from "./Util";
 import { Box, RAD, Point, NormalVector, Polygon, Circle } from "./Geometry";
-import { PLAYER_WALK_SPEED } from "./Config";
+import { PLAYER_WALK_SPEED, DEMON1_WALK_SPEED } from "./Config";
 
 /**
  * Sprites!
@@ -92,8 +92,8 @@ export class Sprite {
     let dy = sprite.bbox[1].y - sprite.bbox[0].y;
     let r = (dx > dy ? dx : dy) / 2;
     return {
-      x,
-      y,
+      x: x - sprite.anchor.x + (sprite.bbox[0].x + sprite.bbox[1].x) / 2,
+      y: y - sprite.anchor.y + (sprite.bbox[0].y + sprite.bbox[1].y) / 2,
       r
     };
   }
@@ -135,8 +135,9 @@ export const enum Behavior {
   ATTACK,
   COOLDOWN,
   DODGE,
+  STUN,
   DYING,
-  DEAD
+  DEAD,
 }
 
 /**
@@ -210,12 +211,70 @@ export class Animation2 {
     { behavior: Behavior.DODGE, sprite: Sprite.player_walk1, m: 2 }
   ] };
 
+  static demon1_walk: Animation2 = { frames: [
+    { behavior: Behavior.DEFAULT, sprite: Sprite.demon1_walk1 },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.demon1_walk1 },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.demon1_walk1 },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.demon1_walk1 },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.demon1_walk2 },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.demon1_walk2 },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.demon1_walk2 },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.demon1_walk2 },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.demon1_walk3 },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.demon1_walk3 },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.demon1_walk3 },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.demon1_walk3 }
+  ] };
+  static demon1_attack: Animation2 = { frames: [
+    // 10
+    { behavior: Behavior.WINDUP, sprite: Sprite.demon1_attack1 },
+    { behavior: Behavior.WINDUP, sprite: Sprite.demon1_attack1 },
+    { behavior: Behavior.WINDUP, sprite: Sprite.demon1_attack1 },
+    { behavior: Behavior.WINDUP, sprite: Sprite.demon1_attack1 },
+    { behavior: Behavior.WINDUP, sprite: Sprite.demon1_attack1 },
+    { behavior: Behavior.WINDUP, sprite: Sprite.demon1_attack1 },
+    { behavior: Behavior.WINDUP, sprite: Sprite.demon1_attack1 },
+    { behavior: Behavior.WINDUP, sprite: Sprite.demon1_attack1 },
+    { behavior: Behavior.WINDUP, sprite: Sprite.demon1_attack1 },
+    { behavior: Behavior.WINDUP, sprite: Sprite.demon1_attack1 },
+    // 10
+    { behavior: Behavior.ATTACK, sprite: Sprite.demon1_attack1 },
+    { behavior: Behavior.ATTACK, sprite: Sprite.demon1_attack1 },
+    { behavior: Behavior.ATTACK, sprite: Sprite.demon1_attack1 },
+    { behavior: Behavior.ATTACK, sprite: Sprite.demon1_attack1 },
+    { behavior: Behavior.ATTACK, sprite: Sprite.demon1_attack1 },
+    { behavior: Behavior.ATTACK, sprite: Sprite.demon1_attack1 },
+    { behavior: Behavior.ATTACK, sprite: Sprite.demon1_attack1 },
+    { behavior: Behavior.ATTACK, sprite: Sprite.demon1_attack2, hit: true },
+    { behavior: Behavior.ATTACK, sprite: Sprite.demon1_attack2 },
+    { behavior: Behavior.ATTACK, sprite: Sprite.demon1_attack2 },
+    { behavior: Behavior.ATTACK, sprite: Sprite.demon1_attack2 },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.demon1_attack2 },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.demon1_attack2 },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.demon1_attack2 },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.demon1_attack2 }
+  ] };
   static demon1_death: Animation2 = { frames: [
-    { behavior: Behavior.DYING, sprite: Sprite.demon1_walk1 },
-    { behavior: Behavior.DYING, sprite: Sprite.demon1_walk1 },
-    { behavior: Behavior.DYING, sprite: Sprite.demon1_walk1 },
-    { behavior: Behavior.DYING, sprite: Sprite.demon1_walk1 },
-    { behavior: Behavior.DEAD, sprite: Sprite.demon1_walk1 }
+    { behavior: Behavior.DYING, sprite: Sprite.demon1_walk1, invuln: true },
+    { behavior: Behavior.DYING, sprite: Sprite.demon1_walk1, invuln: true },
+    { behavior: Behavior.DYING, sprite: Sprite.demon1_walk1, invuln: true },
+    { behavior: Behavior.DYING, sprite: Sprite.demon1_walk1, invuln: true },
+    { behavior: Behavior.DEAD, sprite: Sprite.demon1_walk1, invuln: true }
+  ] };
+  static demon1_stun: Animation2 = { frames: [
+    { behavior: Behavior.STUN, sprite: Sprite.demon1_stun, invuln: true, m: DEMON1_WALK_SPEED * 3 },
+    { behavior: Behavior.STUN, sprite: Sprite.demon1_stun, invuln: true, m: DEMON1_WALK_SPEED * 3 },
+    { behavior: Behavior.STUN, sprite: Sprite.demon1_stun, invuln: true, m: DEMON1_WALK_SPEED * 3 },
+    { behavior: Behavior.STUN, sprite: Sprite.demon1_stun, invuln: true, m: DEMON1_WALK_SPEED * 3 },
+    { behavior: Behavior.STUN, sprite: Sprite.demon1_stun, invuln: true, m: DEMON1_WALK_SPEED * 2 },
+    { behavior: Behavior.STUN, sprite: Sprite.demon1_stun, invuln: true, m: DEMON1_WALK_SPEED * 1 },
+    { behavior: Behavior.STUN, sprite: Sprite.demon1_stun, invuln: true, m: DEMON1_WALK_SPEED * 1 },
+    { behavior: Behavior.STUN, sprite: Sprite.demon1_stun, invuln: true, m: DEMON1_WALK_SPEED * 1 },
+    { behavior: Behavior.STUN, sprite: Sprite.demon1_stun, invuln: true, m: DEMON1_WALK_SPEED * 1 },
+    { behavior: Behavior.STUN, sprite: Sprite.demon1_stun, invuln: true },
+    { behavior: Behavior.STUN, sprite: Sprite.demon1_stun, invuln: true },
+    { behavior: Behavior.STUN, sprite: Sprite.demon1_stun, invuln: true },
+    { behavior: Behavior.STUN, sprite: Sprite.demon1_stun, invuln: true }
   ] };
 }
 
@@ -252,8 +311,11 @@ export class Assets {
     await this.initSprite(Sprite.demon1_walk1,     'demon1.png', 0, 0, 16, 22);
     await this.initSprite(Sprite.demon1_walk2,     'demon1.png', 16, 0, 16, 22);
     await this.initSprite(Sprite.demon1_walk3,     'demon1.png', 32, 0, 16, 22);
-    await this.initSprite(Sprite.demon1_attack1,   'demon1.png', 48, 0, 16, 22);
+    await this.initSprite(Sprite.demon1_attack1,   'demon1.png', 48, 0, 16, 22, {
+      bbox: [{ x: 0, y: 7 }, { x: 16, y: 22 }]
+    });
     await this.initSprite(Sprite.demon1_attack2,   'demon1.png', 64, 0, 16, 22, {
+      bbox: [{ x: 0, y: 7 }, { x: 16, y: 22 }],
       hbox: [{ x: 0, y: 0 }, { x: 16, y: 10 }]
     });
 

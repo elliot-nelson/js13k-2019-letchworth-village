@@ -13,7 +13,16 @@ export class Audio {
   song: any;
   songFrame: number;
 
-  async init() {
+  initialized: boolean;
+
+  constructor() {
+    this.initialized = false;
+  }
+
+  init() {
+    if (this.initialized) return;
+    this.initialized = true;
+
     const AC = window.AudioContext || window.webkitAudioContext;
     this.ctx = new AC();
 
@@ -26,13 +35,15 @@ export class Audio {
     this.song = this.createSong1();
     this.songFrame = -1;
 
+    this.kick.play(1, this.ctx.currentTime);
+
     /*this.distortion = this.ctx.createWaveShaper();
     this.distortion.curve = makeDistortionCurve2(350);
     this.distortion.oversample = '4x';*/
   }
 
   createSong1() {
-    let framesPerBeat = 18;
+    let framesPerBeat = 17;
     let song = [];
 
     let C = 3 - 24 - 12 - 12 + 0;
@@ -57,6 +68,8 @@ export class Audio {
   }
 
   queueSongNotes() {
+    if (!this.initialized) return;
+
     this.songFrame = (this.songFrame + 1) % this.song.length;
     let tracks = this.song[this.songFrame];
 
@@ -268,10 +281,9 @@ export class BassSynthInstrument extends Instrument {
   bq: BiquadFilterNode;
   bqOsc: OscillatorNode;
 
-  //bq.frequency.value = 440;
   play(note: number, time: number) {
     if (!this.bq) this.initBiquadFilter();
-    this.bq.frequency.value = Math.sin(game.frame * RAD[360] / 120) * 240 + 420;
+    this.bq.frequency.value = Math.sin(game.frame * RAD[360] / 240) * 240 + 420;
 
     let length = 0.21;
     let osc1 = this.ctx.createOscillator();

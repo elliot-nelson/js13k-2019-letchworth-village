@@ -1,5 +1,6 @@
 import { Input } from './input';
 import { NormalVector } from './Geometry';
+import { game } from './Globals';
 
 // Just some quick constants
 const A00 = 0;
@@ -42,10 +43,12 @@ export class KeyboardAdapter {
   async init() {
     window.addEventListener('keydown', (event: KeyboardEvent) => {
       let k = this.map[event.keyCode];
-      console.log([k, event.keyCode]);
       if (k) {
         this.held[k] = true;
       }
+
+      // Hack.
+      game.audio.init();
     });
 
     window.addEventListener('keyup', (event: KeyboardEvent) => {

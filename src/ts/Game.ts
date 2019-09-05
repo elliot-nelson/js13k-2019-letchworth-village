@@ -70,8 +70,10 @@ export class Game {
 
         this.monsters = [];
 
+        // Create, but do not initialize, the audio object. The audio object will be
+        // initialized as soon as possible by the first user input event, to meet
+        // requirements of the browser.
         this.audio = new Audio();
-        await this.audio.init();
 
         this.score = 0;
 
@@ -116,12 +118,6 @@ export class Game {
             console.log("released menu: " + this.input.framesHeld[Input.Action.MENU]);
         }
 
-        if (this.input.pressed[Input.Action.RIGHT]) {
-            this.audio.kick.play(0, this.audio.ctx.currentTime);
-        }
-        if (this.input.pressed[Input.Action.DOWN]) {
-            this.audio.hihat.play(0, this.audio.ctx.currentTime);
-        }
         if (this.input.pressed[Input.Action.UP]) {
             this.audio.ghost.play(this.audio.ctx.currentTime, 300, 1);
             this.audio.ghost.play(this.audio.ctx.currentTime + 1, 400, 1);

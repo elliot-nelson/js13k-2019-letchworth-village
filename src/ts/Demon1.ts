@@ -58,6 +58,7 @@ export class Demon1 {
 
     if (this.frame.behavior !== Behavior.DYING && this.frame.behavior !== Behavior.DEAD && this.hp <= 0) {
       this.startAnimation(Animation2.demon1_death);
+      game.audio.enemyDie();
     }
 
     if (this.frame.behavior === Behavior.DYING) {

@@ -118,17 +118,6 @@ export class Game {
             console.log("released menu: " + this.input.framesHeld[Input.Action.MENU]);
         }
 
-        if (this.input.pressed[Input.Action.UP]) {
-            this.audio.ghost.play(this.audio.ctx.currentTime, 300, 1);
-            this.audio.ghost.play(this.audio.ctx.currentTime + 1, 400, 1);
-            this.audio.ghost.play(this.audio.ctx.currentTime + 2, 900, 1);
-            this.audio.ghost.play(this.audio.ctx.currentTime + 3, 400, 1);
-        }
-        if (this.input.pressed[Input.Action.LEFT]) {
-            this.audio.spirit.play(440, this.audio.ctx.currentTime);
-            this.audio.spirit.play(472, this.audio.ctx.currentTime + 0.5);
-        }
-
         this.hive.update();
 
         this.fragglerock();

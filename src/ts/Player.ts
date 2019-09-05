@@ -56,8 +56,10 @@ export class Player {
 
       if (game.input.pressed[Input.Action.DODGE]) {
         this.startAnimation(Animation2.player_dodge);
+        game.audio.playerDodge();
       } else if (game.input.pressed[Input.Action.ATTACK]) {
         this.startAnimation(Animation2.player_attack);
+        game.audio.playerAttack();
       }
     }
 

@@ -9,6 +9,7 @@ export class Audio {
   hihat: HiHatInstrument;
   bass: BassSynthInstrument;
   distortion: WaveShaperNode;
+  bork: BorkInstrument;
 
   song: any;
   songFrame: number;
@@ -31,6 +32,7 @@ export class Audio {
     this.spirit = new SpiritInstrument(this.ctx);
     this.hihat = new HiHatInstrument(this.ctx);
     this.bass = new BassSynthInstrument(this.ctx);
+    this.bork = new BorkInstrument(this.ctx);
 
     this.song = this.createSong1();
     this.songFrame = -1;
@@ -84,6 +86,20 @@ export class Audio {
         this.bass.play(tracks[2][0], this.ctx.currentTime);
       }
     }
+  }
+
+  playerAttack() {
+    this.bork.play(3 - 12, this.ctx.currentTime);
+    this.bork.play(8 - 12, this.ctx.currentTime);
+  }
+
+  playerDodge() {
+    this.bork.play(6 - 12, this.ctx.currentTime);
+  }
+
+  enemyDie() {
+    this.bork.play(3 - 12, this.ctx.currentTime);
+    this.bork.play(8 - 12, this.ctx.currentTime);
   }
 }
 
@@ -167,6 +183,41 @@ export class GhostInstrument extends Instrument {
     osc3.stop(time + length);
     osc4.start(time);
     osc4.stop(time + length);
+  }
+}
+
+export class BorkInstrument extends Instrument {
+  play(note: number, time: number) {
+    let length = 0.34;
+    let osc1 = this.ctx.createOscillator();
+    let osc2 = this.ctx.createOscillator();
+    let gain1 = this.ctx.createGain();
+
+    var bandpass = this.ctx.createBiquadFilter();
+    bandpass.type = "bandpass";
+    bandpass.frequency.value = 440; //440;
+    bandpass.detune.value = note;
+    bandpass.Q.value = 35;
+    bandpass.connect(gain1);
+
+    gain1.gain.setValueAtTime(0, time);
+    gain1.gain.linearRampToValueAtTime(1, time + length * 0.15);
+    gain1.gain.setValueAtTime(1, time + length * 0.6);
+    gain1.gain.linearRampToValueAtTime(0, time + length * 0.96);
+    gain1.connect(this.master);
+
+    osc1.connect(bandpass);
+    osc1.type = 'sine';
+    osc1.frequency.value = 440 * 0.9;
+    osc1.detune.value = note * 100;
+    osc1.start(time);
+    osc1.stop(time + length);
+    osc2.connect(bandpass);
+    osc2.type = 'triangle';
+    osc2.frequency.value = 440 * 1.1;
+    osc2.detune.value = note * 100;
+    osc2.start(time);
+    osc2.stop(time + length);
   }
 }
 

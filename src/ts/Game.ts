@@ -182,13 +182,22 @@ export class Game {
             this.bloodplanes[0][1] = 0;
             this.bloodplanes[0][0].ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         }*/
+
+        this.audio.queueSongNotes();
     }
 
     draw(ctx: CanvasRenderingContext2D) {
         ctx.fillStyle = 'rgba(150, 128, 128, 1)';
         ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
+        for (let i = 0; i < 10; i++) {
+            for (let j = 0; j < 10; j++) {
+                Sprite.drawSprite(ctx, Sprite.tile1, i * 32, j * 32);
+            }
+        }
+
         ctx.globalAlpha = 1 - this.bloodplanes[0][1] / this.bloodplanes[0][2];
+        ctx.globalAlpha = 0.9;
         ctx.drawImage(this.bloodplanes[0][0].canvas, 0, 0);
         ctx.globalAlpha = 1 - this.bloodplanes[1][1] / this.bloodplanes[1][2];
         ctx.drawImage(this.bloodplanes[1][0].canvas, 0, 0);

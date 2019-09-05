@@ -78,7 +78,7 @@ export class Demon1 {
         Sprite.demon1_walk1,
         Sprite.demon1_walk2,
         Sprite.demon1_walk3
-      ][Math.floor(game.frame / 4) % 3];
+      ][Math.floor(game.frame / 5) % 3];
 
       let diff = vectorBetween(this, game.player);
       this.facingAngle = angleFromVector(diff);
@@ -89,6 +89,10 @@ export class Demon1 {
       let move = vectorBetween(this, currentTarget);
 
       let speed = clamp(move.m, 0, 20) / 5;
+      if (diff.m < game.hive.innerRingRadius) {
+        speed /= 2;
+      }
+
       this.next = {
         x: this.x + move.x * speed,
         y: this.y + move.y * speed

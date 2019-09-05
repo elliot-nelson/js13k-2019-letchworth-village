@@ -1,9 +1,17 @@
+import { game } from "./Globals";
+import { RAD } from "./Geometry";
+
 export class Audio {
   ctx: AudioContext;
   kick: KickInstrument;
   ghost: GhostInstrument;
   spirit: SpiritInstrument;
   hihat: HiHatInstrument;
+  bass: BassSynthInstrument;
+  distortion: WaveShaperNode;
+
+  song: any;
+  songFrame: number;
 
   async init() {
     const AC = window.AudioContext || window.webkitAudioContext;
@@ -13,6 +21,56 @@ export class Audio {
     this.ghost = new GhostInstrument(this.ctx);
     this.spirit = new SpiritInstrument(this.ctx);
     this.hihat = new HiHatInstrument(this.ctx);
+    this.bass = new BassSynthInstrument(this.ctx);
+
+    this.song = this.createSong1();
+    this.songFrame = -1;
+
+    /*this.distortion = this.ctx.createWaveShaper();
+    this.distortion.curve = makeDistortionCurve2(350);
+    this.distortion.oversample = '4x';*/
+  }
+
+  createSong1() {
+    let framesPerBeat = 18;
+    let song = [];
+
+    let C = 3 - 24 - 12 - 12 + 0;
+
+    let input = [
+      [ [1], [],  [C], [] ],
+      [ [1], [],  [C], [] ],
+      [ [],  [1], [C], [] ],
+      [ [1], [],  [C], [] ],
+      [ [1], [],  [C], [] ],
+      [ [],  [],  [C], [] ],
+      [ [],  [1], [C], [] ],
+      [ [],  [],  [C], [] ]
+    ];
+
+    for (let row of input) {
+      song.push(row);
+      for (let i = 0; i < framesPerBeat - 1; i++) song.push(undefined);
+    }
+
+    return song;
+  }
+
+  queueSongNotes() {
+    this.songFrame = (this.songFrame + 1) % this.song.length;
+    let tracks = this.song[this.songFrame];
+
+    if (tracks) {
+      if (tracks[0][0] !== undefined) {
+        this.kick.play(tracks[0][0], this.ctx.currentTime);
+      }
+      if (tracks[1][0] !== undefined) {
+        this.hihat.play(tracks[1][0], this.ctx.currentTime);
+      }
+      if (tracks[2][0] !== undefined) {
+        this.bass.play(tracks[2][0], this.ctx.currentTime);
+      }
+    }
   }
 }
 
@@ -203,5 +261,46 @@ export class KickInstrument extends Instrument {
     osc1.stop(time + 0.5);
     osc2.start(time);
     osc2.stop(time + 0.5);
+  }
+}
+
+export class BassSynthInstrument extends Instrument {
+  bq: BiquadFilterNode;
+  bqOsc: OscillatorNode;
+
+  //bq.frequency.value = 440;
+  play(note: number, time: number) {
+    if (!this.bq) this.initBiquadFilter();
+    this.bq.frequency.value = Math.sin(game.frame * RAD[360] / 120) * 240 + 420;
+
+    let length = 0.21;
+    let osc1 = this.ctx.createOscillator();
+    let gain1 = this.ctx.createGain();
+
+    gain1.gain.setValueAtTime(0, time);
+    gain1.gain.linearRampToValueAtTime(1, time + length * 0.05);
+    gain1.gain.setValueAtTime(1, time + length * 0.5);
+    gain1.gain.linearRampToValueAtTime(0, time + length * 0.90);
+    gain1.connect(this.bq);
+
+    osc1.connect(gain1);
+    osc1.type = 'triangle';
+    osc1.frequency.value = 440;
+    osc1.detune.value = note * 100;
+    osc1.start(time);
+    osc1.stop(time + length);
+  }
+
+  initBiquadFilter() {
+    this.bq = this.ctx.createBiquadFilter();
+    this.bq.type = 'lowpass';
+    this.bq.frequency.setValueAtTime(220, 0);
+    this.bq.Q.value = 9;
+    this.bq.connect(this.master);
+
+    this.bqOsc = this.ctx.createOscillator();
+    this.bqOsc.frequency.value = 200;
+    this.bqOsc.connect(this.bq.detune);
+    this.bqOsc.start();
   }
 }

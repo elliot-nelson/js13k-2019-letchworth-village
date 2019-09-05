@@ -45,6 +45,8 @@ export class Sprite {
   static blood_droplet2 = {} as Sprite;
   static blood_droplet3 = {} as Sprite;
 
+  static tile1 = {} as Sprite;
+
   static world1 = {} as Sprite;
   static world2 = {} as Sprite;
   static world3 = {} as Sprite;
@@ -327,6 +329,8 @@ export class Assets {
 
     await this.initDynamicSprite(Sprite.blood_droplet2, this.createBloodDroplet(2));
     await this.initDynamicSprite(Sprite.blood_droplet3, this.createBloodDroplet(3));
+
+    await this.initSprite(Sprite.tile1, 'tiles.png', 0, 0, 32, 32);
 
     await this.initSprite(Sprite.world1, 'worldheartbeat2.png', 0, 0, 23, 23);
     await this.initSprite(Sprite.world2, 'worldheartbeat2.png', 23, 0, 23, 23);

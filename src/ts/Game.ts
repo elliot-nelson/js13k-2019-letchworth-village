@@ -13,7 +13,7 @@ import { game } from './Globals';
 import { Canvas } from './Canvas';
 import { Particle } from './Particle';
 import { Hive } from './Hive';
-import { Point, intersectingPolygons, intersectingCircles } from './Geometry';
+import { Point, intersectingPolygons, intersectingCircles, RAD, vectorFromAngle } from './Geometry';
 import { HEARTBEAT } from './Config';
 
 /**
@@ -135,6 +135,15 @@ export class Game {
             });
         }
 
+        this.monsters.forEach(monster => {
+            let hitbox = monster.getHitPolygon();
+            if (hitbox) {
+                if (intersectingPolygons(hitbox, this.player.getBoundingPolygon())) {
+                    this.player.hitBy(monster);
+                }
+            }
+        });
+
         for (let i = 0; i < this.particles.length; i++) {
             if (!this.particles[i].update()) this.particles.splice(i--, 1);
         }
@@ -244,14 +253,21 @@ export class Game {
     }
 
     fragglerock() {
+        if (this.monsters.length < 10 && Math.random() < 0.01) {
+            this.spawnNewMonster();
+        }
+
         if (this.monsters.length < 1) {
-            let monster = new Demon1(200, 100);
-            this.monsters.push(monster);
+            this.spawnNewMonster();
         }
-        if (this.input.pressed[Input.Action.DEFLECT]) {
-            let monster = new Demon1(200, 100);
-            this.monsters.push(monster);
-        }
+    }
+
+    spawnNewMonster() {
+        let r = Math.random() * RAD[360];
+        let p = vectorFromAngle(r);
+        let d = Math.random() * 100 + 400;
+        let monster = new Demon1(this.player.x + p.x * d, this.player.y + p.y * d);
+        this.monsters.push(monster);
     }
 
     updateEntityPositions() {
@@ -259,6 +275,7 @@ export class Game {
         for (let i = 0; i < entities.length; i++) {
             for (let j = 0; j < entities.length; j++) {
                 if (i === j) continue;
+                if (entities[i].noclip()) continue;
                 let circlei = entities[i].getBoundingCircle();
                 let circlej = entities[j].getBoundingCircle();
 

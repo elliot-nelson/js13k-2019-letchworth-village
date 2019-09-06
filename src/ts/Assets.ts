@@ -28,8 +28,12 @@ export class Sprite {
   static player_walk1 = {} as Sprite;
   static player_walk2 = {} as Sprite;
   static player_walk3 = {} as Sprite;
+  static player_walk4 = {} as Sprite;
   static player_attack1 = {} as Sprite;
   static player_attack2 = {} as Sprite;
+  static player_attack3 = {} as Sprite;
+  static player_stun = {} as Sprite;
+  static player_dodge = {} as Sprite;
 
   // Demon1
   static demon1_walk1 = {} as Sprite;
@@ -202,15 +206,37 @@ export class Animation2 {
     { behavior: Behavior.COOLDOWN, sprite: Sprite.player_walk3, m: PLAYER_WALK_SPEED / 3 },
     { behavior: Behavior.COOLDOWN, sprite: Sprite.player_walk3, m: PLAYER_WALK_SPEED / 3 }
   ] };
+  static player_attack_alt: Animation2 = { frames: [
+    { behavior: Behavior.WINDUP, sprite: Sprite.player_walk3, m: PLAYER_WALK_SPEED },
+    { behavior: Behavior.WINDUP, sprite: Sprite.player_walk3, m: PLAYER_WALK_SPEED },
+    { behavior: Behavior.ATTACK, sprite: Sprite.player_attack3, m: PLAYER_WALK_SPEED },
+    { behavior: Behavior.ATTACK, sprite: Sprite.player_attack3, m: PLAYER_WALK_SPEED * 3 },
+    { behavior: Behavior.ATTACK, sprite: Sprite.player_attack3, m: PLAYER_WALK_SPEED * 2, hit: true },
+    { behavior: Behavior.ATTACK, sprite: Sprite.player_attack3, m: PLAYER_WALK_SPEED * 2 },
+    { behavior: Behavior.ATTACK, sprite: Sprite.player_attack3, m: PLAYER_WALK_SPEED },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_walk4, m: PLAYER_WALK_SPEED / 3 },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_walk4, m: PLAYER_WALK_SPEED / 3 },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_walk4, m: PLAYER_WALK_SPEED / 3 }
+  ] };
   static player_dodge: Animation2 = { frames: [
     { behavior: Behavior.DODGE, sprite: Sprite.player_walk1, m: 4 },
-    { behavior: Behavior.DODGE, sprite: Sprite.player_walk1, m: 8, invuln: true },
-    { behavior: Behavior.DODGE, sprite: Sprite.player_walk1, m: 8, invuln: true },
-    { behavior: Behavior.DODGE, sprite: Sprite.player_walk1, m: 8, invuln: true },
-    { behavior: Behavior.DODGE, sprite: Sprite.player_walk1, m: 8, invuln: true },
-    { behavior: Behavior.DODGE, sprite: Sprite.player_walk1, m: 8, invuln: true },
-    { behavior: Behavior.DODGE, sprite: Sprite.player_walk1, m: 8, invuln: true },
+    { behavior: Behavior.DODGE, sprite: Sprite.player_dodge, m: 7, invuln: true },
+    { behavior: Behavior.DODGE, sprite: Sprite.player_dodge, m: 8, invuln: true },
+    { behavior: Behavior.DODGE, sprite: Sprite.player_dodge, m: 9, invuln: true },
+    { behavior: Behavior.DODGE, sprite: Sprite.player_dodge, m: 9, invuln: true },
+    { behavior: Behavior.DODGE, sprite: Sprite.player_dodge, m: 9, invuln: true },
+    { behavior: Behavior.DODGE, sprite: Sprite.player_dodge, m: 8, invuln: true },
+    { behavior: Behavior.DODGE, sprite: Sprite.player_dodge, m: 7, invuln: true },
     { behavior: Behavior.DODGE, sprite: Sprite.player_walk1, m: 2 }
+  ] };
+  static player_stun: Animation2 = { frames: [
+    { behavior: Behavior.STUN, sprite: Sprite.player_stun, invuln: true, m: PLAYER_WALK_SPEED * 3 },
+    { behavior: Behavior.STUN, sprite: Sprite.player_stun, invuln: true, m: PLAYER_WALK_SPEED * 3 },
+    { behavior: Behavior.STUN, sprite: Sprite.player_stun, invuln: true, m: PLAYER_WALK_SPEED * 3 },
+    { behavior: Behavior.STUN, sprite: Sprite.player_stun, invuln: true, m: PLAYER_WALK_SPEED * 3 },
+    { behavior: Behavior.STUN, sprite: Sprite.demon1_stun, invuln: true },
+    { behavior: Behavior.STUN, sprite: Sprite.demon1_stun, invuln: true },
+    { behavior: Behavior.STUN, sprite: Sprite.demon1_stun, invuln: true }
   ] };
 
   static demon1_walk: Animation2 = { frames: [
@@ -228,7 +254,7 @@ export class Animation2 {
     { behavior: Behavior.DEFAULT, sprite: Sprite.demon1_walk3 }
   ] };
   static demon1_attack: Animation2 = { frames: [
-    // 10
+    // 15
     { behavior: Behavior.WINDUP, sprite: Sprite.demon1_attack1 },
     { behavior: Behavior.WINDUP, sprite: Sprite.demon1_attack1 },
     { behavior: Behavior.WINDUP, sprite: Sprite.demon1_attack1 },
@@ -239,7 +265,13 @@ export class Animation2 {
     { behavior: Behavior.WINDUP, sprite: Sprite.demon1_attack1 },
     { behavior: Behavior.WINDUP, sprite: Sprite.demon1_attack1 },
     { behavior: Behavior.WINDUP, sprite: Sprite.demon1_attack1 },
-    // 10
+    { behavior: Behavior.WINDUP, sprite: Sprite.demon1_attack1 },
+    { behavior: Behavior.WINDUP, sprite: Sprite.demon1_attack1 },
+    { behavior: Behavior.WINDUP, sprite: Sprite.demon1_attack1 },
+    { behavior: Behavior.WINDUP, sprite: Sprite.demon1_attack1 },
+    { behavior: Behavior.WINDUP, sprite: Sprite.demon1_attack1 },
+    // 11
+    { behavior: Behavior.ATTACK, sprite: Sprite.demon1_attack1 },
     { behavior: Behavior.ATTACK, sprite: Sprite.demon1_attack1 },
     { behavior: Behavior.ATTACK, sprite: Sprite.demon1_attack1 },
     { behavior: Behavior.ATTACK, sprite: Sprite.demon1_attack1 },
@@ -304,9 +336,16 @@ export class Assets {
     });
     await this.initSprite(Sprite.player_attack2,   'player.png', 256, 0, 64, 64, {
       bbox: [{ x: 21, y: 25 }, { x: 42, y: 38 }],
-      hbox: [{ x: 16, y: 9 }, { x: 48, y: 33 }]
+      hbox: [{ x: 14, y: 8 }, { x: 50, y: 35 }]
     });
     await this.initSprite(Sprite.player_walk3,     'player.png', 320, 0, 64, 64, {
+      bbox: [{ x: 21, y: 25 }, { x: 42, y: 38 }]
+    });
+    await this.initSprite(Sprite.player_attack3,   'player.png', 384, 0, 64, 64, {
+      bbox: [{ x: 21, y: 25 }, { x: 42, y: 38 }],
+      hbox: [{ x: 14, y: 8 }, { x: 50, y: 35 }]
+    });
+    await this.initSprite(Sprite.player_walk4,   'player.png', 448, 0, 64, 64, {
       bbox: [{ x: 21, y: 25 }, { x: 42, y: 38 }]
     });
 
@@ -321,6 +360,8 @@ export class Assets {
       hbox: [{ x: 0, y: 0 }, { x: 16, y: 10 }]
     });
 
+    await this.initDynamicSprite(Sprite.player_stun, this.tint(Sprite.player_walk1.img, 255, 255, 255, 0.6));
+    await this.initDynamicSprite(Sprite.player_dodge, this.tint(Sprite.player_attack1.img, 128, 128, 255, 0.3));
     await this.initDynamicSprite(Sprite.demon1_stun, this.tint(Sprite.demon1_walk1.img, 255, 255, 255, 0.6));
 
     let chunks = this.cutIntoChunks(Sprite.demon1_walk2.img, RAD[24]);

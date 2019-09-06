@@ -37,7 +37,7 @@ export class Demon1 {
     this.frameNumber = 0;
     this.mode = 'hover';
     this.frameQ = [];
-    this.hp = 24;
+    this.hp = 19;
   }
 
   startAnimation(animation: Animation2) {
@@ -219,6 +219,10 @@ export class Demon1 {
     if (this.frame.sprite.hbox) {
       return rotatePolygon(Sprite.getHitBoxPolygon(this.frame.sprite, this.x, this.y), this.facingAngle + RAD[90]);
     }
+  }
+
+  noclip() {
+    return false;
   }
 }
 

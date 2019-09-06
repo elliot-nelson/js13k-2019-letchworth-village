@@ -1,9 +1,10 @@
 import { game } from './Globals';
 import { Input } from './input';
 import { Assets, Behavior, Animation2, Sprite } from './Assets';
-import { Point, NormalVector, RAD, rotatePolygon, Polygon, Circle } from './Geometry';
+import { Point, NormalVector, RAD, rotatePolygon, Polygon, Circle, vectorBetween } from './Geometry';
 import { Frame } from './Assets';
 import { PLAYER_WALK_SPEED } from './Config';
+import { Demon1 } from './Demon1';
 
 /**
  * Player
@@ -14,6 +15,7 @@ export class Player {
   next: Point;
   facing: NormalVector;
   facingAngle: number;
+  lastImpact: NormalVector;
 
   frame: Frame;
   frameQ: Frame[];
@@ -58,9 +60,15 @@ export class Player {
         this.startAnimation(Animation2.player_dodge);
         game.audio.playerDodge();
       } else if (game.input.pressed[Input.Action.ATTACK]) {
-        this.startAnimation(Animation2.player_attack);
+        this.startAnimation(Math.random() < 0.4 ? Animation2.player_attack_alt : Animation2.player_attack);
         game.audio.playerAttack();
       }
+    } else if (this.frame.behavior === Behavior.STUN) {
+      this.next = {
+        x: this.x + this.lastImpact.x * (this.frame.m || 0),
+        y: this.y + this.lastImpact.y * (this.frame.m || 0)
+      };
+      return;
     }
 
     // If only we had "this.frame.m ?? blah" :)
@@ -77,12 +85,10 @@ export class Player {
     ctx.save();
     ctx.translate(this.x, this.y);
     ctx.rotate(this.facingAngle + RAD[90]);
-    if (this.frame.invuln) {
-      ctx.globalAlpha = 0.5;
+    if (this.frame.behavior === Behavior.DODGE) {
+      ctx.globalAlpha = 0.6;
     }
     Sprite.drawSprite(ctx, this.frame.sprite, 0, 0);
-//    Sprite.drawBoundingBox(ctx, this.frame.sprite, 0, 0);
-//    Sprite.drawHitBox(ctx, this.frame.sprite, 0, 0);
     ctx.globalAlpha = 1;
     ctx.restore();
 
@@ -107,6 +113,21 @@ export class Player {
       ctx.stroke();
     }
 
+  }
+
+  hitBy(impactSource: Point) {
+    if (this.frame.invuln) return;
+
+    //this.hp -= 10;
+
+    let impactVector = vectorBetween(impactSource, this);
+    this.lastImpact = impactVector;
+    this.frameQ = Animation2.player_stun.frames.slice();
+    //spawnBloodSplatter(this, impactVector, 10, 4, 20);
+  }
+
+  noclip() {
+    return this.frame.behavior === Behavior.DODGE;
   }
 
   getBoundingPolygon(): Polygon {

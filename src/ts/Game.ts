@@ -37,6 +37,8 @@ export class Game {
 
     bloodplanes: Array<[Canvas, number, number]>;
 
+    shadow: Canvas;
+
     score: number;
 
     hive: Hive;
@@ -52,6 +54,8 @@ export class Game {
             [new Canvas(this.canvas.width, this.canvas.height), 120, 240],
             [new Canvas(this.canvas.width, this.canvas.height), 240, 240]
         ];
+
+        this.shadow = new Canvas(this.canvas.width, this.canvas.height);
 
         await Assets.init();
 
@@ -190,6 +194,28 @@ export class Game {
             }
         }
 
+        this.shadow.ctx.globalCompositeOperation = 'copy';
+        //this.shadow.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.shadow.ctx.fillStyle = 'rgba(0, 0, 0, 0.99)';
+        this.shadow.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+        this.shadow.ctx.globalCompositeOperation = 'destination-out';
+        let grd = this.shadow.ctx.createRadialGradient(game.player.x, game.player.y, 0, game.player.x, game.player.y, 200);
+        grd.addColorStop(0, "rgba(0, 0, 0, 1)");
+        grd.addColorStop(0.5, "rgba(0, 0, 0, 0.95)");
+        grd.addColorStop(1, "rgba(0, 0, 0, 0)");
+
+        this.shadow.ctx.fillStyle = grd;
+        this.shadow.ctx.beginPath();
+        this.shadow.ctx.arc(game.player.x, game.player.y, 200, 0, 2 * Math.PI);
+        this.shadow.ctx.fill();
+
+        this.shadow.ctx.globalCompositeOperation = 'source-atop';
+        for (let monster of this.monsters) {
+            this.shadow.ctx.beginPath();
+            this.shadow.ctx.arc(game.player.x, game.player.y, 200, 0, 2 * Math.PI);
+        }
+
         ctx.globalAlpha = 1 - this.bloodplanes[0][1] / this.bloodplanes[0][2];
         ctx.globalAlpha = 0.9;
         ctx.drawImage(this.bloodplanes[0][0].canvas, 0, 0);
@@ -229,6 +255,8 @@ export class Game {
         }*/
 
         ctx.restore();
+
+        ctx.drawImage(this.shadow.canvas, 0, 0);
 
         this.hive.draw(ctx);
 

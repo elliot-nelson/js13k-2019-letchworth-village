@@ -167,7 +167,7 @@ function getPolygonNormals(poly: Polygon): NormalVector[] {
 
 export function intersectingPolygons(a: Polygon, b: Polygon) {
   let normals = getPolygonNormals(a).concat(getPolygonNormals(b));
-  console.log(normals);
+  //console.log(normals);
   for (let normal of normals) {
     let p1 = projectedPolygonMinMax(a, normal);
     let p2 = projectedPolygonMinMax(b, normal);
@@ -176,7 +176,7 @@ export function intersectingPolygons(a: Polygon, b: Polygon) {
       (((p1[0] <= p2[1]) && (p1[1] >= p2[0])) ||
       (p2[0] >= p1[1]) && (p2[1] >= p1[0]))
     )) {
-      console.log("not insecting", p1, p2);
+      //console.log("not insecting", p1, p2);
       return false;
     }
   }

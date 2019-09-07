@@ -1,12 +1,14 @@
 import { TweenFn, Tween } from './Tween';
 import { Assets, Sprite } from './Assets';
 import { game } from './Globals';
-import { Point, RAD, rotateVector } from './Geometry';
+import { Point, RAD, rotateVector, vectorBetween, distance } from './Geometry';
 import { spawnBloodSplatter } from './Util';
 
 export type ParticleCallback = (particle: Particle) => void;
 
 export class Particle {
+  static bloodbath: Particle[] = [];
+
   p1: Point;
   p2: Point;
   tweenFn: TweenFn;
@@ -25,14 +27,17 @@ export class Particle {
     this.t = -1;
     this.d = frames;
     this.complete = complete;
-    console.log("constructed ", this);
   }
 
   update(): boolean {
     if (++this.t > this.d) {
-      if (this.complete) this.complete(this);
-      console.log("finishing " + this.sprite);
-      return false;
+      //if (this.complete) this.complete(this);
+      //Particle.bloodbath.push(this);
+      //console.log(Particle.bloodbath.length);
+      //return false;
+      this.update = BloodSuckParticle.prototype.update;
+      this.d = this.t + 280;
+      return true;
     }
 
     this.x = this.tweenFn(this.t, this.p1.x, this.p2.x, this.d);
@@ -72,6 +77,23 @@ export class GibParticle extends Particle {
     ctx.rotate(this.r);
     Sprite.drawSprite(ctx, this.sprite, 0, 0);
     ctx.restore();
+  }
+}
+
+export class BloodSuckParticle extends Particle {
+  update(): boolean {
+    if (++this.t > this.d) {
+      let v = vectorBetween(this, game.player);
+      v = rotateVector(v, RAD[45]);
+      this.x = this.x + v.x * 2.9;
+      this.y = this.y + v.y * 2.9;
+      if (distance(this, game.player) < 5) {
+        console.log('COLLECTED');
+        return false;
+      }
+    }
+
+    return true;
   }
 }
 

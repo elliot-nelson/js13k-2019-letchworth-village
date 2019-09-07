@@ -233,6 +233,8 @@ export class Game {
         });
         ctx.translate(shakeX, shakeY);
 
+        for (let particle of this.particles) particle.draw(ctx);
+
         this.player.draw(ctx);
 
         //Text.renderText(ctx, 250, 120, 20, 'THE ELEPHANTS');
@@ -240,7 +242,6 @@ export class Game {
         //Text.renderText(ctx, 100, 150, 30, 'AB0123456789');
 
         for (let monster of this.monsters) monster.draw(ctx);
-        for (let particle of this.particles) particle.draw(ctx);
 
         this.hud.draw(ctx);
 

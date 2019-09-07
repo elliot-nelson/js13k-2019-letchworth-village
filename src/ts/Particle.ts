@@ -1,7 +1,7 @@
 import { TweenFn, Tween } from './Tween';
 import { Assets, Sprite } from './Assets';
 import { game } from './Globals';
-import { Point, RAD, rotateVector, vectorBetween, distance } from './Geometry';
+import { Point, RAD, rotateVector, vectorBetween, distance, clamp } from './Geometry';
 import { spawnBloodSplatter } from './Util';
 
 export type ParticleCallback = (particle: Particle) => void;
@@ -83,10 +83,11 @@ export class GibParticle extends Particle {
 export class BloodSuckParticle extends Particle {
   update(): boolean {
     if (++this.t > this.d) {
+      let m = clamp((this.t - this.d) / 30, 0, 5);
       let v = vectorBetween(this, game.player);
       v = rotateVector(v, RAD[45]);
-      this.x = this.x + v.x * 2.9;
-      this.y = this.y + v.y * 2.9;
+      this.x = this.x + v.x * m;
+      this.y = this.y + v.y * m;
       if (distance(this, game.player) < 5) {
         console.log('COLLECTED');
         return false;

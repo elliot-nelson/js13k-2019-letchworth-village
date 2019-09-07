@@ -27,11 +27,11 @@ export class Audio {
     const AC = window.AudioContext || window.webkitAudioContext;
     this.ctx = new AC();
 
-    this.kick = new KickInstrument(this.ctx);
+    this.kick = new KickInstrument(this.ctx, 0.8);
     this.ghost = new GhostInstrument(this.ctx);
     this.spirit = new SpiritInstrument(this.ctx);
-    this.hihat = new HiHatInstrument(this.ctx);
-    this.bass = new BassSynthInstrument(this.ctx);
+    this.hihat = new HiHatInstrument(this.ctx, 0.7);
+    this.bass = new BassSynthInstrument(this.ctx, 0.9);
     this.bork = new BorkInstrument(this.ctx);
 
     this.song = this.createSong1();

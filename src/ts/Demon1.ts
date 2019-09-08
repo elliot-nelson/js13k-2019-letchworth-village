@@ -6,6 +6,7 @@ import { Tween } from './Tween';
 import { Point, NormalVector, vectorBetween, angleFromVector, clamp, vectorFromAngle, distance, RAD, Polygon, rotatePolygon, Circle, rotateVector } from './Geometry';
 import { nextHeartbeatAfter, spawnBloodSplatter } from './Util';
 import { HEARTBEAT, DEMON1_WALK_SPEED } from './Config';
+import { ScreenShake } from './ScreenShake';
 
 /**
  * Player demon1
@@ -72,6 +73,9 @@ export class Demon1 {
       let m2 = Math.random() * 60 + 30;
       game.particles.push(new GibParticle(this, { x: this.x + gib1.x * m1, y: this.y + gib1.y * m1 }, Tween.easeOut2, Sprite.demon1_chunk_a, time1));
       game.particles.push(new GibParticle(this, { x: this.x + gib2.x * m2, y: this.y + gib2.y * m2 }, Tween.easeOut2, Sprite.demon1_chunk_b, time2));
+
+      game.screenshakes.push(new ScreenShake(15, 3, 3));
+
       return false;
     } else
     if (this.frame.behavior === Behavior.DEFAULT) {

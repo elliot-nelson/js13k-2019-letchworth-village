@@ -5,6 +5,7 @@ import { Point, NormalVector, RAD, rotatePolygon, Polygon, Circle, vectorBetween
 import { Frame } from './Assets';
 import { PLAYER_WALK_SPEED } from './Config';
 import { Demon1 } from './Demon1';
+import { ScreenShake } from './ScreenShake';
 
 /**
  * Player
@@ -48,6 +49,10 @@ export class Player {
 
   update() {
     this.swordframe = (this.swordframe + 1) % 600;
+    if (this.swordframe === 480) {
+      game.screenshakes.push(new ScreenShake(28, 9, 15));
+    }
+
     this.nextAnimationFrame(Animation2.player_walk);
 
     // Do a "first pass" behavior check, so that we can respond on *this frame*

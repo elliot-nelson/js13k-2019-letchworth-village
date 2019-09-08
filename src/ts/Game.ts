@@ -188,12 +188,6 @@ export class Game {
         ctx.fillStyle = 'rgba(150, 128, 128, 1)';
         ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
 
-        for (let i = 0; i < 10; i++) {
-            for (let j = 0; j < 10; j++) {
-                Sprite.drawSprite(ctx, Sprite.tile1, i * 32, j * 32);
-            }
-        }
-
         this.shadow.ctx.globalCompositeOperation = 'copy';
         //this.shadow.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.shadow.ctx.fillStyle = 'rgba(0, 0, 0, 0.99)';
@@ -233,6 +227,12 @@ export class Game {
         });
         ctx.translate(shakeX, shakeY);
 
+        for (let i = 0; i < 10; i++) {
+            for (let j = 0; j < 10; j++) {
+                Sprite.drawSprite(ctx, Sprite.tile1, i * 32, j * 32);
+            }
+        }
+
         for (let particle of this.particles) particle.draw(ctx);
 
         this.player.draw(ctx);
@@ -242,7 +242,6 @@ export class Game {
         //Text.renderText(ctx, 100, 150, 30, 'AB0123456789');
 
         for (let monster of this.monsters) monster.draw(ctx);
-
 
   //      var bubble = ctx.createLinearGradient(
         // Let's add blue noise?
@@ -254,12 +253,12 @@ export class Game {
             }
         }*/
 
-        ctx.restore();
-
         ctx.drawImage(this.shadow.canvas, 0, 0);
 
         this.hud.draw(ctx);
         this.hive.draw(ctx);
+
+        ctx.restore();
 
         if (this.frame % HEARTBEAT === 0 || (this.frame - 1) % HEARTBEAT === 0 || (this.frame - 2) % HEARTBEAT === 0) {
             ctx.fillStyle = 'rgba(255, 255, 30, 0.3)';

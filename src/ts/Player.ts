@@ -29,8 +29,10 @@ export class Player {
     this.y = 60;
     this.facing = { x: 0, y: -1, m: 0 };
     this.facingAngle = Math.atan2(this.facing.y, this.facing.x);
-    this.frameQ = [];
-    this.powerlevel = 500;
+    this.frameQ = [
+      { behavior: Behavior.SPAWNING, sprite: Sprite.player_walk1 }
+    ];
+    this.powerlevel = 2000; //x
     this.swordframe = 0;
   }
 
@@ -48,6 +50,10 @@ export class Player {
   }
 
   update() {
+    if (this.frame.behavior === Behavior.SPAWNING) {
+      return;
+    }
+
     this.swordframe = (this.swordframe + 1) % 600;
     if (this.swordframe === 480) {
       game.screenshakes.push(new ScreenShake(28, 9, 15));
@@ -92,6 +98,11 @@ export class Player {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
+    if (this.frame.behavior === Behavior.SPAWNING) {
+      //for (let i = 0; i < 10; i++) {
+      //ctx.drawSprite(
+    }
+
     ctx.imageSmoothingEnabled = false;
     ctx.save();
     ctx.translate(this.x, this.y);
@@ -155,8 +166,8 @@ export class Player {
     }
   }
 
-  powerup() {
-    this.powerlevel++;
+  powerup(factor: number) {
+    this.powerlevel += factor;
   }
 
   swordhungry() {

@@ -52,6 +52,10 @@ export class Sprite {
   static blood_droplet2 = {} as Sprite;
   static blood_droplet3 = {} as Sprite;
 
+  // Electricity
+  static electric2 = {} as Sprite;
+  static electric3 = {} as Sprite;
+
   static tile1 = {} as Sprite;
 
   static world1 = {} as Sprite;
@@ -386,6 +390,8 @@ export class Assets {
 
     await this.initDynamicSprite(Sprite.blood_droplet2, this.createBloodDroplet(2));
     await this.initDynamicSprite(Sprite.blood_droplet3, this.createBloodDroplet(3));
+    await this.initDynamicSprite(Sprite.electric2, this.createElectricity(2));
+    await this.initDynamicSprite(Sprite.electric3, this.createElectricity(3));
 
     await this.initSprite(Sprite.tile1, 'tiles.png', 0, 0, 32, 32);
 
@@ -478,6 +484,21 @@ export class Assets {
   }
 
   /**
+   * Create an electricity droplet.
+   */
+  static createElectricity(size: number) {
+    const canvas = new Canvas(size, size);
+    const ctx = canvas.ctx;
+
+    ctx.fillStyle = 'rgba(128, 250, 255, 0.8)';
+    ctx.fillRect(0, 0, size, size);
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+    ctx.fillRect(0, 0, 1, 1);
+
+    return canvas.canvas;
+  }
+
+  /**
    * Take an existing image, draw a line through it based on the provided angle, and
    * then return two "chunks" (one from each side of the line).
    */
@@ -515,6 +536,19 @@ export class Assets {
     ctx[1].fill();
 
     return [canvas[0].canvas, canvas[1].canvas];
+  }
+
+  static grayscaleNoise(width: number, height: number): Canvas {
+    const canvas = new Canvas(width, height);
+    for (let y = 0; y < height; y++) {
+      for(let x = 0; x < width; x++) {
+        let c = Math.floor(Math.random() * 256);
+        canvas.ctx.fillStyle = rgba(c, c, c, 1);
+        canvas.ctx.fillRect(x, y, 1, 1);
+      }
+    }
+
+    return canvas;
   }
 }
 

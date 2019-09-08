@@ -38,6 +38,8 @@ export class Game {
 
     bloodplanes: Array<[Canvas, number, number]>;
 
+    artifacts: Canvas[];
+
     shadow: Canvas;
 
     score: number;
@@ -59,6 +61,12 @@ export class Game {
         this.shadow = new Canvas(this.canvas.width, this.canvas.height);
 
         await Assets.init();
+
+        this.artifacts = [
+            await Assets.grayscaleNoise(this.canvas.width, this.canvas.height),
+            await Assets.grayscaleNoise(this.canvas.width, this.canvas.height),
+            await Assets.grayscaleNoise(this.canvas.width, this.canvas.height)
+        ];
 
         this.input = new Input();
         await this.input.init();
@@ -268,6 +276,10 @@ export class Game {
         for (let particle of this.particles) if (particle.foreground) particle.draw(ctx);
 
         ctx.drawImage(this.shadow.canvas, 0, 0);
+        let noiseLoop = Math.floor(this.frame / 8) % 3;
+        ctx.globalAlpha = 0.06;
+        ctx.drawImage(this.artifacts[noiseLoop].canvas, 0, 0);
+        ctx.globalAlpha = 1;
 
         this.hud.draw(ctx);
         this.hive.draw(ctx);

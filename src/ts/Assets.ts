@@ -59,6 +59,8 @@ export class Sprite {
   static hud_sword_outline = {} as Sprite;
   static hud_sword_hungry = {} as Sprite;
 
+  static portal = {} as Sprite;
+
   /**
    * A small helper that draws a sprite onto a canvas, respecting the anchor point of
    * the sprite. Note that the canvas should be PRE-TRANSLATED and PRE-ROTATED, if
@@ -139,6 +141,7 @@ export class Sprite {
  */
 export const enum Behavior {
   DEFAULT = 1,
+  SPAWNING,
   NEUTRAL,
   HOVER,
   WINDUP,
@@ -147,7 +150,7 @@ export const enum Behavior {
   DODGE,
   STUN,
   DYING,
-  DEAD,
+  DEAD
 }
 
 /**
@@ -384,6 +387,8 @@ export class Assets {
     await this.initSprite(Sprite.hud_sword_base, 'swordmeter.png', 0, 0, 32, 116);
     await this.initSprite(Sprite.hud_sword_outline, 'swordmeter.png', 48, 0, 32, 116);
     await this.initSprite(Sprite.hud_sword_hungry, 'swordmeter.png', 96, 0, 32, 116);
+
+    await this.initSprite(Sprite.portal, 'portal.png', 0, 0, 32, 32);
   };
 
   /**

@@ -11,10 +11,11 @@ import { Assets, Sprite, drawPoly } from './Assets';
 import { Demon1 } from './Demon1';
 import { game } from './Globals';
 import { Canvas } from './Canvas';
-import { Particle } from './Particle';
+import { Particle, PortalParticle } from './Particle';
 import { Hive } from './Hive';
 import { Point, intersectingPolygons, intersectingCircles, RAD, vectorFromAngle } from './Geometry';
 import { HEARTBEAT } from './Config';
+import { Tween } from './Tween';
 
 /**
  * Game state.
@@ -198,16 +199,27 @@ export class Game {
         grd.addColorStop(0, "rgba(0, 0, 0, 1)");
         grd.addColorStop(0.5, "rgba(0, 0, 0, 0.95)");
         grd.addColorStop(1, "rgba(0, 0, 0, 0)");
-
         this.shadow.ctx.fillStyle = grd;
         this.shadow.ctx.beginPath();
         this.shadow.ctx.arc(game.player.x, game.player.y, 200, 0, 2 * Math.PI);
         this.shadow.ctx.fill();
 
+        for (let particle of this.particles.filter(p => p instanceof PortalParticle)) {
+            let r = (particle as PortalParticle).effectiveRadius();
+            this.shadow.ctx.globalCompositeOperation = 'destination-out';
+            let grd = this.shadow.ctx.createRadialGradient(particle.x, particle.y, 0, particle.x, particle.y, r);
+            grd.addColorStop(0, "rgba(0, 0, 0, 0.7)");
+            grd.addColorStop(1, "rgba(0, 0, 0, 0)");
+            this.shadow.ctx.fillStyle = grd;
+            this.shadow.ctx.beginPath();
+            this.shadow.ctx.arc(particle.x, particle.y, r, 0, 2 * Math.PI);
+            this.shadow.ctx.fill();
+        }
+
         this.shadow.ctx.globalCompositeOperation = 'source-atop';
         for (let monster of this.monsters) {
             this.shadow.ctx.beginPath();
-            this.shadow.ctx.arc(game.player.x, game.player.y, 200, 0, 2 * Math.PI);
+            this.shadow.ctx.arc(monster.x, monster.y, 200, 0, 2 * Math.PI);
         }
 
         ctx.globalAlpha = 1 - this.bloodplanes[0][1] / this.bloodplanes[0][2];
@@ -233,7 +245,7 @@ export class Game {
             }
         }
 
-        for (let particle of this.particles) particle.draw(ctx);
+        for (let particle of this.particles) if (!particle.foreground) particle.draw(ctx);
 
         this.player.draw(ctx);
 
@@ -252,6 +264,8 @@ export class Game {
                 ctx.fillRect(i+Math.floor(x),j+Math.floor(y),1,1);
             }
         }*/
+
+        for (let particle of this.particles) if (particle.foreground) particle.draw(ctx);
 
         ctx.drawImage(this.shadow.canvas, 0, 0);
 
@@ -293,9 +307,12 @@ export class Game {
     spawnNewMonster() {
         let r = Math.random() * RAD[360];
         let p = vectorFromAngle(r);
-        let d = Math.random() * 100 + 400;
+        let d = Math.random() * 100 + 100;
         let monster = new Demon1(this.player.x + p.x * d, this.player.y + p.y * d);
         this.monsters.push(monster);
+
+        let point = { x: monster.x, y: monster.y };
+        this.particles.push(new PortalParticle(point, point, Tween.linear, Sprite.portal, 68));
     }
 
     updateEntityPositions() {

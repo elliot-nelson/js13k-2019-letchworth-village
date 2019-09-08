@@ -37,8 +37,11 @@ export class Demon1 {
     this.facingAngle = RAD[45];
     this.frameNumber = 0;
     this.mode = 'hover';
-    this.frameQ = [];
     this.hp = 19;
+    this.frameQ = [];
+    for (let i = 0; i < 28; i++) {
+      this.frameQ.push({ behavior: Behavior.SPAWNING, sprite: Sprite.demon1_walk1 });
+    }
   }
 
   startAnimation(animation: Animation2) {
@@ -57,13 +60,16 @@ export class Demon1 {
   update(): boolean {
     this.nextAnimationFrame(Animation2.demon1_walk);
 
+
     if (this.frame.behavior !== Behavior.DYING && this.frame.behavior !== Behavior.DEAD && this.hp <= 0) {
       this.startAnimation(Animation2.demon1_death);
       game.audio.enemyDie();
     }
 
-    if (this.frame.behavior === Behavior.DYING) {
-      // x?
+    if (this.frame.behavior === Behavior.SPAWNING) {
+      this.next = { x: this.x, y: this.y };
+    } else if (this.frame.behavior === Behavior.DYING) {
+      this.next = { x: this.x, y: this.y };
     } else if (this.frame.behavior === Behavior.DEAD) {
       let gib1 = rotateVector(this.lastImpact, Math.random() * RAD[45]);
       let gib2 = rotateVector(this.lastImpact, -(Math.random() * RAD[45]));
@@ -179,6 +185,8 @@ export class Demon1 {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
+    if (this.frame.behavior === Behavior.SPAWNING) return;
+
     ctx.imageSmoothingEnabled = false;
     ctx.save();
     ctx.translate(this.x, this.y);

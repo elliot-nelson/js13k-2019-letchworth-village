@@ -18,6 +18,7 @@ export class Particle {
   y: number;
   t: number;
   d: number;
+  foreground: boolean;
 
   constructor(p1: Point, p2: Point, tweenFn: TweenFn, sprite: Sprite, frames: number, complete?: ParticleCallback) {
     this.p1 = { x: p1.x, y: p1.y };
@@ -27,6 +28,7 @@ export class Particle {
     this.t = -1;
     this.d = frames;
     this.complete = complete;
+    this.foreground = false;
   }
 
   update(): boolean {
@@ -35,6 +37,11 @@ export class Particle {
       //Particle.bloodbath.push(this);
       //console.log(Particle.bloodbath.length);
       //return false;
+
+      if (this instanceof PortalParticle) {
+        return false;
+      }
+
       this.update = BloodSuckParticle.prototype.update;
       this.d = this.t + 280;
       return true;
@@ -100,6 +107,41 @@ export class BloodSuckParticle extends Particle {
     }
 
     return true;
+  }
+}
+
+export class PortalParticle extends Particle {
+  r: number;
+  vr: number;
+
+  constructor(p1: Point, p2: Point, tweenFn: TweenFn, sprite: Sprite, frames: number, complete?: ParticleCallback) {
+    super(p1, p2, tweenFn, sprite, frames);
+    this.r = Math.random() * RAD[360];
+    this.vr = RAD[6];
+    this.foreground = true;
+  }
+
+  update(): boolean {
+    if (!super.update()) return false;
+
+    this.r += this.vr;
+
+    return true;
+  }
+
+  draw(ctx: CanvasRenderingContext2D) {
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.rotate(this.r);
+    let scale = 1 - Math.abs(this.t / this.d - 0.5) * 2;
+    ctx.scale(scale, scale);
+    Sprite.drawSprite(ctx, this.sprite, 0, 0);
+    ctx.restore();
+  }
+
+  effectiveRadius() {
+    let scale = 1 - Math.abs(this.t / this.d - 0.5) * 2;
+    return Math.floor(scale * 18);
   }
 }
 

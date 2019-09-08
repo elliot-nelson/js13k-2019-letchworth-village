@@ -71,17 +71,27 @@ export class Demon1 {
     } else if (this.frame.behavior === Behavior.DYING) {
       this.next = { x: this.x, y: this.y };
     } else if (this.frame.behavior === Behavior.DEAD) {
-      let gib1 = rotateVector(this.lastImpact, Math.random() * RAD[45]);
-      let gib2 = rotateVector(this.lastImpact, -(Math.random() * RAD[45]));
-      let time1 = Math.floor(Math.random() * 4) + 16;
-      let time2 = Math.floor(Math.random() * 4) + 16;
-      let m1 = Math.random() * 60 + 30;
-      let m2 = Math.random() * 60 + 30;
-      game.particles.push(new GibParticle(this, { x: this.x + gib1.x * m1, y: this.y + gib1.y * m1 }, Tween.easeOut2, Sprite.demon1_chunk_a, time1));
-      game.particles.push(new GibParticle(this, { x: this.x + gib2.x * m2, y: this.y + gib2.y * m2 }, Tween.easeOut2, Sprite.demon1_chunk_b, time2));
-
+      let gibs = Math.random() < 0.4 ? 3 : 2;
+      for (let i = 0; i < gibs; i++) {
+        let v = rotateVector(this.lastImpact, Math.random() * RAD[90] - RAD[45]);
+        let time = Math.floor(Math.random() * 5) + 16;
+        let m = Math.random() * 65 + 30;
+        let sprite = [
+          Sprite.demon1_chunk1,
+          Sprite.demon1_chunk2,
+          Sprite.demon1_chunk3,
+          Sprite.demon1_chunk4,
+          Sprite.demon1_chunk5
+        ][Math.floor(Math.random() * 5)];
+        game.particles.push(new GibParticle(
+          this,
+          { x: this.x + v.x * m, y: this.y + v.y * m },
+          Tween.easeOut2,
+          sprite,
+          time
+        ));
+      }
       game.screenshakes.push(new ScreenShake(15, 3, 3));
-
       return false;
     } else
     if (this.frame.behavior === Behavior.DEFAULT) {
@@ -216,7 +226,7 @@ export class Demon1 {
     let impactVector = vectorBetween(impactSource, this);
     this.lastImpact = impactVector;
     this.frameQ = Animation2.demon1_stun.frames.slice();
-    spawnBloodSplatter(this, impactVector, 10, 4, 20);
+    spawnBloodSplatter(this, impactVector, 10,  4, 20);
   }
 
   getBoundingPolygon(): Polygon {

@@ -42,8 +42,11 @@ export class Sprite {
   static demon1_attack1 = {} as Sprite;
   static demon1_attack2 = {} as Sprite;
   static demon1_stun = {} as Sprite;
-  static demon1_chunk_a = {} as Sprite;
-  static demon1_chunk_b = {} as Sprite;
+  static demon1_chunk1 = {} as Sprite;
+  static demon1_chunk2 = {} as Sprite;
+  static demon1_chunk3 = {} as Sprite;
+  static demon1_chunk4 = {} as Sprite;
+  static demon1_chunk5 = {} as Sprite;
 
   // Blood droplets
   static blood_droplet2 = {} as Sprite;
@@ -367,13 +370,19 @@ export class Assets {
       hbox: [{ x: 0, y: 0 }, { x: 16, y: 10 }]
     });
 
+    await this.initSprite(Sprite.demon1_chunk1,    'demon1.png', 80, 0, 16, 22);
+    await this.initSprite(Sprite.demon1_chunk2,    'demon1.png', 96, 0, 16, 22);
+    await this.initSprite(Sprite.demon1_chunk3,    'demon1.png', 112, 0, 16, 22);
+    await this.initSprite(Sprite.demon1_chunk4,    'demon1.png', 128, 0, 16, 22);
+    await this.initSprite(Sprite.demon1_chunk5,    'demon1.png', 144, 0, 16, 22);
+
     await this.initDynamicSprite(Sprite.player_stun, this.tint(Sprite.player_walk1.img, 255, 255, 255, 0.6));
     await this.initDynamicSprite(Sprite.player_dodge, this.tint(Sprite.player_attack1.img, 128, 128, 255, 0.3));
     await this.initDynamicSprite(Sprite.demon1_stun, this.tint(Sprite.demon1_walk1.img, 255, 255, 255, 0.6));
 
-    let chunks = this.cutIntoChunks(Sprite.demon1_walk2.img, RAD[24]);
+    /*let chunks = this.cutIntoChunks(Sprite.demon1_walk2.img, RAD[24]);
     await this.initDynamicSprite(Sprite.demon1_chunk_a, chunks[0]);
-    await this.initDynamicSprite(Sprite.demon1_chunk_b, chunks[1]);
+    await this.initDynamicSprite(Sprite.demon1_chunk_b, chunks[1]);*/
 
     await this.initDynamicSprite(Sprite.blood_droplet2, this.createBloodDroplet(2));
     await this.initDynamicSprite(Sprite.blood_droplet3, this.createBloodDroplet(3));

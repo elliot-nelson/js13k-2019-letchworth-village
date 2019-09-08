@@ -1,0 +1,50 @@
+{ "frames": {
+   "swordmeter 0.aseprite": {
+    "frame": { "x": 0, "y": 0, "w": 48, "h": 128 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 48, "h": 128 },
+    "sourceSize": { "w": 48, "h": 128 },
+    "duration": 100
+   },
+   "swordmeter 1.aseprite": {
+    "frame": { "x": 48, "y": 0, "w": 48, "h": 128 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 48, "h": 128 },
+    "sourceSize": { "w": 48, "h": 128 },
+    "duration": 100
+   },
+   "swordmeter 2.aseprite": {
+    "frame": { "x": 96, "y": 0, "w": 48, "h": 128 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 48, "h": 128 },
+    "sourceSize": { "w": 48, "h": 128 },
+    "duration": 100
+   },
+   "swordmeter 3.aseprite": {
+    "frame": { "x": 144, "y": 0, "w": 48, "h": 128 },
+    "rotated": false,
+    "trimmed": false,
+    "spriteSourceSize": { "x": 0, "y": 0, "w": 48, "h": 128 },
+    "sourceSize": { "w": 48, "h": 128 },
+    "duration": 100
+   }
+ },
+ "meta": {
+  "app": "http://www.aseprite.org/",
+  "version": "1.2.13",
+  "image": "swordmeter.png",
+  "format": "RGBA8888",
+  "size": { "w": 192, "h": 128 },
+  "scale": "1",
+  "frameTags": [
+  ],
+  "layers": [
+   { "name": "Layer 1 Copy Copy", "opacity": 255, "blendMode": "normal" }
+  ],
+  "slices": [
+  ]
+ }
+}

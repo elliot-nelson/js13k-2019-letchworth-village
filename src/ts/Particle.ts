@@ -82,14 +82,19 @@ export class GibParticle extends Particle {
 
 export class BloodSuckParticle extends Particle {
   update(): boolean {
-    if (++this.t > this.d) {
+    if (game.player.swordhungry()) {
+      this.t = this.d + 45;
+    }
+
+    if (this.t > this.d) {
+      this.t++;
       let m = clamp((this.t - this.d) / 30, 0, 5);
       let v = vectorBetween(this, game.player);
       v = rotateVector(v, RAD[45]);
       this.x = this.x + v.x * m;
       this.y = this.y + v.y * m;
       if (distance(this, game.player) < 5) {
-        console.log('COLLECTED');
+        game.player.powerup();
         return false;
       }
     }

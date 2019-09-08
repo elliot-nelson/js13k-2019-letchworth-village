@@ -20,12 +20,17 @@ export class Player {
   frame: Frame;
   frameQ: Frame[];
 
+  powerlevel: number;
+  swordframe: number;
+
   constructor() {
     this.x = 60;
     this.y = 60;
     this.facing = { x: 0, y: -1, m: 0 };
     this.facingAngle = Math.atan2(this.facing.y, this.facing.x);
     this.frameQ = [];
+    this.powerlevel = 500;
+    this.swordframe = 0;
   }
 
   startAnimation(animation: Animation2) {
@@ -42,6 +47,7 @@ export class Player {
   }
 
   update() {
+    this.swordframe = (this.swordframe + 1) % 600;
     this.nextAnimationFrame(Animation2.player_walk);
 
     // Do a "first pass" behavior check, so that we can respond on *this frame*
@@ -142,5 +148,13 @@ export class Player {
     if (this.frame.sprite.hbox) {
       return rotatePolygon(Sprite.getHitBoxPolygon(this.frame.sprite, this.x, this.y), this.facingAngle + RAD[90]);
     }
+  }
+
+  powerup() {
+    this.powerlevel++;
+  }
+
+  swordhungry() {
+    return this.swordframe > 480;
   }
 }

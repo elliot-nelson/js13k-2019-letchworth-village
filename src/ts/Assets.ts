@@ -55,6 +55,10 @@ export class Sprite {
   static world2 = {} as Sprite;
   static world3 = {} as Sprite;
 
+  static hud_sword_base = {} as Sprite;
+  static hud_sword_outline = {} as Sprite;
+  static hud_sword_hungry = {} as Sprite;
+
   /**
    * A small helper that draws a sprite onto a canvas, respecting the anchor point of
    * the sprite. Note that the canvas should be PRE-TRANSLATED and PRE-ROTATED, if
@@ -376,6 +380,10 @@ export class Assets {
     await this.initSprite(Sprite.world1, 'worldheartbeat2.png', 0, 0, 23, 23);
     await this.initSprite(Sprite.world2, 'worldheartbeat2.png', 23, 0, 23, 23);
     await this.initSprite(Sprite.world3, 'worldheartbeat2.png', 46, 0, 23, 23);
+
+    await this.initSprite(Sprite.hud_sword_base, 'swordmeter.png', 0, 0, 32, 116);
+    await this.initSprite(Sprite.hud_sword_outline, 'swordmeter.png', 48, 0, 32, 116);
+    await this.initSprite(Sprite.hud_sword_hungry, 'swordmeter.png', 96, 0, 32, 116);
   };
 
   /**

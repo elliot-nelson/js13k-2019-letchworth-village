@@ -1,6 +1,6 @@
 import { Canvas } from "./Canvas";
 import { game } from "./Globals";
-import { Assets } from "./Assets";
+import { Assets, Sprite } from "./Assets";
 import { RAD } from "./Geometry";
 
 export class Hud {
@@ -11,6 +11,7 @@ export class Hud {
   hpgradient: CanvasGradient;
   frame: number;
   heartbeatFrames: CanvasImageSource[];
+  swordmeter: Canvas;
 
   constructor() {
     this.hpcanvas0 = new Canvas(220, 30);
@@ -18,6 +19,8 @@ export class Hud {
     this.hpcanvas2 = new Canvas(220, 30);
     this.pattern = new Canvas(312, 312);
     this.hpgradient = this.hpcanvas0.ctx.createLinearGradient(0, 0, 0, 30);
+
+    this.swordmeter = new Canvas(32, 116);
 
     this.hpgradient.addColorStop(0, '#6d0000');
     this.hpgradient.addColorStop(0.85, '#ea2a2a');
@@ -91,6 +94,24 @@ export class Hud {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
+    this.swordmeter.ctx.globalCompositeOperation = 'copy';
+    this.swordmeter.ctx.drawImage(Sprite.hud_sword_base.img, 0, 0);
+    this.swordmeter.ctx.globalCompositeOperation = 'source-atop';
+
+    let height = Math.floor((110 - 16 + 1) * game.player.powerlevel / 9000);
+    let y = 111 - height;
+
+    this.swordmeter.ctx.fillStyle = 'red';
+    this.swordmeter.ctx.fillRect(0, y, 32, height);
+
+    this.swordmeter.ctx.globalCompositeOperation = 'source-over';
+    if (game.player.swordhungry()) {
+      this.swordmeter.ctx.drawImage(Sprite.hud_sword_hungry.img, 0, 0);
+    } else {
+      this.swordmeter.ctx.drawImage(Sprite.hud_sword_outline.img, 0, 0);
+    }
+    ctx.drawImage(this.swordmeter.canvas, 0, 0);
+
     return;
 
     let heartbeatSprite = this.heartbeatFrames[this.frame % this.heartbeatFrames.length];

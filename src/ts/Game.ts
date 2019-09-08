@@ -243,7 +243,6 @@ export class Game {
 
         for (let monster of this.monsters) monster.draw(ctx);
 
-        this.hud.draw(ctx);
 
   //      var bubble = ctx.createLinearGradient(
         // Let's add blue noise?
@@ -259,6 +258,7 @@ export class Game {
 
         ctx.drawImage(this.shadow.canvas, 0, 0);
 
+        this.hud.draw(ctx);
         this.hive.draw(ctx);
 
         if (this.frame % HEARTBEAT === 0 || (this.frame - 1) % HEARTBEAT === 0 || (this.frame - 2) % HEARTBEAT === 0) {

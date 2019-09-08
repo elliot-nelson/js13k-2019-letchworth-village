@@ -21,6 +21,7 @@ export class Audio {
   }
 
   init() {
+    return;
     if (this.initialized) return;
     this.initialized = true;
 
@@ -89,15 +90,18 @@ export class Audio {
   }
 
   playerAttack() {
+    if (!this.initialized) return;
     this.bork.play(3 - 12, this.ctx.currentTime);
     this.bork.play(8 - 12, this.ctx.currentTime);
   }
 
   playerDodge() {
+    if (!this.initialized) return;
     this.bork.play(6 - 12, this.ctx.currentTime);
   }
 
   enemyDie() {
+    if (!this.initialized) return;
     this.bork.play(3 - 12, this.ctx.currentTime);
     this.bork.play(8 - 12, this.ctx.currentTime);
   }

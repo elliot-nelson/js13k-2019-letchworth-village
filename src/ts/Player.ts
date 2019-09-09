@@ -6,6 +6,7 @@ import { Frame } from './Assets';
 import { PLAYER_WALK_SPEED } from './Config';
 import { Demon1 } from './Demon1';
 import { ScreenShake } from './ScreenShake';
+import { spawnBloodSplatter } from './Util';
 
 /**
  * Player
@@ -25,13 +26,13 @@ export class Player {
   swordframe: number;
 
   constructor() {
-    this.x = 60;
-    this.y = 60;
+    this.x = 480 / 2;
+    this.y = 270 / 2 + 30;
     this.facing = { x: 0, y: -1, m: 0 };
     this.facingAngle = Math.atan2(this.facing.y, this.facing.x);
-    this.frameQ = [
-      { behavior: Behavior.SPAWNING, sprite: Sprite.player_walk1 }
-    ];
+    this.frameQ = [];
+      /*{ behavior: Behavior.SPAWNING, sprite: Sprite.player_walk1 }
+    ];*/
     this.powerlevel = 2000; //x
     this.swordframe = 0;
   }
@@ -50,9 +51,12 @@ export class Player {
   }
 
   update() {
-    if (this.frame.behavior === Behavior.SPAWNING) {
+    if (this.powerlevel < 0) this.powerlevel = 0;
+    if (this.powerlevel < 2000) this.powerlevel += 4;
+
+    /*if (this.frame.behavior === Behavior.SPAWNING) {
       return;
-    }
+    }*/
 
     this.swordframe = (this.swordframe + 1) % 600;
     if (this.swordframe === 480) {
@@ -140,11 +144,12 @@ export class Player {
   hitBy(impactSource: Point) {
     if (this.frame.invuln) return;
 
-    //this.hp -= 10;
+    this.powerlevel -= 900;
 
     let impactVector = vectorBetween(impactSource, this);
     this.lastImpact = impactVector;
     this.frameQ = Animation2.player_stun.frames.slice();
+    spawnBloodSplatter(this, impactVector, 5, 5, 30);
     //spawnBloodSplatter(this, impactVector, 10, 4, 20);
   }
 

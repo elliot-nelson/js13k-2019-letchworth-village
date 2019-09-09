@@ -4,8 +4,7 @@ import { createSplashPattern } from './Pattern';
 import { Text } from './Text';
 import { ScreenShake } from './ScreenShake';
 import { Hud } from './Hud';
-import { PauseMenu } from './PauseMenu';
-import { Menu } from './Menu';
+import { Menu, PauseMenu, IntroMenuA, IntroMenuB } from './Menu';
 import { Audio } from './Audio';
 import { Assets, Sprite, drawPoly } from './Assets';
 import { Demon1 } from './Demon1';
@@ -45,6 +44,8 @@ export class Game {
     score: number;
 
     hive: Hive;
+
+    started: boolean;
 
     async init() {
         this.canvas = document.getElementById('canvas') as HTMLCanvasElement;
@@ -95,8 +96,19 @@ export class Game {
 
     start() {
         this.frame = 0;
+
+        this.started = true;
+        this.update();
+        this.started = false;
+
+        this.menuStack.push(new IntroMenuA({
+            onClose: () => {
+                this.menuStack.push(new IntroMenuB({}));
+            }
+        }));
+
         //this.framems = performance.now();
-        window.requestAnimationFrame(() => this.onFrame(3));
+        window.requestAnimationFrame(() => this.onFrame(1));
         //this.frame = 0;
         /// #if DEBUG
         //console.log('Starting game.');
@@ -116,20 +128,17 @@ export class Game {
 
         if (this.menuStack.length > 0) {
             if (!this.menuStack[this.menuStack.length - 1].update()) {
-                this.menuStack.pop();
+                let menu = this.menuStack.pop();
+                if (menu.onClose) menu.onClose();
             }
         } else {
-            if (this.input.pressed[Input.Action.MENU]) {
+            this.started = true;
+            /*if (this.input.pressed[Input.Action.MENU]) {
                 this.menuStack.push(new PauseMenu());
-            }
+            }*/
         }
 
-        if (this.input.pressed[Input.Action.MENU]) {
-            console.log(37);
-        }
-        if (this.input.released[Input.Action.MENU]) {
-            console.log("released menu: " + this.input.framesHeld[Input.Action.MENU]);
-        }
+        if (!this.started) return;
 
         this.hive.update();
 

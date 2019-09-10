@@ -63,7 +63,7 @@ export class Demon1 {
 
     if (this.frame.behavior !== Behavior.DYING && this.frame.behavior !== Behavior.DEAD && this.hp <= 0) {
       this.startAnimation(Animation2.demon1_death);
-      game.audio.enemyDie();
+      game.audio.triggerEnemyKilled();
     }
 
     if (this.frame.behavior === Behavior.SPAWNING) {
@@ -220,6 +220,8 @@ export class Demon1 {
 
   hitBy(impactSource: Point) {
     if (this.frame.invuln) return;
+
+    game.audio.triggerEnemyHit();
 
     this.hp -= 10;
 

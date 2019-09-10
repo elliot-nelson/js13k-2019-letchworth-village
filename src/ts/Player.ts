@@ -1,4 +1,4 @@
-import { game } from './Globals';
+import { game, ZZFX } from './Globals';
 import { Input } from './input';
 import { Assets, Behavior, Animation2, Sprite } from './Assets';
 import { Point, NormalVector, RAD, rotatePolygon, Polygon, Circle, vectorBetween, vectorFromAngle } from './Geometry';
@@ -63,6 +63,7 @@ export class Player {
     this.swordframe = (this.swordframe + 1) % 600;
     if (this.swordframe === 480) {
       game.screenshakes.push(new ScreenShake(28, 9, 15));
+      ZZFX.z(2914,{length:1.5,attack:.35,modulation:1});
     }
 
     this.nextAnimationFrame(Animation2.player_walk);
@@ -81,12 +82,13 @@ export class Player {
 
       if (game.input.pressed[Input.Action.DODGE]) {
         this.startAnimation(Animation2.player_dodge);
-        game.audio.playerDodge();
+        game.audio.triggerPlayerDodged();
       } else if (game.input.pressed[Input.Action.ATTACK]) {
         this.startAnimation(Math.random() < 0.4 ? Animation2.player_attack_alt : Animation2.player_attack);
-        game.audio.playerAttack();
+        game.audio.triggerPlayerAttacked();
       } else if (game.input.pressed[Input.Action.SUPER]) {
         this.startAnimation(Animation2.player_super);
+        ZZFX.z(57066,{length:1.8});
       }
     } else if (this.frame.behavior === Behavior.STUN) {
       this.next = {
@@ -158,6 +160,7 @@ export class Player {
   hitBy(impactSource: Point) {
     if (this.frame.invuln) return;
 
+    game.audio.triggerPlayerHit();
     this.powerlevel -= 900;
 
     let impactVector = vectorBetween(impactSource, this);

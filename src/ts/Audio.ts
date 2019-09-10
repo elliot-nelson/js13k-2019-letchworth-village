@@ -1,10 +1,9 @@
-import { game } from "./Globals";
+import { game, ZZFX } from "./Globals";
 import { RAD } from "./Geometry";
 
 export class Audio {
   ctx: AudioContext;
   kick: KickInstrument;
-  ghost: GhostInstrument;
   spirit: SpiritInstrument;
   hihat: HiHatInstrument;
   bass: BassSynthInstrument;
@@ -16,12 +15,18 @@ export class Audio {
 
   initialized: boolean;
 
+  private playerAttacked: boolean;
+  private playerDodged: boolean;
+  private playerHit: boolean;
+  private enemyHit: boolean;
+  private enemyKilled: boolean;
+
   constructor() {
     this.initialized = false;
   }
 
   init() {
-    return;
+    //return;
     if (this.initialized) return;
     this.initialized = true;
 
@@ -29,7 +34,6 @@ export class Audio {
     this.ctx = new AC();
 
     this.kick = new KickInstrument(this.ctx, 0.8);
-    this.ghost = new GhostInstrument(this.ctx);
     this.spirit = new SpiritInstrument(this.ctx);
     this.hihat = new HiHatInstrument(this.ctx, 0.7);
     this.bass = new BassSynthInstrument(this.ctx, 0.9);
@@ -46,20 +50,28 @@ export class Audio {
   }
 
   createSong1() {
-    let framesPerBeat = 17;
+    let framesPerBeat = 8;
     let song = [];
 
     let C = 3 - 24 - 12 - 12 + 0;
 
     let input = [
-      [ [1], [],  [C], [] ],
-      [ [1], [],  [C], [] ],
-      [ [],  [1], [C], [] ],
-      [ [1], [],  [C], [] ],
-      [ [1], [],  [C], [] ],
-      [ [],  [],  [C], [] ],
-      [ [],  [1], [C], [] ],
-      [ [],  [],  [C], [] ]
+      [ [1], [],  [1], [] ],
+      [ [],  [],  [2], [] ],
+      [ [1], [],  [1], [] ],
+      [ [],  [],  [2], [] ],
+      [ [],  [1], [1], [] ],
+      [ [],  [],  [2], [] ],
+      [ [1], [],  [1], [] ],
+      [ [],  [],  [2], [] ],
+      [ [1], [],  [1], [] ],
+      [ [],  [],  [2], [] ],
+      [ [],  [],  [1], [] ],
+      [ [],  [],  [2], [] ],
+      [ [],  [1], [1], [] ],
+      [ [],  [],  [2], [] ],
+      [ [],  [],  [1], [] ],
+      [ [],  [],  [2], [] ]
     ];
 
     for (let row of input) {
@@ -84,26 +96,68 @@ export class Audio {
         this.hihat.play(tracks[1][0], this.ctx.currentTime);
       }
       if (tracks[2][0] !== undefined) {
-        this.bass.play(tracks[2][0], this.ctx.currentTime);
+        let note = 3 - 24 - 12 - 12 + 0; // C
+
+        if (tracks[2][0] === 1) {
+          // on-beat
+          if (this.playerHit) {
+            ZZFX.z(2307);
+          }
+          this.playerHit = false;
+          this.playerAttacked = false;
+        } else if (tracks[2][0] === 2) {
+          // off-beat
+          if (this.enemyHit) {
+            ZZFX.z(25520);
+          }
+          if (this.playerDodged) {
+            ZZFX.z(12377);
+            note = undefined;
+          } else if (this.enemyKilled) {
+            note += 6; // F#
+          } else if (this.enemyHit) {
+            note = undefined;
+          } else {
+            note = undefined;
+          }
+
+          this.enemyHit = false;
+          this.enemyKilled = false;
+          this.playerDodged = false;
+        }
+
+        if (note !== undefined) {
+          this.bass.play(note, this.ctx.currentTime);
+        }
       }
     }
   }
 
-  playerAttack() {
-    if (!this.initialized) return;
-    this.bork.play(3 - 12, this.ctx.currentTime);
-    this.bork.play(8 - 12, this.ctx.currentTime);
+  triggerPlayerAttacked() {
+    this.playerAttacked = true;
   }
 
-  playerDodge() {
-    if (!this.initialized) return;
-    this.bork.play(6 - 12, this.ctx.currentTime);
+  triggerPlayerDodged() {
+    ZZFX.z(55574,{length:.2});
+    //this.playerDodged = true;
   }
 
-  enemyDie() {
-    if (!this.initialized) return;
-    this.bork.play(3 - 12, this.ctx.currentTime);
-    this.bork.play(8 - 12, this.ctx.currentTime);
+  triggerPlayerHit() {
+    this.playerHit = true;
+  }
+
+  triggerEnemyHit() {
+    //this.enemyHit = true;
+          //if (this.enemyHit) {
+           // ZZFX.z(25520);
+            //ZZFX.z(96122,{randomness:.4,frequency:400,noise:.3});
+            //ZZFX.z(43545,{frequency:42,length:.3});
+            ZZFX.z(71914,{volume:.7,length:.1,attack:.79,slide:5.1,noise:1.2,modulation:9});
+          //}
+  }
+
+  triggerEnemyKilled() {
+    this.enemyKilled = true;
   }
 }
 
@@ -119,75 +173,6 @@ export abstract class Instrument {
   }
 
   abstract play(time: number, note?: number, length?: number): void;
-}
-
-export class GhostInstrument extends Instrument {
-  play(time: number, note: number, length: number) {
-    let osc1 = this.ctx.createOscillator();
-    let osc2 = this.ctx.createOscillator();
-    let osc3 = this.ctx.createOscillator();
-    let osc4 = this.ctx.createOscillator();
-    let gain1 = this.ctx.createGain();
-    let gainx = this.ctx.createGain();
-    var bandpass = this.ctx.createBiquadFilter();
-    bandpass.type = "bandpass";
-    bandpass.frequency.value = 440;
-    bandpass.detune.value = note;
-    bandpass.Q.value = 25;
-
-    var saw = this.ctx.createOscillator(),
-    sine = this.ctx.createOscillator(),
-    sineGain = this.ctx.createGain();
-
-    saw.type = 'sawtooth';
-    sine.type = 'sine';
-
-    sineGain.gain.value = 10;
-    sine.connect(sineGain);
-    saw.frequency.value = 440;
-    sineGain.connect(saw.detune);
-    saw.connect(gain1);
-
-    osc1.type = 'square';
-    osc1.frequency.value = 440;
-    osc1.detune.value = note;
-    osc2.type = 'sine';
-    osc2.frequency.value = 440;
-    osc2.detune.value = note - 1200;
-
-    //osc2.type = 'square';
-    //osc2.frequency.value = 440 * 0.99;
-    //osc2.detune.value = note;
-    //osc3.type = 'square';
-    //osc3.frequency.value = 440 * 1.01;
-    //osc3.detune.value = note;
-    //osc4.type = 'square';
-    //osc4.frequency.value = 440 * 1.02 + 22000;
-    //osc4.detune.value = note;
-    //osc4.frequency.value = 472;
-
-    gain1.gain.setValueAtTime(0, time);
-    gain1.gain.linearRampToValueAtTime(1, time + length * 0.3);
-    gain1.gain.setValueAtTime(1, time + length * 0.8);
-    gain1.gain.linearRampToValueAtTime(0, time + length * 0.999);
-
-    //osc1.connect(bandpass);
-    //osc2.connect(bandpass);
-    //osc2.connect(gainx.gain);
-    //osc3.connect(bandpass);
-    //osc4.connect(gain1.gain);
-    bandpass.connect(gainx);
-    gainx.connect(gain1);
-    gain1.connect(this.master);
-    osc1.start(time);
-    osc1.stop(time + length);
-    osc2.start(time);
-    osc2.stop(time + length);
-    osc3.start(time);
-    osc3.stop(time + length);
-    osc4.start(time);
-    osc4.stop(time + length);
-  }
 }
 
 export class BorkInstrument extends Instrument {

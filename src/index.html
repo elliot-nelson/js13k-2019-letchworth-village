@@ -5,7 +5,7 @@
 <script><%= js %></script>
 <script>
 // Generated using https://zzfx.3d2k.com/
-
+if (typeof AudioContext === 'undefined') { AudioContext = webkitAudioContext }
 // ZzFX - Zuper Zmall Zound Zynth - Minified Version - MIT License - Copyright 2019 Frank Force
 function ZZFXLib(){this.x=new AudioContext;this.r=Date.now();this.buffer=0;this.volume=.5;this.randomness=.1}ZZFXLib.prototype.z=function(b,d){var a=this.Generate(b),c;for(c in d)a[c]=d[c];return this.Z(a.volume,a.randomness,a.frequency,a.length,a.attack,a.slide,a.noise,a.modulation,a.modulationPhase)};
 ZZFXLib.prototype.Z=function(b,d,a,c,e,g,h,k,l){c=void 0===c?1:c;e=void 0===e?.1:e;g=void 0===g?0:g;h=void 0===h?0:h;k=void 0===k?0:k;l=void 0===l?0:l;b*=this.volume;a*=2*Math.PI/44100;a*=1+d*(2*this.R()-1);g*=1E3*Math.PI/Math.pow(44100,2);c=0<c?44100*(10<c?10:c)|0:1;e*=c|0;k*=2*Math.PI/44100;l*=Math.PI;d=[];for(var m=0,n=0,f=0;f<c;++f)d[f]=b*Math.cos(m*a*Math.cos(n*k+l))*(f<e?f/e:1-(f-e)/(c-e)),m+=1+h*(2*this.R()-1),n+=1+h*(2*this.R()-1),a+=g;this.buffer=d;b=this.x.createBuffer(1,d.length,44100);

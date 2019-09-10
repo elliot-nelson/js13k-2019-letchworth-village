@@ -311,9 +311,9 @@ export class KickInstrument extends Instrument {
     gain2.connect(this.master);
 
     osc1.start(time);
-    osc1.stop(time + 0.5);
+    osc1.stop(time + 0.51);
     osc2.start(time);
-    osc2.stop(time + 0.5);
+    osc2.stop(time + 0.51);
   }
 }
 

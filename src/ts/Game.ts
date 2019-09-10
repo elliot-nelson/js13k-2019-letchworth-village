@@ -127,6 +127,7 @@ export class Game {
 
     update() {
         this.input.update();
+        this.audio.queueSongNotes();
 
         if (this.menuStack.length > 0) {
             if (!this.menuStack[this.menuStack.length - 1].update()) {
@@ -216,8 +217,6 @@ export class Game {
         if (this.particles.length === 0 && this.monsters.length === 0 && this.superFired && this.menuStack.length === 0) {
             this.menuStack.push(new OutroMenu({}));
         }
-
-        this.audio.queueSongNotes();
     }
 
     draw(ctx: CanvasRenderingContext2D) {

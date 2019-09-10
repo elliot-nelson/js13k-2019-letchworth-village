@@ -95,7 +95,7 @@ export class Audio {
       if (tracks[1][0] !== undefined) {
         this.hihat.play(tracks[1][0], this.ctx.currentTime);
       }
-      if (tracks[2][0] !== undefined) {
+      if (tracks[2][0] !== undefined && game.menuStack.length === 0) {
         let note = 3 - 24 - 12 - 12 + 0; // C
 
         if (tracks[2][0] === 1) {

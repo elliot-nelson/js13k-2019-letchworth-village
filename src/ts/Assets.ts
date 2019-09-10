@@ -56,7 +56,9 @@ export class Sprite {
   static electric2 = {} as Sprite;
   static electric3 = {} as Sprite;
 
-  static tile1 = {} as Sprite;
+  static tiles = [
+    {}, {}, {}, {}, {}, {}, {}, {}, {}
+  ] as Sprite[];
 
   static world1 = {} as Sprite;
   static world2 = {} as Sprite;
@@ -451,7 +453,15 @@ export class Assets {
     await this.initDynamicSprite(Sprite.electric2, this.createElectricity(2));
     await this.initDynamicSprite(Sprite.electric3, this.createElectricity(3));
 
-    await this.initSprite(Sprite.tile1, 'tiles.png', 0, 0, 32, 32);
+    await this.initSprite(Sprite.tiles[0], 'tiles.png', 0, 0, 32, 32);
+    await this.initSprite(Sprite.tiles[1], 'tiles.png', 32, 0, 32, 32);
+    await this.initSprite(Sprite.tiles[2], 'tiles.png', 64, 0, 32, 32);
+    await this.initSprite(Sprite.tiles[3], 'tiles.png', 96, 0, 32, 32);
+    await this.initSprite(Sprite.tiles[4], 'tiles.png', 128, 0, 32, 32);
+    await this.initSprite(Sprite.tiles[5], 'tiles.png', 160, 0, 32, 32);
+    await this.initSprite(Sprite.tiles[6], 'tiles.png', 192, 0, 32, 32);
+    await this.initSprite(Sprite.tiles[7], 'tiles.png', 224, 0, 32, 32);
+    await this.initSprite(Sprite.tiles[8], 'tiles.png', 256, 0, 32, 32);
 
     await this.initSprite(Sprite.world1, 'worldheartbeat2.png', 0, 0, 23, 23);
     await this.initSprite(Sprite.world2, 'worldheartbeat2.png', 23, 0, 23, 23);

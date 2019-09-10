@@ -273,9 +273,10 @@ export class Game {
         });
         ctx.translate(shakeX, shakeY);
 
-        for (let i = 0; i < 10; i++) {
-            for (let j = 0; j < 10; j++) {
-                Sprite.drawSprite(ctx, Sprite.tile1, i * 32, j * 32);
+        for (let i = 0; i < 16; i++) {
+            for (let j = 0; j < 9; j++) {
+                let k = ((i * i * 13) + j * 17) % 9;
+                Sprite.drawSprite(ctx, Sprite.tiles[k], i * 32 - 16, j * 32 - 8);
             }
         }
 

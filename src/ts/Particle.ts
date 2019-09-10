@@ -145,6 +145,40 @@ export class PortalParticle extends Particle {
   }
 }
 
+export class SuperParticle extends Particle {
+  constructor(p1: Point, p2: Point, tweenFn: TweenFn, sprite: Sprite, frames: number, complete?: ParticleCallback) {
+    super(p1, p2, tweenFn, sprite, frames);
+    this.foreground = true;
+    this.x = p1.x;
+    this.y = p1.y;
+  }
+
+  update(): boolean {
+    if (++this.t > this.d) {
+      game.particles = [];
+      game.monsters = [];
+      return false;
+    }
+    return true;
+  }
+
+  draw(ctx: CanvasRenderingContext2D) {
+    ctx.save();
+    //ctx.translate(this.x, this.y);
+    let scale = (this.t / this.d) * 450;
+    ctx.strokeStyle = 'red';
+    ctx.lineWidth = 150;
+    ctx.beginPath();
+    ctx.arc(this.x, this.y, scale, 0, 2 * Math.PI);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  effectiveRadius() {
+    return (this.t / this.d) * 450;
+  }
+}
+
 /*
 class Particle {
     x: number;

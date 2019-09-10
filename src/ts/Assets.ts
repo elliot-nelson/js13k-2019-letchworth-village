@@ -156,6 +156,8 @@ export const enum Behavior {
   COOLDOWN,
   DODGE,
   STUN,
+  SUPER_WINDUP,
+  SUPER_FIRE,
   DYING,
   DEAD
 }
@@ -251,6 +253,62 @@ export class Animation2 {
     { behavior: Behavior.STUN, sprite: Sprite.demon1_stun, invuln: true },
     { behavior: Behavior.STUN, sprite: Sprite.demon1_stun, invuln: true },
     { behavior: Behavior.STUN, sprite: Sprite.demon1_stun, invuln: true }
+  ] };
+  static player_super: Animation2 = { frames: [
+    { behavior: Behavior.SUPER_WINDUP, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.SUPER_WINDUP, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.SUPER_WINDUP, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.SUPER_WINDUP, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.SUPER_WINDUP, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.SUPER_WINDUP, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.SUPER_WINDUP, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.SUPER_WINDUP, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.SUPER_WINDUP, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.SUPER_WINDUP, sprite: Sprite.player_stun, invuln: true },
+
+    { behavior: Behavior.SUPER_WINDUP, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.SUPER_WINDUP, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.SUPER_WINDUP, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.SUPER_WINDUP, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.SUPER_FIRE, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.SUPER_WINDUP, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.SUPER_WINDUP, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.SUPER_WINDUP, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.SUPER_WINDUP, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.SUPER_WINDUP, sprite: Sprite.player_stun, invuln: true },
+
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_stun, invuln: true },
+
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_stun, invuln: true },
+
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_stun, invuln: true }
   ] };
 
   static demon1_walk: Animation2 = { frames: [

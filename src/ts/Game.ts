@@ -4,15 +4,15 @@ import { createSplashPattern } from './Pattern';
 import { Text } from './Text';
 import { ScreenShake } from './ScreenShake';
 import { Hud } from './Hud';
-import { Menu, PauseMenu, IntroMenuA, IntroMenuB } from './Menu';
+import { Menu, PauseMenu, IntroMenuA, IntroMenuB, OutroMenu } from './Menu';
 import { Audio } from './Audio';
 import { Assets, Sprite, drawPoly } from './Assets';
 import { Demon1 } from './Demon1';
 import { game } from './Globals';
 import { Canvas } from './Canvas';
-import { Particle, PortalParticle } from './Particle';
+import { Particle, PortalParticle, SuperParticle } from './Particle';
 import { Hive } from './Hive';
-import { Point, intersectingPolygons, intersectingCircles, RAD, vectorFromAngle } from './Geometry';
+import { Point, intersectingPolygons, intersectingCircles, RAD, vectorFromAngle, distance } from './Geometry';
 import { HEARTBEAT } from './Config';
 import { Tween } from './Tween';
 
@@ -46,6 +46,8 @@ export class Game {
     hive: Hive;
 
     started: boolean;
+
+    superFired: boolean;
 
     async init() {
         this.canvas = document.getElementById('canvas') as HTMLCanvasElement;
@@ -199,6 +201,22 @@ export class Game {
             this.bloodplanes[0][0].ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         }*/
 
+        // Super wave destroys monsters underneath it
+        for (let particle of this.particles.filter(p => p instanceof SuperParticle)) {
+            let r = (particle as SuperParticle).effectiveRadius();
+            for (let i = 0; i < this.monsters.length; i++) {
+                let d = distance(this.player, this.monsters[i]);
+                if (d > r - 50 && d < r + 50) {
+                    this.monsters.splice(i, 1);
+                    i--;
+                }
+            }
+        }
+
+        if (this.particles.length === 0 && this.monsters.length === 0 && this.superFired && this.menuStack.length === 0) {
+            this.menuStack.push(new OutroMenu({}));
+        }
+
         this.audio.queueSongNotes();
     }
 
@@ -262,7 +280,7 @@ export class Game {
             }
         }
 
-        for (let particle of this.particles) if (!particle.foreground) particle.draw(ctx);
+        for (let particle of this.particles) if (!particle.foreground && !game.superFired) particle.draw(ctx);
 
         this.player.draw(ctx);
 
@@ -316,6 +334,8 @@ export class Game {
     }
 
     fragglerock() {
+        if (this.superFired) return;
+
         if (this.monsters.length < 10 && Math.random() < 0.01) {
             this.spawnNewMonster();
         }

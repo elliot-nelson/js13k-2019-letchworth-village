@@ -1,12 +1,14 @@
 import { game } from './Globals';
 import { Input } from './input';
 import { Assets, Behavior, Animation2, Sprite } from './Assets';
-import { Point, NormalVector, RAD, rotatePolygon, Polygon, Circle, vectorBetween } from './Geometry';
+import { Point, NormalVector, RAD, rotatePolygon, Polygon, Circle, vectorBetween, vectorFromAngle } from './Geometry';
 import { Frame } from './Assets';
 import { PLAYER_WALK_SPEED } from './Config';
 import { Demon1 } from './Demon1';
 import { ScreenShake } from './ScreenShake';
 import { spawnBloodSplatter } from './Util';
+import { SuperParticle } from './Particle';
+import { Tween } from './Tween';
 
 /**
  * Player
@@ -83,6 +85,8 @@ export class Player {
       } else if (game.input.pressed[Input.Action.ATTACK]) {
         this.startAnimation(Math.random() < 0.4 ? Animation2.player_attack_alt : Animation2.player_attack);
         game.audio.playerAttack();
+      } else if (game.input.pressed[Input.Action.SUPER]) {
+        this.startAnimation(Animation2.player_super);
       }
     } else if (this.frame.behavior === Behavior.STUN) {
       this.next = {
@@ -90,6 +94,16 @@ export class Player {
         y: this.y + this.lastImpact.y * (this.frame.m || 0)
       };
       return;
+    }
+
+    if (this.frame.behavior === Behavior.SUPER_WINDUP) {
+      spawnBloodSplatter(this, vectorFromAngle(Math.random() * RAD[360]), 10, 5, 40);
+    }
+    if (this.frame.behavior === Behavior.SUPER_FIRE) {
+      game.superFired = true;
+      game.particles = [];
+      game.particles.push(new SuperParticle(this, this, Tween.linear, Sprite.blood_droplet2, 38));
+      game.screenshakes.push(new ScreenShake(35, 18, 18));
     }
 
     // If only we had "this.frame.m ?? blah" :)

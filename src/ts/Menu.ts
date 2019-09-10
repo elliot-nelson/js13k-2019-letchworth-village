@@ -153,6 +153,58 @@ export class IntroMenuB extends Menu {
   }
 }
 
+export class OutroMenu extends Menu {
+  frames: number;
+
+  constructor(options: any) {
+    super(options);
+    this.frames = 0;
+  }
+
+  update() {
+    switch (this.state) {
+      case Menu.State.BIRTH:
+        this.frames++;
+        if (this.frames >= 10) {
+          this.state = Menu.State.ACTIVE;
+        }
+        break;
+      case Menu.State.ACTIVE:
+        break;
+      case Menu.State.DEATH:
+        this.frames--;
+        if (this.frames < 0) return false;
+        break;
+    }
+
+    return true;
+  }
+
+  draw(ctx: CanvasRenderingContext2D) {
+    let alpha = Math.min(this.frames / 10, 1) * 0.33;
+    ctx.fillStyle = rgba(0, 0, 0, alpha);
+    ctx.fillRect(0, 0, game.canvas.width, game.canvas.height);
+    ctx.font = '12px monospace';
+    ctx.fillStyle = 'white';
+
+    let text = [
+      '',
+      '',
+      '',
+      '',
+      '       CONGRATULATIONS. YOU HAVE CLOSED THE PORTAL.'
+    ];
+
+    ctx.save();
+    ctx.scale(this.frames / 10, 1);
+    ctx.rotate((10 - this.frames) * RAD[5]);
+    for (let i = 0; i < text.length; i++) {
+      ctx.fillText(text[i].toUpperCase(), 30, 50 + i * 20);
+    }
+    ctx.restore();
+  }
+}
+
 export class PauseMenu extends Menu {
   frames: number;
 

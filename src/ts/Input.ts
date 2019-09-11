@@ -56,7 +56,6 @@ export class Input implements Input.ActionHandler {
         this.keyboard.update();
         this.gamepad.update();
 
-//            console.log(this.keyboard.held);
         for (let action of Input.AllActions) {
             let held = this.gamepad.held[action] || this.keyboard.held[action];
             this.pressed[action] = !this.held[action] && held;
@@ -75,11 +74,9 @@ export class Input implements Input.ActionHandler {
     }
 
     onDown(action: Input.Action) {
-        console.log("down:" + action);
     }
 
     onUp(action: Input.Action) {
-        console.log("up:" + action);
     }
 }
 

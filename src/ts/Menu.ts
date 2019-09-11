@@ -50,7 +50,6 @@ export class IntroMenuA extends Menu {
         }
         break;
       case Menu.State.ACTIVE:
-        console.log(game.input.pressed[Input.Action.ATTACK]);
         if (game.input.pressed[Input.Action.ATTACK]) {
           this.state = Menu.State.DEATH;
         }

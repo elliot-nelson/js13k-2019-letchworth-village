@@ -45,13 +45,13 @@ export class GamepadAdapter {
       this.gamepadIndex = event.gamepad.index;
       let gp = this.getGamepad();
 
-      console.log(
+      /*console.log(
         'Gamepad connected: index=%d id=%s, %d buttons, %d axes',
         gp.index,
         gp.id,
         gp.buttons.length,
         gp.axes.length
-      );
+      );*/
 
       this.reset();
     });
@@ -59,10 +59,10 @@ export class GamepadAdapter {
     window.addEventListener("gamepaddisconnected", (event: GamepadEvent) => {
       if (this.gamepadIndex === event.gamepad.index) {
         this.gamepadIndex = undefined;
-        console.log(
+        /*console.log(
           'Gamepad disconnected: index=%d',
           event.gamepad.index
-        );
+        );*/
       }
 
       this.reset();

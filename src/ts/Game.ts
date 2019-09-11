@@ -112,9 +112,6 @@ export class Game {
         //this.framems = performance.now();
         window.requestAnimationFrame(() => this.onFrame(1));
         //this.frame = 0;
-        /// #if DEBUG
-        //console.log('Starting game.');
-        /// #endif
     }
 
     onFrame(currentms : number) {
@@ -174,7 +171,6 @@ export class Game {
         }
         //this.particles = this.particles.filter(particle => particle.update());
         //this.particles.push(new Particle(105, 100));
-        //console.log(this.particles.length);
 
         // Example screenshake calls
         /*
@@ -400,8 +396,6 @@ export class Game {
                 /*
                 let polygoni = entities[i].getBoundingPolygon();
                 let polygonj = entities[j].getBoundingPolygon();
-
-                console.log(intersectingPolygons(polygoni, polygonj));
 
                 Object.assign(polygoni, entities[i].next);
                 if (!intersectingPolygons(polygoni, polygonj)) {

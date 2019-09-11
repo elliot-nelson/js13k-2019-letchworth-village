@@ -97,7 +97,6 @@ export class Sprite {
    */
   static drawHitBox(ctx: CanvasRenderingContext2D, sprite: Sprite, x: number, y: number) {
     if (sprite.hbox) {
-      console.log(sprite.hbox);
       ctx.strokeStyle = 'rgba(255, 0, 0, 0.7)';
       ctx.strokeRect(
         x - sprite.anchor.x + sprite.hbox[0].x,
@@ -510,7 +509,6 @@ export class Assets {
    * This helper method loads the specified image, caching it for future use.
    */
   static async loadImage(uri: string): Promise<HTMLImageElement> {
-    console.log(["loadImage", uri, this.images[uri]]);
     if (this.images[uri]) return this.images[uri];
 
     return await new Promise((resolve, reject) => {

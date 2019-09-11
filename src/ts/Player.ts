@@ -1,4 +1,4 @@
-import { game, ZZFX } from './Globals';
+import { game } from './Globals';
 import { Input } from './input';
 import { Assets, Behavior, Animation2, Sprite } from './Assets';
 import { Point, NormalVector, RAD, rotatePolygon, Polygon, Circle, vectorBetween, vectorFromAngle } from './Geometry';
@@ -70,7 +70,7 @@ export class Player {
     if (this.swordframe === 480) {
       game.screenshakes.push(new ScreenShake(28, 9, 15));
       game.hud.screenshakes.push(new ScreenShake(16, 9, 1));
-      ZZFX.z(2914,{length:1.5,attack:.35,modulation:1});
+      game.audio.z(2914,{length:1.5,attack:.35,modulation:1});
     }
 
     this.nextAnimationFrame(Animation2.player_walk);
@@ -95,7 +95,7 @@ export class Player {
         game.audio.triggerPlayerAttacked();
       } else if (game.input.pressed[Input.Action.SUPER] && this.powerlevel >= 9000) {
         this.startAnimation(Animation2.player_super);
-        ZZFX.z(57066,{length:1.8});
+        game.audio.z(57066,{length:1.8});
       }
     } else if (this.frame.behavior === Behavior.STUN) {
       this.next = {

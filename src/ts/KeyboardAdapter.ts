@@ -36,6 +36,7 @@ export class KeyboardAdapter {
     this.map[37] = Input.Action.LEFT;      // [LeftArrow]
     this.map[39] = Input.Action.RIGHT;     // [RightArrow]
     this.map[27] = Input.Action.MENU;      // [ESC]
+    this.map[77] = Input.Action.MUTE;      // [M]
 
     this.reset();
   }
@@ -47,7 +48,7 @@ export class KeyboardAdapter {
         this.held[k] = true;
       }
 
-      // Hack.
+      // Hack - first key pressed in window will initialize the audio.
       game.audio.init();
     });
 

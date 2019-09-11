@@ -85,11 +85,11 @@ export class IntroMenuA extends Menu {
       'Awake again. Why?',
       'The smell of demons fills the air. Send them...',
       '',
-      '                   BACK TO HELL!',
+      '                      BACK TO HELL!',
       '',
       'Drink until you are full, then banish them for good.',
       '',
-      '...Welcome to Letchworth Village.',
+      '             Welcome to Letchworth Village.',
       '',
       '         PRESS [X] / (X) / (SQUARE) TO CONTINUE'
     ];

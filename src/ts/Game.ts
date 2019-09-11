@@ -138,6 +138,10 @@ export class Game {
             }*/
         }
 
+        if (this.input.pressed[Input.Action.MUTE]) {
+            this.audio.muted = !this.audio.muted;
+        }
+
         if (!this.started) return;
 
         this.hive.update();

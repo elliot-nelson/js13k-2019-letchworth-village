@@ -14,6 +14,7 @@ export class Audio {
   songFrame: number;
 
   initialized: boolean;
+  muted: boolean;
 
   private playerAttacked: boolean;
   private playerDodged: boolean;
@@ -23,6 +24,7 @@ export class Audio {
 
   constructor() {
     this.initialized = false;
+    this.muted = false;
   }
 
   init() {
@@ -84,6 +86,7 @@ export class Audio {
 
   queueSongNotes() {
     if (!this.initialized) return;
+    if (this.muted) return;
 
     this.songFrame = (this.songFrame + 1) % this.song.length;
     let tracks = this.song[this.songFrame];
@@ -101,17 +104,17 @@ export class Audio {
         if (tracks[2][0] === 1) {
           // on-beat
           if (this.playerHit) {
-            ZZFX.z(2307);
+            this.z(2307);
           }
           this.playerHit = false;
           this.playerAttacked = false;
         } else if (tracks[2][0] === 2) {
           // off-beat
           if (this.enemyHit) {
-            ZZFX.z(25520);
+            this.z(25520);
           }
           if (this.playerDodged) {
-            ZZFX.z(12377);
+            this.z(12377);
             note = undefined;
           } else if (this.enemyKilled) {
             note += 6; // F#
@@ -138,7 +141,7 @@ export class Audio {
   }
 
   triggerPlayerDodged() {
-    ZZFX.z(55574,{length:.2});
+    this.z(55574,{length:.2});
     //this.playerDodged = true;
   }
 
@@ -152,12 +155,17 @@ export class Audio {
            // ZZFX.z(25520);
             //ZZFX.z(96122,{randomness:.4,frequency:400,noise:.3});
             //ZZFX.z(43545,{frequency:42,length:.3});
-            ZZFX.z(71914,{volume:.7,length:.1,attack:.79,slide:5.1,noise:1.2,modulation:9});
+            this.z(71914,{volume:.7,length:.1,attack:.79,slide:5.1,noise:1.2,modulation:9});
           //}
   }
 
   triggerEnemyKilled() {
     this.enemyKilled = true;
+  }
+
+  z(...args: any[]) {
+    if (this.muted) return;
+    ZZFX.z(...args);
   }
 }
 

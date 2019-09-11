@@ -105,7 +105,8 @@ export namespace Input {
         DEFLECT,
         DODGE,
         SUPER,
-        MENU
+        MENU,
+        MUTE
     }
 
     export const AllActions: Input.Action[] = [
@@ -117,7 +118,8 @@ export namespace Input {
         Input.Action.DEFLECT,
         Input.Action.DODGE,
         Input.Action.SUPER,
-        Input.Action.MENU
+        Input.Action.MENU,
+        Input.Action.MUTE
     ];
 
     export type ActionBoolMap = { [key in Input.Action]?: boolean };

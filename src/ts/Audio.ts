@@ -163,6 +163,10 @@ export class Audio {
     this.enemyKilled = true;
   }
 
+  triggerPlayerDeflected() {
+    // ?
+  }
+
   z(...args: any[]) {
     if (this.muted) return;
     ZZFX.z(...args);

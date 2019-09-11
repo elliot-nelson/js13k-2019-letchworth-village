@@ -115,6 +115,9 @@ export class Player {
       } else if (game.input.pressed[Input.Action.SUPER] && this.powerlevel >= 9000) {
         this.startAnimation(Animation2.player_super);
         game.audio.z(57066,{length:1.8});
+      } else if (game.input.pressed[Input.Action.DEFLECT]) {
+        this.startAnimation(Animation2.player_deflect);
+        game.audio.triggerPlayerDeflected();
       }
     } else if (this.frame.behavior === Behavior.STUN) {
       this.next = {
@@ -155,9 +158,26 @@ export class Player {
     ctx.translate(this.x, this.y);
     ctx.rotate(this.facingAngle + RAD[90]);
 
+    if (this.frame.behavior === Behavior.ATTACK && (this.frame.sprite === Sprite.player_counter1 || this.frame.sprite === Sprite.player_counter2 || this.frame.sprite === Sprite.player_counter3)) {
+      ctx.save();
+      ctx.globalAlpha = 0.3;
+      ctx.scale(1.9, 1.9);
+      Sprite.drawSprite(ctx, this.frame.sprite, 0, 0);
+      ctx.restore();
+    }
+
     ctx.globalAlpha = (this.frame.behavior === Behavior.DODGE ? 0.9 : 1);
     Sprite.drawSprite(ctx, this.frame.sprite, 0, 0);
     ctx.globalAlpha = 1;
+
+    if (this.frame.behavior === Behavior.DEFLECT) {
+      ctx.save();
+      ctx.translate(0, -9);
+      ctx.rotate((game.frame / 6) % RAD[360]);
+      ctx.scale(3, 3);
+      Sprite.drawSprite(ctx, Sprite.star, 0, 0);
+      ctx.restore();
+    }
 
     for (let shadow of this.shadows) {
       ctx.save();
@@ -190,9 +210,8 @@ export class Player {
       ctx.restore();
     }
 
-
     // polygons
-    /*
+
     let poly = this.getBoundingPolygon();
     ctx.beginPath();
     for (let i = 0; i < poly.p.length; i++) {
@@ -213,10 +232,16 @@ export class Player {
       ctx.strokeStyle = 'rgba(255, 0, 0, 1)';
       ctx.stroke();
     }
-    */
+
   }
 
   hitBy(impactSource: Point) {
+    if (this.frame.behavior === Behavior.DEFLECT) {
+      this.startAnimation(Animation2.player_counter);
+      game.screenshakes.push(new ScreenShake(16, 8, 8));
+      return;
+    }
+
     if (this.frame.invuln) return;
 
     game.audio.triggerPlayerHit();

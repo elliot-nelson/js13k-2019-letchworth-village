@@ -35,6 +35,10 @@ export class Sprite {
   static player_attack3 = {} as Sprite;
   static player_stun = {} as Sprite;
   static player_dodge = {} as Sprite;
+  static player_deflect = {} as Sprite;
+  static player_counter1 = {} as Sprite;
+  static player_counter2 = {} as Sprite;
+  static player_counter3 = {} as Sprite;
 
   // hitbox only
   static player_attack_rush = {} as Sprite;
@@ -59,6 +63,7 @@ export class Sprite {
   // Electricity
   static electric2 = {} as Sprite;
   static electric3 = {} as Sprite;
+  static star = {} as Sprite;
 
   static tiles = [
     {}, {}, {}, {}, {}, {}, {}, {}, {}
@@ -162,6 +167,7 @@ export const enum Behavior {
   COOLDOWN,
   DODGE,
   STUN,
+  DEFLECT,
   SUPER_WINDUP,
   SUPER_FIRE,
   DYING,
@@ -259,6 +265,78 @@ export class Animation2 {
     { behavior: Behavior.STUN, sprite: Sprite.player_stun, invuln: true },
     { behavior: Behavior.STUN, sprite: Sprite.player_stun, invuln: true },
     { behavior: Behavior.STUN, sprite: Sprite.player_stun, invuln: true }
+  ] };
+  static player_deflect: Animation2 = { frames: [
+    { behavior: Behavior.DEFLECT, sprite: Sprite.player_deflect, invuln: true, m: 0 },
+    { behavior: Behavior.DEFLECT, sprite: Sprite.player_deflect, invuln: true, m: 0 },
+    { behavior: Behavior.DEFLECT, sprite: Sprite.player_deflect, invuln: true, m: 0 },
+    { behavior: Behavior.DEFLECT, sprite: Sprite.player_deflect, invuln: true, m: 0 },
+    { behavior: Behavior.DEFLECT, sprite: Sprite.player_deflect, invuln: true, m: 0 },
+
+    { behavior: Behavior.DEFLECT, sprite: Sprite.player_deflect, invuln: true, m: 0 },
+    { behavior: Behavior.DEFLECT, sprite: Sprite.player_deflect, invuln: true, m: 0 },
+    { behavior: Behavior.DEFLECT, sprite: Sprite.player_deflect, invuln: true, m: 0 },
+    { behavior: Behavior.DEFLECT, sprite: Sprite.player_deflect, invuln: true, m: 0 },
+    { behavior: Behavior.DEFLECT, sprite: Sprite.player_deflect, invuln: true, m: 0 },
+
+    { behavior: Behavior.DEFLECT, sprite: Sprite.player_deflect, invuln: true, m: 0 },
+    { behavior: Behavior.DEFLECT, sprite: Sprite.player_deflect, invuln: true, m: 0 },
+    { behavior: Behavior.DEFLECT, sprite: Sprite.player_deflect, invuln: true, m: 0 },
+    { behavior: Behavior.DEFLECT, sprite: Sprite.player_deflect, invuln: true, m: 0 },
+    { behavior: Behavior.DEFLECT, sprite: Sprite.player_deflect, invuln: true, m: 0 },
+
+    { behavior: Behavior.DEFLECT, sprite: Sprite.player_deflect, invuln: true, m: 0 },
+    { behavior: Behavior.DEFLECT, sprite: Sprite.player_deflect, invuln: true, m: 0 },
+    { behavior: Behavior.DEFLECT, sprite: Sprite.player_deflect, invuln: true, m: 0 },
+    { behavior: Behavior.DEFLECT, sprite: Sprite.player_deflect, invuln: true, m: 0 },
+    { behavior: Behavior.DEFLECT, sprite: Sprite.player_deflect, invuln: true, m: 0 },
+
+    { behavior: Behavior.DEFLECT, sprite: Sprite.player_deflect, invuln: true, m: 0 },
+    { behavior: Behavior.DEFLECT, sprite: Sprite.player_deflect, invuln: true, m: 0 },
+    { behavior: Behavior.DEFLECT, sprite: Sprite.player_deflect, invuln: true, m: 0 },
+    { behavior: Behavior.DEFLECT, sprite: Sprite.player_deflect, invuln: true, m: 0 },
+    { behavior: Behavior.DEFLECT, sprite: Sprite.player_deflect, invuln: true, m: 0 },
+
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_deflect, m: 0 },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_deflect, m: 0 },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_deflect, m: 0 },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_deflect, m: 0 },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_deflect, m: 0 },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_deflect, m: 0 },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_deflect, m: 0 },
+    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_deflect, m: 0 }
+  ] };
+  static player_counter: Animation2 = { frames: [
+    { behavior: Behavior.ATTACK, sprite: Sprite.player_counter2, invuln: true, m: 0 },
+    { behavior: Behavior.ATTACK, sprite: Sprite.player_counter2, invuln: true, m: 0 },
+    { behavior: Behavior.ATTACK, sprite: Sprite.player_counter2, invuln: true, m: 0 },
+    { behavior: Behavior.ATTACK, sprite: Sprite.player_counter1, invuln: true, m: 0 },
+    { behavior: Behavior.ATTACK, sprite: Sprite.player_counter1, invuln: true, m: 0 },
+    { behavior: Behavior.ATTACK, sprite: Sprite.player_counter1, invuln: true, m: 0, hit: true },
+    { behavior: Behavior.ATTACK, sprite: Sprite.player_counter3, invuln: true, m: 0 },
+    { behavior: Behavior.ATTACK, sprite: Sprite.player_counter3, invuln: true, m: 0 },
+    { behavior: Behavior.ATTACK, sprite: Sprite.player_counter2, invuln: true, m: 0 },
+    { behavior: Behavior.ATTACK, sprite: Sprite.player_counter2, invuln: true, m: 0 },
+    { behavior: Behavior.ATTACK, sprite: Sprite.player_counter1, invuln: true, m: 0 },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_counter1, invuln: true },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_counter3, invuln: true },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_counter3, invuln: true },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_counter2, invuln: true },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_counter2, invuln: true },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_counter1, invuln: true },
+
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk1, invuln: true },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk1, invuln: true },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk1, invuln: true },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk1, invuln: true },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk1, invuln: true },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk1, invuln: true },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk2, invuln: true },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk2, invuln: true },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk2, invuln: true },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk2, invuln: true },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk2, invuln: true },
+    { behavior: Behavior.DEFAULT, sprite: Sprite.player_walk2, invuln: true }
   ] };
   static player_super: Animation2 = { frames: [
     { behavior: Behavior.SUPER_WINDUP, sprite: Sprite.player_stun, invuln: true },
@@ -386,7 +464,11 @@ export class Animation2 {
     { behavior: Behavior.STUN, sprite: Sprite.demon1_stun, invuln: true },
     { behavior: Behavior.STUN, sprite: Sprite.demon1_stun, invuln: true },
     { behavior: Behavior.STUN, sprite: Sprite.demon1_stun, invuln: true },
-    { behavior: Behavior.STUN, sprite: Sprite.demon1_stun, invuln: true }
+    { behavior: Behavior.STUN, sprite: Sprite.demon1_stun, invuln: true },
+    { behavior: Behavior.STUN, sprite: Sprite.demon1_stun },
+    { behavior: Behavior.STUN, sprite: Sprite.demon1_stun },
+    { behavior: Behavior.STUN, sprite: Sprite.demon1_stun },
+    { behavior: Behavior.STUN, sprite: Sprite.demon1_stun }
   ] };
 }
 
@@ -427,6 +509,29 @@ export class Assets {
       bbox: [{ x: 21, y: 25 }, { x: 42, y: 38 }]
     });
 
+    // The bouding box on the deflection frame is intentionally larger, because
+    // the player usually WANTS to deflect an attack. Our enemy attacks are kind
+    // of squirrelly so let's give the player a little bit of a nudge...
+    await this.initSprite(Sprite.player_deflect,   'player.png', 576, 0, 64, 64, {
+      bbox: [{ x: 21 - 8, y: 25 - 8 }, { x: 42 + 8, y: 38 + 8 }]
+    });
+
+    await this.initSprite(Sprite.player_counter1,   'player.png', 640, 0, 64, 64, {
+      bbox: [{ x: 21, y: 25 }, { x: 42, y: 38 }],
+      hbox: [{ x: -12, y: -12 }, { x: 64 + 12, y: 64 + 12 }]
+      //hbox: [{ x: 2, y: 2 }, { x: 62, y: 62 }]
+    });
+    await this.initSprite(Sprite.player_counter2,   'player.png', 704, 0, 64, 64, {
+      bbox: [{ x: 21, y: 25 }, { x: 42, y: 38 }],
+      hbox: [{ x: -12, y: -12 }, { x: 64 + 12, y: 64 + 12 }]
+      //hbox: [{ x: 2, y: 2 }, { x: 62, y: 62 }]
+    });
+    await this.initSprite(Sprite.player_counter3,   'player.png', 768, 0, 64, 64, {
+      bbox: [{ x: 21, y: 25 }, { x: 42, y: 38 }],
+      //hbox: [{ x: 2, y: 2 }, { x: 62, y: 62 }]
+      hbox: [{ x: -12, y: -12 }, { x: 64 + 12, y: 64 + 12 }]
+    });
+
     await this.initSprite(Sprite.demon1_walk1,     'demon1.png', 0, 0, 16, 22);
     await this.initSprite(Sprite.demon1_walk2,     'demon1.png', 16, 0, 16, 22);
     await this.initSprite(Sprite.demon1_walk3,     'demon1.png', 32, 0, 16, 22);
@@ -458,7 +563,11 @@ export class Assets {
       Sprite.player_attack2,
       Sprite.player_attack3,
       Sprite.player_stun,
-      Sprite.player_dodge
+      Sprite.player_dodge,
+      Sprite.player_deflect,
+      Sprite.player_counter1,
+      Sprite.player_counter2,
+      Sprite.player_counter3
     ];
     for (let sprite of sprites) {
       sprite.shadow = {} as Sprite;
@@ -496,6 +605,7 @@ export class Assets {
     await this.initSprite(Sprite.hud_sword_hungry, 'swordmeter.png', 96, 0, 32, 116);
     await this.initSprite(Sprite.hud_sword_charged, 'swordmeter.png', 144, 0, 32, 116);
 
+    await this.initSprite(Sprite.star, 'particles.png', 0, 0, 11, 11);
     await this.initSprite(Sprite.portal, 'portal.png', 0, 0, 32, 32);
   };
 

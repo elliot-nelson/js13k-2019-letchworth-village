@@ -218,12 +218,16 @@ export class Demon1 {
 
     game.audio.triggerEnemyHit();
 
-    this.hp -= 10;
+    this.hp -= game.player.damageValue();
 
     let impactVector = vectorBetween(impactSource, this);
     this.lastImpact = impactVector;
     this.frameQ = Animation2.demon1_stun.frames.slice();
-    spawnBloodSplatter(this, impactVector, 10,  4, 20);
+
+    let factor = Math.floor(Math.max(4, game.player.combo / 4));
+    let particles = 10 + factor;
+    let force = 20 + factor * 4;
+    spawnBloodSplatter(this, impactVector, particles, 4, force);
   }
 
   getBoundingPolygon(): Polygon {

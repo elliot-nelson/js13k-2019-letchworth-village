@@ -22,6 +22,7 @@ export class Sprite {
   anchor: Point;
   bbox: Box;
   hbox?: Box;
+  shadow?: Sprite;
 
   // Player
   static player_stand = {} as Sprite;
@@ -34,6 +35,9 @@ export class Sprite {
   static player_attack3 = {} as Sprite;
   static player_stun = {} as Sprite;
   static player_dodge = {} as Sprite;
+
+  // hitbox only
+  static player_attack_rush = {} as Sprite;
 
   // Demon1
   static demon1_walk1 = {} as Sprite;
@@ -252,9 +256,9 @@ export class Animation2 {
     { behavior: Behavior.STUN, sprite: Sprite.player_stun, invuln: true, m: PLAYER_WALK_SPEED * 3 },
     { behavior: Behavior.STUN, sprite: Sprite.player_stun, invuln: true, m: PLAYER_WALK_SPEED * 3 },
     { behavior: Behavior.STUN, sprite: Sprite.player_stun, invuln: true, m: PLAYER_WALK_SPEED * 3 },
-    { behavior: Behavior.STUN, sprite: Sprite.demon1_stun, invuln: true },
-    { behavior: Behavior.STUN, sprite: Sprite.demon1_stun, invuln: true },
-    { behavior: Behavior.STUN, sprite: Sprite.demon1_stun, invuln: true }
+    { behavior: Behavior.STUN, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.STUN, sprite: Sprite.player_stun, invuln: true },
+    { behavior: Behavior.STUN, sprite: Sprite.player_stun, invuln: true }
   ] };
   static player_super: Animation2 = { frames: [
     { behavior: Behavior.SUPER_WINDUP, sprite: Sprite.player_stun, invuln: true },
@@ -443,6 +447,26 @@ export class Assets {
     await this.initDynamicSprite(Sprite.player_stun, this.tint(Sprite.player_walk1.img, 255, 255, 255, 0.6));
     await this.initDynamicSprite(Sprite.player_dodge, this.tint(Sprite.player_attack1.img, 96, 96, 255, 0.5));
     await this.initDynamicSprite(Sprite.demon1_stun, this.tint(Sprite.demon1_walk1.img, 255, 255, 255, 0.6));
+
+    let sprites = [
+      Sprite.player_stand,
+      Sprite.player_walk1,
+      Sprite.player_walk2,
+      Sprite.player_walk3,
+      Sprite.player_walk4,
+      Sprite.player_attack1,
+      Sprite.player_attack2,
+      Sprite.player_attack3,
+      Sprite.player_stun,
+      Sprite.player_dodge
+    ];
+    for (let sprite of sprites) {
+      sprite.shadow = {} as Sprite;
+      await this.initDynamicSprite(sprite.shadow, this.tint(sprite.img, 0, 0, 0, 1));
+    }
+
+    Sprite.player_attack_rush.anchor = Sprite.player_attack2.anchor;
+    Sprite.player_attack_rush.hbox = [{ x: 4, y: 2 }, { x: 60, y: 38 }];
 
     /*let chunks = this.cutIntoChunks(Sprite.demon1_walk2.img, RAD[24]);
     await this.initDynamicSprite(Sprite.demon1_chunk_a, chunks[0]);

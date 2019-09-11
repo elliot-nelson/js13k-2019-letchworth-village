@@ -16,8 +16,14 @@ export class Hud {
 
   screenshakes: ScreenShake[];
 
+  combot: number;
+  combod: number;
+
   constructor() {
     this.screenshakes = [];
+
+    this.combot = 120;
+    this.combod = 120;
 
     this.hpcanvas0 = new Canvas(220, 30);
     this.hpcanvas1 = new Canvas(220, 30);
@@ -98,6 +104,8 @@ export class Hud {
     this.frame++;
 
     this.screenshakes = this.screenshakes.filter(shake => shake.update());
+
+    this.combot++;
   }
 
   draw(ctx: CanvasRenderingContext2D) {
@@ -130,6 +138,17 @@ export class Hud {
     ctx.translate(shakeX, shakeY);
     ctx.drawImage(this.swordmeter.canvas, 0, 0);
     ctx.restore();
+
+    let alpha = Math.min(1, 1 - (this.combot / this.combod));
+    if (alpha > 0) {
+      ctx.globalAlpha = alpha;
+      let string = String(game.player.combo) + 'x';
+      let width = ctx.measureText(string).width;
+      ctx.font = '20px monospace';
+      ctx.fillStyle = 'rgba(240, 32, 32, 0.75)';
+      ctx.fillText(string, 480 - 16 - width, 24);
+      ctx.globalAlpha = 1;
+    }
 
     return;
 

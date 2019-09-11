@@ -154,11 +154,15 @@ export class Game {
 
         let hitbox = this.player.getHitPolygon();
         if (hitbox) {
+            let hitCount = 0;
             this.monsters.forEach(monster => {
                 if (intersectingPolygons(hitbox, monster.getBoundingPolygon())) {
+                    if (!monster.frame.invuln) hitCount++;
                     monster.hitBy(this.player);
                 }
             });
+
+            this.player.setCombo(hitCount);
         }
 
         this.monsters.forEach(monster => {

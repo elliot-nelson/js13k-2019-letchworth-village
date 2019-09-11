@@ -29,6 +29,9 @@ export class Player {
   powerlevel: number;
   swordframe: number;
 
+  shadows: any[];
+  combo: number;
+
   constructor() {
     this.x = 480 / 2;
     this.y = 270 / 2 + 30;
@@ -40,6 +43,8 @@ export class Player {
     this.powerlevel = 9000; //2000; //x
     this.swordframe = 0;
     this.lastPosition = [];
+    this.shadows = [];
+    this.combo = 0;
   }
 
   startAnimation(animation: Animation2) {
@@ -62,9 +67,23 @@ export class Player {
     if (this.powerlevel < 0) this.powerlevel = 0;
     if (this.powerlevel < 2000) this.powerlevel += 4;
 
-    /*if (this.frame.behavior === Behavior.SPAWNING) {
-      return;
-    }*/
+    if (this.combo >= 4 && (this.shadows.length < 1 || game.frame % 5 === 0)) {
+      this.shadows = [];
+      this.shadows.push({
+        x: Math.random() * 4 - 2,
+        y: Math.random() * 4 - 2 + 2,
+        s: Math.random() * 0.25 + 1,
+        a: 0.3
+      });
+      if (this.combo >= 8 && (this.shadows.length < 2 || game.frame % 5 === 0)) {
+        this.shadows.push({
+          x: Math.random() * 6 - 3,
+          y: Math.random() * 6 - 3 + 3,
+          s: Math.random() * 0.75 + 1,
+          a: 0.3
+        });
+      }
+    }
 
     this.swordframe = (this.swordframe + 1) % 600;
     if (this.swordframe === 480) {
@@ -118,6 +137,12 @@ export class Player {
     // If only we had "this.frame.m ?? blah" :)
     let motion = this.frame.m === undefined ? (game.input.direction.m * PLAYER_WALK_SPEED) : this.frame.m;
 
+    if (this.combo >= 8) {
+      motion *= 1.4;
+    } else if (this.combo >= 4) {
+      motion *= 1.2;
+    }
+
     this.next = {
       x: this.x + this.facing.x * motion,
       y: this.y + this.facing.y * motion
@@ -129,9 +154,19 @@ export class Player {
     ctx.save();
     ctx.translate(this.x, this.y);
     ctx.rotate(this.facingAngle + RAD[90]);
+
     ctx.globalAlpha = (this.frame.behavior === Behavior.DODGE ? 0.9 : 1);
     Sprite.drawSprite(ctx, this.frame.sprite, 0, 0);
     ctx.globalAlpha = 1;
+
+    for (let shadow of this.shadows) {
+      ctx.save();
+      ctx.scale(shadow.s, shadow.s);
+      ctx.globalAlpha = shadow.a;
+      Sprite.drawSprite(ctx, this.frame.sprite.shadow, shadow.x, shadow.y);
+      ctx.restore();
+    }
+
     ctx.restore();
 
     if (this.frame.behavior === Behavior.DODGE) {
@@ -154,6 +189,7 @@ export class Player {
       Sprite.drawSprite(ctx, this.frame.sprite, 0, 0);
       ctx.restore();
     }
+
 
     // polygons
     /*
@@ -185,7 +221,8 @@ export class Player {
 
     game.audio.triggerPlayerHit();
     game.hud.screenshakes.push(new ScreenShake(16, 8, 8));
-    this.powerlevel -= 900;
+    this.setCombo(0);
+    this.powerlevel -= 850;
 
     let impactVector = vectorBetween(impactSource, this);
     this.lastImpact = impactVector;
@@ -207,8 +244,10 @@ export class Player {
   }
 
   getHitPolygon(): Polygon|undefined {
-    if (this.frame.sprite.hbox) {
-      return rotatePolygon(Sprite.getHitBoxPolygon(this.frame.sprite, this.x, this.y), this.facingAngle + RAD[90]);
+    if (this.frame.sprite.hbox && this.frame.hit) {
+      let sprite = this.frame.sprite;
+      if (this.combo >= 8) sprite = Sprite.player_attack_rush;
+      return rotatePolygon(Sprite.getHitBoxPolygon(sprite, this.x, this.y), this.facingAngle + RAD[90]);
     }
   }
 
@@ -218,5 +257,26 @@ export class Player {
 
   swordhungry() {
     return this.swordframe > 480;
+  }
+
+  setCombo(value: number) {
+    let oldCombo = this.combo;
+
+    if (value === 0) {
+      this.combo = 0;
+      this.shadows = [];
+    } else {
+      this.combo += value;
+    }
+
+    if (this.combo !== oldCombo && oldCombo >= 2) {
+      game.hud.combot = -30;
+    }
+  }
+
+  damageValue() {
+    if (this.combo >= 8) return 20;
+    if (this.combo >= 4) return 15;
+    return 10;
   }
 }

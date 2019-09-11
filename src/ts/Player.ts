@@ -21,6 +21,8 @@ export class Player {
   facingAngle: number;
   lastImpact: NormalVector;
 
+  lastPosition: Point[];
+
   frame: Frame;
   frameQ: Frame[];
 
@@ -35,8 +37,9 @@ export class Player {
     this.frameQ = [];
       /*{ behavior: Behavior.SPAWNING, sprite: Sprite.player_walk1 }
     ];*/
-    this.powerlevel = 2000; //x
+    this.powerlevel = 9000; //2000; //x
     this.swordframe = 0;
+    this.lastPosition = [];
   }
 
   startAnimation(animation: Animation2) {
@@ -53,6 +56,9 @@ export class Player {
   }
 
   update() {
+    this.lastPosition.unshift({ x: this.x, y: this.y });
+    this.lastPosition = this.lastPosition.slice(0, 10);
+
     if (this.powerlevel < 0) this.powerlevel = 0;
     if (this.powerlevel < 2000) this.powerlevel += 4;
 
@@ -87,7 +93,7 @@ export class Player {
       } else if (game.input.pressed[Input.Action.ATTACK]) {
         this.startAnimation(Math.random() < 0.4 ? Animation2.player_attack_alt : Animation2.player_attack);
         game.audio.triggerPlayerAttacked();
-      } else if (game.input.pressed[Input.Action.SUPER]) {
+      } else if (game.input.pressed[Input.Action.SUPER] && this.powerlevel >= 9000) {
         this.startAnimation(Animation2.player_super);
         ZZFX.z(57066,{length:1.8});
       }
@@ -123,12 +129,31 @@ export class Player {
     ctx.save();
     ctx.translate(this.x, this.y);
     ctx.rotate(this.facingAngle + RAD[90]);
-    if (this.frame.behavior === Behavior.DODGE) {
-      ctx.globalAlpha = 0.6;
-    }
+    ctx.globalAlpha = (this.frame.behavior === Behavior.DODGE ? 0.9 : 1);
     Sprite.drawSprite(ctx, this.frame.sprite, 0, 0);
     ctx.globalAlpha = 1;
     ctx.restore();
+
+    if (this.frame.behavior === Behavior.DODGE) {
+      ctx.save();
+      ctx.translate(this.lastPosition[2].x, this.lastPosition[2].y);
+      ctx.rotate(this.facingAngle + RAD[90]);
+      ctx.globalAlpha = 0.7;
+      Sprite.drawSprite(ctx, this.frame.sprite, 0, 0);
+      ctx.restore();
+      ctx.save();
+      ctx.translate(this.lastPosition[4].x, this.lastPosition[4].y);
+      ctx.rotate(this.facingAngle + RAD[90]);
+      ctx.globalAlpha = 0.5;
+      Sprite.drawSprite(ctx, this.frame.sprite, 0, 0);
+      ctx.restore();
+      ctx.save();
+      ctx.translate(this.lastPosition[6].x, this.lastPosition[6].y);
+      ctx.rotate(this.facingAngle + RAD[90]);
+      ctx.globalAlpha = 0.3;
+      Sprite.drawSprite(ctx, this.frame.sprite, 0, 0);
+      ctx.restore();
+    }
 
     // polygons
     /*
@@ -165,7 +190,7 @@ export class Player {
     let impactVector = vectorBetween(impactSource, this);
     this.lastImpact = impactVector;
     this.frameQ = Animation2.player_stun.frames.slice();
-    spawnBloodSplatter(this, impactVector, 5, 5, 30);
+    spawnBloodSplatter(this, impactVector, 9, 5, 32);
     //spawnBloodSplatter(this, impactVector, 10, 4, 20);
   }
 

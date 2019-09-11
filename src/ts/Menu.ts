@@ -45,13 +45,14 @@ export class IntroMenuA extends Menu {
     switch (this.state) {
       case Menu.State.BIRTH:
         this.frames++;
-        if (this.frames >= 10) {
+        if (this.frames >= 70) {
           this.state = Menu.State.ACTIVE;
         }
         break;
       case Menu.State.ACTIVE:
         if (game.input.pressed[Input.Action.ATTACK]) {
           this.state = Menu.State.DEATH;
+          this.frames = 10;
         }
         break;
       case Menu.State.DEATH:
@@ -66,27 +67,36 @@ export class IntroMenuA extends Menu {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    let alpha = Math.min(this.frames / 10, 1) * 0.33;
+    let alpha: number;
+    let max: number;
+    if (this.state === Menu.State.BIRTH || this.state === Menu.State.ACTIVE) {
+      max = 70;
+      alpha = 1 - Math.min(this.frames / max, 1) * 0.66;
+    } else {
+      max = 10;
+      alpha = Math.min(this.frames / max, 1) * 0.33;
+    }
     ctx.fillStyle = rgba(0, 0, 0, alpha);
     ctx.fillRect(0, 0, game.canvas.width, game.canvas.height);
     ctx.font = '12px monospace';
     ctx.fillStyle = 'white';
 
     let text = [
-      'Suddenly awake, the smell of despair fills your place of',
-      'birth. A fresh demon invasion... feed until you are sated,',
-      'then banish them for good.',
+      'Awake again. Why?',
+      'The smell of demons fills the air. Send them...',
       '',
-      'As a cursed sword, you are invulnerable, but your host is',
-      'not. Avoid damage and drink the blood of your prey until',
-      'fully charged, then release your power to close the portals.',
+      '                   BACK TO HELL!',
+      '',
+      'Drink until you are full, then banish them for good.',
+      '',
+      '...Welcome to Letchworth Village.',
       '',
       '         PRESS [X] / (X) / (SQUARE) TO CONTINUE'
     ];
 
     ctx.save();
-    ctx.scale(this.frames / 10, 1);
-    ctx.rotate((10 - this.frames) * -RAD[5]);
+    ctx.scale(Math.min(this.frames, 10) / 10, 1);
+    ctx.rotate(Math.max((10 - this.frames), 0) * -RAD[5]);
     for (let i = 0; i < text.length; i++) {
       ctx.fillText(text[i].toUpperCase(), 30, 50 + i * 20);
     }
@@ -189,9 +199,11 @@ export class OutroMenu extends Menu {
     let text = [
       '',
       '',
+      '       CONGRATULATIONS. YOU HAVE CLOSED THE PORTAL.',
       '',
       '',
-      '       CONGRATULATIONS. YOU HAVE CLOSED THE PORTAL.'
+      'The game is now over, but you can reload your browser',
+      'to play again. Thanks for playing!'
     ];
 
     ctx.save();

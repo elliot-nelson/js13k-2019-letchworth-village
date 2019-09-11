@@ -67,6 +67,7 @@ export class Sprite {
   static hud_sword_base = {} as Sprite;
   static hud_sword_outline = {} as Sprite;
   static hud_sword_hungry = {} as Sprite;
+  static hud_sword_charged = {} as Sprite;
 
   static portal = {} as Sprite;
 
@@ -440,7 +441,7 @@ export class Assets {
     await this.initSprite(Sprite.demon1_chunk5,    'demon1.png', 144, 0, 16, 22);
 
     await this.initDynamicSprite(Sprite.player_stun, this.tint(Sprite.player_walk1.img, 255, 255, 255, 0.6));
-    await this.initDynamicSprite(Sprite.player_dodge, this.tint(Sprite.player_attack1.img, 128, 128, 255, 0.3));
+    await this.initDynamicSprite(Sprite.player_dodge, this.tint(Sprite.player_attack1.img, 96, 96, 255, 0.5));
     await this.initDynamicSprite(Sprite.demon1_stun, this.tint(Sprite.demon1_walk1.img, 255, 255, 255, 0.6));
 
     /*let chunks = this.cutIntoChunks(Sprite.demon1_walk2.img, RAD[24]);
@@ -469,6 +470,7 @@ export class Assets {
     await this.initSprite(Sprite.hud_sword_base, 'swordmeter.png', 0, 0, 32, 116);
     await this.initSprite(Sprite.hud_sword_outline, 'swordmeter.png', 48, 0, 32, 116);
     await this.initSprite(Sprite.hud_sword_hungry, 'swordmeter.png', 96, 0, 32, 116);
+    await this.initSprite(Sprite.hud_sword_charged, 'swordmeter.png', 144, 0, 32, 116);
 
     await this.initSprite(Sprite.portal, 'portal.png', 0, 0, 32, 32);
   };

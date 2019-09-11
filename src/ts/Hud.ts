@@ -117,6 +117,9 @@ export class Hud {
     } else {
       this.swordmeter.ctx.drawImage(Sprite.hud_sword_outline.img, 0, 0);
     }
+    if (game.player.powerlevel >= 9000) {
+      this.swordmeter.ctx.drawImage(Sprite.hud_sword_charged.img, 0, 0);
+    }
 
     ctx.save();
     let shakeX = 0, shakeY = 0;

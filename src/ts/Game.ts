@@ -252,6 +252,9 @@ export class Game {
             this.shadow.ctx.arc(monster.x, monster.y, 200, 0, 2 * Math.PI);
         }
 
+        /*
+          we don't even use bloodplanes (splatter terrain) anymore because i just
+          render all of them as particles
         ctx.globalAlpha = 1 - this.bloodplanes[0][1] / this.bloodplanes[0][2];
         ctx.globalAlpha = 0.9;
         ctx.drawImage(this.bloodplanes[0][0].canvas, 0, 0);
@@ -260,6 +263,7 @@ export class Game {
         ctx.globalAlpha = 1 - this.bloodplanes[2][1] / this.bloodplanes[2][2];
         ctx.drawImage(this.bloodplanes[2][0].canvas, 0, 0);
         ctx.globalAlpha = 1;
+        */
 
         ctx.save();
         let shakeX = 0, shakeY = 0;
@@ -269,8 +273,9 @@ export class Game {
         });
         ctx.translate(shakeX, shakeY);
 
+        // low-hanging fruit here (pre-render the map since it never changes)
         for (let i = 0; i < 16; i++) {
-            for (let j = 0; j < 9; j++) {
+            for (let j = 0; j < 10; j++) {
                 let k = ((i * i * 13) + j * 17) % 9;
                 Sprite.drawSprite(ctx, Sprite.tiles[k], i * 32 - 16, j * 32 - 8);
             }
@@ -322,6 +327,14 @@ export class Game {
     resize() {
         let width = this.canvas.clientWidth;
         let height = this.canvas.clientHeight;
+
+        // We'd uncomment this if we wanted to always lock pixel size to screen
+        // size, but we are intentionally upscaling 480x270 fixed to the size
+        // of the user's browser.
+        //
+        // (In the process, we're accepting that it could look kind of ugly and
+        // skewed if the user has an unusual aspect ratio.)
+
         /*if (this.canvas.width !== width || this.canvas.height !== height) {
             this.canvas.width = width;
             this.canvas.height = height;

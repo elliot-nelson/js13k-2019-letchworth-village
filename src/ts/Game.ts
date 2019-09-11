@@ -313,10 +313,12 @@ export class Game {
 
         ctx.restore();
 
+        /*
         if (this.frame % HEARTBEAT === 0 || (this.frame - 1) % HEARTBEAT === 0 || (this.frame - 2) % HEARTBEAT === 0) {
             ctx.fillStyle = 'rgba(255, 255, 30, 0.3)';
             ctx.fillRect(100, 0, 100, 10);
         }
+        */
 
         for (let menu of this.menuStack) menu.draw(ctx);
     }

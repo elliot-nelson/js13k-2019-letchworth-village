@@ -63,6 +63,7 @@ export class Player {
     this.swordframe = (this.swordframe + 1) % 600;
     if (this.swordframe === 480) {
       game.screenshakes.push(new ScreenShake(28, 9, 15));
+      game.hud.screenshakes.push(new ScreenShake(16, 9, 1));
       ZZFX.z(2914,{length:1.5,attack:.35,modulation:1});
     }
 
@@ -118,11 +119,6 @@ export class Player {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
-    if (this.frame.behavior === Behavior.SPAWNING) {
-      //for (let i = 0; i < 10; i++) {
-      //ctx.drawSprite(
-    }
-
     ctx.imageSmoothingEnabled = false;
     ctx.save();
     ctx.translate(this.x, this.y);
@@ -134,6 +130,8 @@ export class Player {
     ctx.globalAlpha = 1;
     ctx.restore();
 
+    // polygons
+    /*
     let poly = this.getBoundingPolygon();
     ctx.beginPath();
     for (let i = 0; i < poly.p.length; i++) {
@@ -154,13 +152,14 @@ export class Player {
       ctx.strokeStyle = 'rgba(255, 0, 0, 1)';
       ctx.stroke();
     }
-
+    */
   }
 
   hitBy(impactSource: Point) {
     if (this.frame.invuln) return;
 
     game.audio.triggerPlayerHit();
+    game.hud.screenshakes.push(new ScreenShake(16, 8, 8));
     this.powerlevel -= 900;
 
     let impactVector = vectorBetween(impactSource, this);

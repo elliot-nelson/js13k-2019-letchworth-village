@@ -186,14 +186,6 @@ export class Demon1 {
     ];
   }
 
-  startAttack() {
-    let attackFrame = nextHeartbeatAfter(game.frame + 24) + 8;
-
-    let windupFrames = 14;
-    let motionFrames = 12;
-    let attackFrames = 10;
-  }
-
   draw(ctx: CanvasRenderingContext2D) {
     if (this.frame.behavior === Behavior.SPAWNING) return;
 
@@ -202,11 +194,13 @@ export class Demon1 {
     ctx.translate(this.x, this.y);
     ctx.rotate(this.facingAngle + RAD[90]);
     Sprite.drawSprite(ctx, this.frame.sprite, 0, 0);
-    Sprite.drawBoundingBox(ctx, this.frame.sprite, 0, 0);
-    Sprite.drawHitBox(ctx, this.frame.sprite, 0, 0);
+    //Sprite.drawBoundingBox(ctx, this.frame.sprite, 0, 0);
+    //Sprite.drawHitBox(ctx, this.frame.sprite, 0, 0);
 
     ctx.restore();
 
+    // polys
+    /*
     let poly = this.getBoundingPolygon();
     ctx.beginPath();
     for (let i = 0; i < poly.p.length; i++) {
@@ -216,6 +210,7 @@ export class Demon1 {
     }
     ctx.strokeStyle = 'rgba(0, 255, 0, 1)';
     ctx.stroke();
+    */
   }
 
   hitBy(impactSource: Point) {

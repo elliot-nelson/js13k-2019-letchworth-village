@@ -2,6 +2,7 @@ import { Canvas } from "./Canvas";
 import { game } from "./Globals";
 import { Assets, Sprite } from "./Assets";
 import { RAD } from "./Geometry";
+import { ScreenShake } from "./ScreenShake";
 
 export class Hud {
   hpcanvas0: Canvas;
@@ -13,7 +14,11 @@ export class Hud {
   heartbeatFrames: CanvasImageSource[];
   swordmeter: Canvas;
 
+  screenshakes: ScreenShake[];
+
   constructor() {
+    this.screenshakes = [];
+
     this.hpcanvas0 = new Canvas(220, 30);
     this.hpcanvas1 = new Canvas(220, 30);
     this.hpcanvas2 = new Canvas(220, 30);
@@ -91,6 +96,8 @@ export class Hud {
   update() {
     this.frame = this.frame || 0;
     this.frame++;
+
+    this.screenshakes = this.screenshakes.filter(shake => shake.update());
   }
 
   draw(ctx: CanvasRenderingContext2D) {
@@ -110,7 +117,16 @@ export class Hud {
     } else {
       this.swordmeter.ctx.drawImage(Sprite.hud_sword_outline.img, 0, 0);
     }
+
+    ctx.save();
+    let shakeX = 0, shakeY = 0;
+    this.screenshakes.forEach(shake => {
+        shakeX += shake.x;
+        shakeY += shake.y;
+    });
+    ctx.translate(shakeX, shakeY);
     ctx.drawImage(this.swordmeter.canvas, 0, 0);
+    ctx.restore();
 
     return;
 

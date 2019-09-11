@@ -9,7 +9,7 @@ export class Hive {
   constructor() {
     this.frame = 0;
     this.innerRingOffset = 0;
-    this.innerRingRadius = 60; // 72
+    this.innerRingRadius = 64; // 72
   }
 
   update() {
@@ -18,6 +18,7 @@ export class Hive {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
+    /*
     ctx.strokeStyle = 'rgba(0,0,255,0.3)';
     ctx.beginPath();
     ctx.arc(game.player.x, game.player.y, this.innerRingRadius, 0, RAD[360]);
@@ -28,6 +29,7 @@ export class Hive {
       ctx.fillStyle = 'rgba(0,0,255,0.7)';
       ctx.fillRect(p.x * this.innerRingRadius + game.player.x, p.y * this.innerRingRadius + game.player.y, 3, 3);
     }
+    */
   }
 
   getInnerRingPositions(): NormalVector[] {

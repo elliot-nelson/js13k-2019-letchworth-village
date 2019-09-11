@@ -95,12 +95,12 @@ export class BloodSuckParticle extends Particle {
 
     if (this.t > this.d) {
       this.t++;
-      let m = clamp((this.t - this.d) / 30, 0, 5);
+      let m = clamp((this.t - this.d) / 30 + 2, 0, 5.5);
       let v = vectorBetween(this, game.player);
       v = rotateVector(v, this.t > this.d + 150 ? RAD[20] : RAD[45]);
       this.x = this.x + v.x * m;
       this.y = this.y + v.y * m;
-      if (distance(this, game.player) < 5) {
+      if (distance(this, game.player) < 5.5) {
         game.player.powerup(this.sprite.img.width > 4 ? 3 : 2);
         return false;
       }

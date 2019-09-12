@@ -168,6 +168,7 @@ export const enum Behavior {
   DODGE,
   STUN,
   DEFLECT,
+  DEFLECT_COOLDOWN,
   SUPER_WINDUP,
   SUPER_FIRE,
   DYING,
@@ -247,7 +248,7 @@ export class Animation2 {
     { behavior: Behavior.COOLDOWN, sprite: Sprite.player_walk4, m: PLAYER_WALK_SPEED / 3 }
   ] };
   static player_dodge: Animation2 = { frames: [
-    { behavior: Behavior.DODGE, sprite: Sprite.player_walk1, m: 4 },
+    { behavior: Behavior.DODGE, sprite: Sprite.player_walk1, m: 4, invuln: true },
     { behavior: Behavior.DODGE, sprite: Sprite.player_dodge, m: 7, invuln: true },
     { behavior: Behavior.DODGE, sprite: Sprite.player_dodge, m: 8, invuln: true },
     { behavior: Behavior.DODGE, sprite: Sprite.player_dodge, m: 9, invuln: true },
@@ -255,7 +256,8 @@ export class Animation2 {
     { behavior: Behavior.DODGE, sprite: Sprite.player_dodge, m: 9, invuln: true },
     { behavior: Behavior.DODGE, sprite: Sprite.player_dodge, m: 8, invuln: true },
     { behavior: Behavior.DODGE, sprite: Sprite.player_dodge, m: 7, invuln: true },
-    { behavior: Behavior.DODGE, sprite: Sprite.player_walk1, m: 2 }
+    { behavior: Behavior.DODGE, sprite: Sprite.player_walk1, m: 2, invuln: true },
+    { behavior: Behavior.DODGE, sprite: Sprite.player_walk1, m: 1, invuln: true }
   ] };
   static player_stun: Animation2 = { frames: [
     { behavior: Behavior.STUN, sprite: Sprite.player_stun, invuln: true, m: PLAYER_WALK_SPEED * 3 },
@@ -297,7 +299,7 @@ export class Animation2 {
     { behavior: Behavior.DEFLECT, sprite: Sprite.player_deflect, invuln: true, m: 0 },
     { behavior: Behavior.DEFLECT, sprite: Sprite.player_deflect, invuln: true, m: 0 },
 
-    { behavior: Behavior.COOLDOWN, sprite: Sprite.player_deflect, m: 0 },
+    { behavior: Behavior.DEFLECT_COOLDOWN, sprite: Sprite.player_deflect, m: 0 },
     { behavior: Behavior.COOLDOWN, sprite: Sprite.player_deflect, m: 0 },
     { behavior: Behavior.COOLDOWN, sprite: Sprite.player_deflect, m: 0 },
     { behavior: Behavior.COOLDOWN, sprite: Sprite.player_deflect, m: 0 },
@@ -550,7 +552,7 @@ export class Assets {
     await this.initSprite(Sprite.demon1_chunk5,    'demon1.png', 144, 0, 16, 22);
 
     await this.initDynamicSprite(Sprite.player_stun, this.tint(Sprite.player_walk1.img, 255, 255, 255, 0.6));
-    await this.initDynamicSprite(Sprite.player_dodge, this.tint(Sprite.player_attack1.img, 96, 96, 255, 0.5));
+    await this.initDynamicSprite(Sprite.player_dodge, this.tint(Sprite.player_attack1.img, 96, 96, 255, 0.8));
     await this.initDynamicSprite(Sprite.demon1_stun, this.tint(Sprite.demon1_walk1.img, 255, 255, 255, 0.6));
 
     let sprites = [

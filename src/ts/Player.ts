@@ -149,6 +149,12 @@ export class Player {
       return;
     }
 
+    if (this.frame.behavior === Behavior.DEFLECT_COOLDOWN) {
+      // Reaching a DEFLECT_COOLDOWN frame means that a deflection FAILED
+      // (otherwise we would have cut the animation short and entered an ATTACK
+      // frame).
+      this.setCombo(0);
+    }
     if (this.frame.behavior === Behavior.SUPER_WINDUP) {
       spawnBloodSplatter(this, vectorFromAngle(Math.random() * RAD[360]), 10, 5, 40);
     }
@@ -269,7 +275,7 @@ export class Player {
     game.audio.triggerPlayerHit();
     game.hud.screenshakes.push(new ScreenShake(16, 8, 8));
     this.setCombo(0);
-    this.powerlevel -= 850;
+    this.powerlevel -= 750;
 
     let impactVector = vectorBetween(impactSource, this);
     this.lastImpact = impactVector;

@@ -188,15 +188,18 @@ export class Player {
 
     if (this.frame.behavior === Behavior.ATTACK && (this.frame.sprite === Sprite.player_counter1 || this.frame.sprite === Sprite.player_counter2 || this.frame.sprite === Sprite.player_counter3)) {
       ctx.save();
+      ctx.rotate(Math.random() * RAD[360]);
+      Sprite.drawSprite(ctx, Math.random() < 0.5 ? Sprite.player_attack3 : Sprite.player_attack2, 0, 0);
+      ctx.rotate(Math.random() * RAD[360]);
       ctx.globalAlpha = 0.3;
       ctx.scale(1.9, 1.9);
-      Sprite.drawSprite(ctx, this.frame.sprite, 0, 0);
+      Sprite.drawSprite(ctx, Math.random() < 0.5 ? Sprite.player_attack3 : Sprite.player_attack2, 0, 0);
       ctx.restore();
+    } else {
+      ctx.globalAlpha = (this.frame.behavior === Behavior.DODGE ? 0.9 : 1);
+      Sprite.drawSprite(ctx, this.frame.sprite, 0, 0);
+      ctx.globalAlpha = 1;
     }
-
-    ctx.globalAlpha = (this.frame.behavior === Behavior.DODGE ? 0.9 : 1);
-    Sprite.drawSprite(ctx, this.frame.sprite, 0, 0);
-    ctx.globalAlpha = 1;
 
     if (this.frame.behavior === Behavior.DEFLECT) {
       ctx.save();

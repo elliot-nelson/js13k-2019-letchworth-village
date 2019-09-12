@@ -37,7 +37,7 @@
     "trimmed": false,
     "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 64 },
     "sourceSize": { "w": 64, "h": 64 },
-    "duration": 100
+    "duration": 200
    },
    "player 5.aseprite": {
     "frame": { "x": 320, "y": 0, "w": 64, "h": 64 },
@@ -69,38 +69,6 @@
     "trimmed": false,
     "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 64 },
     "sourceSize": { "w": 64, "h": 64 },
-    "duration": 250
-   },
-   "player 9.aseprite": {
-    "frame": { "x": 576, "y": 0, "w": 64, "h": 64 },
-    "rotated": false,
-    "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 64 },
-    "sourceSize": { "w": 64, "h": 64 },
-    "duration": 200
-   },
-   "player 10.aseprite": {
-    "frame": { "x": 640, "y": 0, "w": 64, "h": 64 },
-    "rotated": false,
-    "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 64 },
-    "sourceSize": { "w": 64, "h": 64 },
-    "duration": 200
-   },
-   "player 11.aseprite": {
-    "frame": { "x": 704, "y": 0, "w": 64, "h": 64 },
-    "rotated": false,
-    "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 64 },
-    "sourceSize": { "w": 64, "h": 64 },
-    "duration": 200
-   },
-   "player 12.aseprite": {
-    "frame": { "x": 768, "y": 0, "w": 64, "h": 64 },
-    "rotated": false,
-    "trimmed": false,
-    "spriteSourceSize": { "x": 0, "y": 0, "w": 64, "h": 64 },
-    "sourceSize": { "w": 64, "h": 64 },
     "duration": 200
    }
  },
@@ -109,7 +77,7 @@
   "version": "1.2.13",
   "image": "player.png",
   "format": "RGBA8888",
-  "size": { "w": 832, "h": 64 },
+  "size": { "w": 576, "h": 64 },
   "scale": "1",
   "frameTags": [
   ],

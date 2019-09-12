@@ -69,10 +69,6 @@ export class Sprite {
     {}, {}, {}, {}, {}, {}, {}, {}, {}
   ] as Sprite[];
 
-  static world1 = {} as Sprite;
-  static world2 = {} as Sprite;
-  static world3 = {} as Sprite;
-
   static hud_sword_base = {} as Sprite;
   static hud_sword_outline = {} as Sprite;
   static hud_sword_hungry = {} as Sprite;
@@ -507,30 +503,31 @@ export class Assets {
       bbox: [{ x: 21, y: 25 }, { x: 42, y: 38 }],
       hbox: [{ x: 14, y: 8 }, { x: 50, y: 35 }]
     });
-    await this.initSprite(Sprite.player_walk4,   'player.png', 448, 0, 64, 64, {
+    // same as walk2
+    await this.initSprite(Sprite.player_walk4,     'player.png', 128, 0, 64, 64, {
       bbox: [{ x: 21, y: 25 }, { x: 42, y: 38 }]
     });
 
     // The bouding box on the deflection frame is intentionally larger, because
     // the player usually WANTS to deflect an attack. Our enemy attacks are kind
     // of squirrelly so let's give the player a little bit of a nudge...
-    await this.initSprite(Sprite.player_deflect,   'player.png', 576, 0, 64, 64, {
+    await this.initSprite(Sprite.player_deflect,   'player.png', 448, 0, 64, 64, {
       bbox: [{ x: 21 - 8, y: 25 - 8 }, { x: 42 + 8, y: 38 + 8 }]
     });
 
-    await this.initSprite(Sprite.player_counter1,   'player.png', 640, 0, 64, 64, {
+    // There were dedicated frames for countering but I had to golf them out. To
+    // simplify the process, I'm importing a stand-in sprite and then "hack" something
+    // different in the Player model.
+    await this.initSprite(Sprite.player_counter1,   'player.png', 512, 0, 64, 64, {
       bbox: [{ x: 21, y: 25 }, { x: 42, y: 38 }],
       hbox: [{ x: -12, y: -12 }, { x: 64 + 12, y: 64 + 12 }]
-      //hbox: [{ x: 2, y: 2 }, { x: 62, y: 62 }]
     });
-    await this.initSprite(Sprite.player_counter2,   'player.png', 704, 0, 64, 64, {
+    await this.initSprite(Sprite.player_counter2,   'player.png', 512, 0, 64, 64, {
       bbox: [{ x: 21, y: 25 }, { x: 42, y: 38 }],
       hbox: [{ x: -12, y: -12 }, { x: 64 + 12, y: 64 + 12 }]
-      //hbox: [{ x: 2, y: 2 }, { x: 62, y: 62 }]
     });
-    await this.initSprite(Sprite.player_counter3,   'player.png', 768, 0, 64, 64, {
+    await this.initSprite(Sprite.player_counter3,   'player.png', 512, 0, 64, 64, {
       bbox: [{ x: 21, y: 25 }, { x: 42, y: 38 }],
-      //hbox: [{ x: 2, y: 2 }, { x: 62, y: 62 }]
       hbox: [{ x: -12, y: -12 }, { x: 64 + 12, y: 64 + 12 }]
     });
 
@@ -598,16 +595,12 @@ export class Assets {
     await this.initSprite(Sprite.tiles[7], 'tiles.png', 224, 0, 32, 32);
     await this.initSprite(Sprite.tiles[8], 'tiles.png', 256, 0, 32, 32);
 
-    await this.initSprite(Sprite.world1, 'worldheartbeat2.png', 0, 0, 23, 23);
-    await this.initSprite(Sprite.world2, 'worldheartbeat2.png', 23, 0, 23, 23);
-    await this.initSprite(Sprite.world3, 'worldheartbeat2.png', 46, 0, 23, 23);
-
     await this.initSprite(Sprite.hud_sword_base, 'swordmeter.png', 0, 0, 32, 116);
     await this.initSprite(Sprite.hud_sword_outline, 'swordmeter.png', 48, 0, 32, 116);
     await this.initSprite(Sprite.hud_sword_hungry, 'swordmeter.png', 96, 0, 32, 116);
     await this.initSprite(Sprite.hud_sword_charged, 'swordmeter.png', 144, 0, 32, 116);
 
-    await this.initSprite(Sprite.star, 'particles.png', 0, 0, 11, 11);
+    await this.initSprite(Sprite.star, 'player.png', 512, 0, 11, 11);
     await this.initSprite(Sprite.portal, 'portal.png', 0, 0, 32, 32);
   };
 

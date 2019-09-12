@@ -4,11 +4,9 @@ import { RAD } from "./Geometry";
 export class Audio {
   ctx: AudioContext;
   kick: KickInstrument;
-  spirit: SpiritInstrument;
   hihat: HiHatInstrument;
   bass: BassSynthInstrument;
   distortion: WaveShaperNode;
-  bork: BorkInstrument;
 
   song: any;
   songFrame: number;
@@ -36,10 +34,8 @@ export class Audio {
     this.ctx = new AC();
 
     this.kick = new KickInstrument(this.ctx, 0.8);
-    this.spirit = new SpiritInstrument(this.ctx);
     this.hihat = new HiHatInstrument(this.ctx, 0.7);
     this.bass = new BassSynthInstrument(this.ctx, 0.9);
-    this.bork = new BorkInstrument(this.ctx);
 
     this.song = this.createSong1();
     this.songFrame = -1;
@@ -185,81 +181,6 @@ export abstract class Instrument {
   }
 
   abstract play(time: number, note?: number, length?: number): void;
-}
-
-export class BorkInstrument extends Instrument {
-  play(note: number, time: number) {
-    let length = 0.34;
-    let osc1 = this.ctx.createOscillator();
-    let osc2 = this.ctx.createOscillator();
-    let gain1 = this.ctx.createGain();
-
-    var bandpass = this.ctx.createBiquadFilter();
-    bandpass.type = "bandpass";
-    bandpass.frequency.value = 440; //440;
-    bandpass.detune.value = note;
-    bandpass.Q.value = 35;
-    bandpass.connect(gain1);
-
-    gain1.gain.setValueAtTime(0, time);
-    gain1.gain.linearRampToValueAtTime(1, time + length * 0.15);
-    gain1.gain.setValueAtTime(1, time + length * 0.6);
-    gain1.gain.linearRampToValueAtTime(0, time + length * 0.96);
-    gain1.connect(this.master);
-
-    osc1.connect(bandpass);
-    osc1.type = 'sine';
-    osc1.frequency.value = 440 * 0.9;
-    osc1.detune.value = note * 100;
-    osc1.start(time);
-    osc1.stop(time + length);
-    osc2.connect(bandpass);
-    osc2.type = 'triangle';
-    osc2.frequency.value = 440 * 1.1;
-    osc2.detune.value = note * 100;
-    osc2.start(time);
-    osc2.stop(time + length);
-  }
-}
-
-export class SpiritInstrument extends Instrument {
-  play(note: number, time: number) {
-    var node = this.ctx.createBufferSource(),
-        buffer = this.ctx.createBuffer(1, 4096, this.ctx.sampleRate),
-        data = buffer.getChannelData(0);
-    let gain1 = this.ctx.createGain();
-    let bq1 = this.ctx.createBiquadFilter();
-    let bq2 = this.ctx.createBiquadFilter();
-    for (var i = 0; i < 4096; i++) {
-      data[i] = Math.random();
-    }
-
-    node.buffer = buffer;
-    node.loop = true;
-
-    node.start(time);
-    node.stop(time + 0.5);
-
-    bq1.type = 'peaking';
-    bq1.frequency.setValueAtTime(note, time);
-    bq1.Q.setValueAtTime(100, time);
-    bq1.gain.value = 25;
-
-    bq2.type = 'bandpass';
-    bq2.frequency.setValueAtTime(note, time);
-    bq2.Q.setValueAtTime(25, time);
-    //bq2.gain.value = 25;
-
-    gain1.gain.setValueAtTime(0, time);
-    gain1.gain.linearRampToValueAtTime(1, time + 0.05);
-    gain1.gain.setValueAtTime(1, time + 0.45);
-    gain1.gain.linearRampToValueAtTime(0, time + 0.5);
-
-    node.connect(bq1);
-    bq1.connect(bq2);
-    bq2.connect(gain1);
-    gain1.connect(this.master);
-  }
 }
 
 export class HiHatInstrument extends Instrument {

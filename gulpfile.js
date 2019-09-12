@@ -109,18 +109,16 @@ task('build:css', () => {
 // -----------------------------------------------------------------------------
 task('build:assets:dev', () => {
     return gulp.src('src/assets/*.png')
-        .pipe(imagemin([
-            advpng({ optimizationLevel: 4, iterations: 10 })
-        ]))
+        .pipe(imagemin())
         .pipe(gulp.dest('dist/dev'));
 });
 task('build:assets:prod', () => {
     return gulp.src('src/assets/*.png')
         .pipe(imagemin())
         .pipe(imagemin([
-            advpng({ optimizationLevel: 4, iterations: 10 })
+            advpng({ optimizationLevel: 4, iterations: 50 })
         ]))
-        .pipe(gulp.dest('out'));
+        .pipe(gulp.dest('dist/prod'));
 });
 task('build:assets', parallel('build:assets:dev', 'build:assets:prod'));
 

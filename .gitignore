@@ -2,7 +2,9 @@
 node_modules
 
 # Output
-dist
+dist/dev
+dist/prod
+dist/temp
 
 # Misc files
 .DS_Store

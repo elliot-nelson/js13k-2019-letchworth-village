@@ -32,6 +32,8 @@ export class Player {
   shadows: any[];
   combo: number;
 
+  bufferFrame: { dodge: number, attack: number, deflect: number };
+
   constructor() {
     this.x = 480 / 2;
     this.y = 270 / 2 + 30;
@@ -45,6 +47,7 @@ export class Player {
     this.lastPosition = [];
     this.shadows = [];
     this.combo = 0;
+    this.bufferFrame = { dodge: undefined, attack: undefined, deflect: undefined };
   }
 
   startAnimation(animation: Animation2) {
@@ -94,6 +97,18 @@ export class Player {
 
     this.nextAnimationFrame(Animation2.player_walk);
 
+    // Allow buffered inputs - this makes a big difference in responsiveness
+    // when you are respecting cooldown frames!
+    if (game.input.pressed[Input.Action.DODGE]) {
+      this.bufferFrame.dodge = game.frame;
+    }
+    if (game.input.pressed[Input.Action.ATTACK]) {
+      this.bufferFrame.attack = game.frame;
+    }
+    if (game.input.pressed[Input.Action.DEFLECT]) {
+      this.bufferFrame.deflect = game.frame;
+    }
+
     // Do a "first pass" behavior check, so that we can respond on *this frame*
     // to input presses. You could simplify a bit by doing a single pass, with
     // the downside that the 1st frame of the attack animation would come out on the
@@ -106,16 +121,23 @@ export class Player {
         this.frame = Animation2.player_stand.frames[0];
       }
 
-      if (game.input.pressed[Input.Action.DODGE]) {
+      //if (game.input.pressed[Input.Action.DODGE]) {
+      if (this.bufferFrame.dodge && this.bufferFrame.dodge > game.frame - 30) {
+        this.bufferFrame.dodge = undefined;
         this.startAnimation(Animation2.player_dodge);
         game.audio.triggerPlayerDodged();
-      } else if (game.input.pressed[Input.Action.ATTACK]) {
+      //} else if (game.input.pressed[Input.Action.ATTACK]) {
+      } else if (this.bufferFrame.attack && this.bufferFrame.attack > game.frame - 30) {
+        this.bufferFrame.attack = undefined;
         this.startAnimation(Math.random() < 0.4 ? Animation2.player_attack_alt : Animation2.player_attack);
         game.audio.triggerPlayerAttacked();
+      // don't bother buffering super
       } else if (game.input.pressed[Input.Action.SUPER] && this.powerlevel >= 9000) {
         this.startAnimation(Animation2.player_super);
         game.audio.z(57066,{length:1.8});
-      } else if (game.input.pressed[Input.Action.DEFLECT]) {
+      //} else if (game.input.pressed[Input.Action.DEFLECT]) {
+      } else if (this.bufferFrame.deflect && this.bufferFrame.deflect > game.frame - 30) {
+        this.bufferFrame.deflect = undefined;
         this.startAnimation(Animation2.player_deflect);
         game.audio.triggerPlayerDeflected();
       }

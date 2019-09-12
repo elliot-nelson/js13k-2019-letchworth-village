@@ -1,5 +1,6 @@
 import { normalizeVector, NormalVector } from './Geometry';
 import { Input } from './Input';
+import { game } from './Globals';
 
 // TODO: Should these thresholds represent scale points instead of clamps?
 const MIN_STICK_THRESHOLD = 0.15;
@@ -54,6 +55,9 @@ export class GamepadAdapter {
       );*/
 
       this.reset();
+
+      // Hack.
+      game.audio.init();
     });
 
     window.addEventListener("gamepaddisconnected", (event: GamepadEvent) => {

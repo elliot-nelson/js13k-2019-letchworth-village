@@ -145,9 +145,10 @@ export class IntroMenuB extends Menu {
       'CONTROLS                     [KEYBOARD]   (GAMEPAD)',
       '',
       'ATTACK                       [X]        / (X) / (SQUARE)',
+      'COUNTER                      [Z]        / (Y) / (TRIANGLE)',
       'DASH                         [C]        / (A) / (CROSS)',
-      'FINISHER (FULL CHARGE)       [SPACEBAR] / (B) / (CIRCLE)',
-      'FEED                         AUTOMATIC',
+      'FINISHER (W/FULL CHARGE)     [SPACEBAR] / (B) / (CIRCLE)',
+      'CONSUME                      AUTOMATIC',
       '',
       '         PRESS [X] / (X) / (SQUARE) TO CONTINUE'
     ];

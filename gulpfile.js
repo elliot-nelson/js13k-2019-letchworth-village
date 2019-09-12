@@ -57,7 +57,9 @@ const sources = glob.sync('src/ts/**/*.ts').sort((a, b) => {
 });
 const tsdev = typescript.createProject('tsconfig.json');
 const tsprod = typescript.createProject('tsconfig.json');
-task('build:js:font', () => {
+task('build:js:font', (done) => {
+    done();
+    return;
     return gulp.src('src/assets/font.png')
         .pipe(add('Font.js', buildFont('src/assets/font.png'), true))
         .pipe(gulp.dest('dist/temp'));
@@ -67,7 +69,7 @@ task('build:js:dev', () => {
         .pipe(sourcemaps.init())
         .pipe(tsdev())
         .pipe(stripImportExport())
-        .pipe(gulp.src('dist/temp/Font.js'))
+        //.pipe(gulp.src('dist/temp/Font.js'))
         //.pipe(ifdef({ DEBUG: true }, { extname: ['js'], verbose: false }))
         .pipe(concat('app.dev.js'))
         //.pipe(terser())

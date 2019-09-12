@@ -164,7 +164,7 @@ export class Audio {
   }
 
   triggerPlayerDeflected() {
-    // ?
+    this.z(2756,{volume:.7,frequency:850,length:.5});
   }
 
   z(...args: any[]) {

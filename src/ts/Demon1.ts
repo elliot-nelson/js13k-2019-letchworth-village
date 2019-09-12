@@ -30,6 +30,8 @@ export class Demon1 {
 
   lastImpact: NormalVector;
 
+  static lastAttackFrame: number = 0;
+
   constructor(x: number, y: number) {
     this.x = x;
     this.y = y;
@@ -119,7 +121,18 @@ export class Demon1 {
         y: this.y + move.y * speed
       };
 
-      if (Math.random() < 1/60) {
+      let sinceLastAttack = game.frame - Demon1.lastAttackFrame;
+      let chance;
+      if (sinceLastAttack < 5) {
+        chance = 1 / 200;
+      } else if (sinceLastAttack < 15) {
+        chance = 1 / 100;
+      } else if (sinceLastAttack < 30) {
+        chance = 1 / 50;
+      } else {
+        chance = 1 / 20;
+      }
+      if ((distance(this, game.player) <= 60 && Math.random() < chance) || Math.random() < chance / 4) {
         this.frameQ = Animation2.demon1_attack.frames.slice();
       }
     } else if (this.frame.behavior === Behavior.WINDUP) {
@@ -224,10 +237,10 @@ export class Demon1 {
     this.lastImpact = impactVector;
     this.frameQ = Animation2.demon1_stun.frames.slice();
 
-    let factor = Math.floor(Math.max(4, game.player.combo / 4));
-    let particles = 10 + factor;
-    let force = 20 + factor * 4;
-    spawnBloodSplatter(this, impactVector, particles, 4, force);
+    spawnBloodSplatter(this, impactVector, 10, 4, 20);
+    if (game.player.combo >= 4) spawnBloodSplatter(this, impactVector, 5, 3, 40);
+    if (game.player.combo >= 8) spawnBloodSplatter(this, impactVector, 5, 5, 29);
+    if (game.player.combo >= 12) spawnBloodSplatter(this, impactVector, 5, 4, 35);
   }
 
   getBoundingPolygon(): Polygon {

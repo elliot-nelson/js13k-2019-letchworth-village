@@ -199,8 +199,9 @@ export class OutroMenu extends Menu {
 
     let text = [
       '',
-      '',
       '       CONGRATULATIONS. YOU HAVE CLOSED THE PORTAL.',
+      '',
+      '     THOSE DEMONS ARE BACK IN HELL WHERE THEY BELONG!',
       '',
       '',
       'The game is now over, but you can reload your browser',

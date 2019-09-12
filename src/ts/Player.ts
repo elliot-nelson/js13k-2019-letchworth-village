@@ -42,7 +42,7 @@ export class Player {
     this.frameQ = [];
       /*{ behavior: Behavior.SPAWNING, sprite: Sprite.player_walk1 }
     ];*/
-    this.powerlevel = 9000; //2000; //x
+    this.powerlevel = 2000;
     this.swordframe = 0;
     this.lastPosition = [];
     this.shadows = [];

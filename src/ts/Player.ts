@@ -163,6 +163,7 @@ export class Player {
       game.particles = [];
       game.particles.push(new SuperParticle(this, this, Tween.linear, Sprite.blood_droplet2, 38));
       game.screenshakes.push(new ScreenShake(35, 18, 18));
+      game.stats.winTime = game.frame;
     }
 
     // If only we had "this.frame.m ?? blah" :)
@@ -309,6 +310,7 @@ export class Player {
 
   powerup(factor: number) {
     this.powerlevel += factor;
+    game.stats.bloodDrank += factor;
   }
 
   swordhungry() {
@@ -323,6 +325,7 @@ export class Player {
       this.shadows = [];
     } else {
       this.combo += value;
+      if (this.combo > game.stats.maxWrath) game.stats.maxWrath = this.combo;
     }
 
     if (this.combo !== oldCombo && oldCombo >= 2) {

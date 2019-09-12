@@ -49,11 +49,20 @@ export class Game {
 
     frozen: boolean;
 
+    stats: any;
+
     async init() {
         this.canvas = document.getElementById('canvas') as HTMLCanvasElement;
         this.canvas.width = 480;
         this.canvas.height = 270;
         this.ctx = this.canvas.getContext('2d');
+
+        this.stats = {
+            demonsKilled: 0,
+            bloodDrank: 0,
+            maxWrath: 0,
+            winTime: 0,
+        };
 
         this.bloodplanes = [
             [new Canvas(this.canvas.width, this.canvas.height), 0, 240],
@@ -454,5 +463,16 @@ export class Game {
             }
             Object.assign(entities[i], entities[i].next);
         }
+    }
+
+    computeScore() {
+        let score = 10000;
+        score -= (this.stats.winTime / 60);
+        score += (1 + (this.stats.maxWrath / 10)) * this.stats.demonsKilled;
+        score += (this.stats.bloodDrank / 5);
+        score = Math.floor(score);
+        let str = String(score);
+        if (str.length > 3) str = str.substring(0, str.length - 3) + ',' + str.substring(str.length - 3);
+        return str;
     }
 }

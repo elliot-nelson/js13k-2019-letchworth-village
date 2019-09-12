@@ -203,9 +203,11 @@ export class OutroMenu extends Menu {
       '',
       '     THOSE DEMONS ARE BACK IN HELL WHERE THEY BELONG!',
       '',
+      '                    Your Score: ' + game.computeScore(),
       '',
-      'The game is now over, but you can reload your browser',
-      'to play again. Thanks for playing!'
+      '',
+      'The game is now over, but you can reload your browser to',
+      'play again. Thanks for playing!'
     ];
 
     ctx.save();

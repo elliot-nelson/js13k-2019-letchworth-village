@@ -94,6 +94,7 @@ export class Demon1 {
         ));
       }
       game.screenshakes.push(new ScreenShake(15, 3, 3));
+      game.stats.demonsKilled++;
       return false;
     } else
     if (this.frame.behavior === Behavior.DEFAULT) {

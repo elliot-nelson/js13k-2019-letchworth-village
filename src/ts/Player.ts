@@ -239,7 +239,7 @@ export class Player {
     }
 
     // polygons
-
+    /*
     let poly = this.getBoundingPolygon();
     ctx.beginPath();
     for (let i = 0; i < poly.p.length; i++) {
@@ -260,7 +260,7 @@ export class Player {
       ctx.strokeStyle = 'rgba(255, 0, 0, 1)';
       ctx.stroke();
     }
-
+    */
   }
 
   hitBy(impactSource: Point) {

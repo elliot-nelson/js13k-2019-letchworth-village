@@ -37,6 +37,8 @@ export class KeyboardAdapter {
     this.map[39] = Input.Action.RIGHT;     // [RightArrow]
     this.map[27] = Input.Action.MENU;      // [ESC]
     this.map[77] = Input.Action.MUTE;      // [M]
+    this.map[70] = Input.Action.FREEZE;    // [F]
+    this.map[80] = Input.Action.FREEZE;    // [P]
 
     this.reset();
   }

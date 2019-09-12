@@ -49,6 +49,8 @@ export class Game {
 
     superFired: boolean;
 
+    frozen: boolean;
+
     async init() {
         this.canvas = document.getElementById('canvas') as HTMLCanvasElement;
         this.canvas.width = 480;
@@ -142,6 +144,11 @@ export class Game {
             this.audio.muted = !this.audio.muted;
         }
 
+        if (this.input.pressed[Input.Action.FREEZE]) {
+            this.frozen = !this.frozen;
+        }
+
+        if (this.frozen) return;
         if (!this.started) return;
 
         this.hive.update();

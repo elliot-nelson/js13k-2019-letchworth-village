@@ -41,7 +41,7 @@ read on. Don't read the following if you want to discover mechanics yourself...
 - When possible, circle demons and attack right after they miss. Circling is a little bit easier
   (feels more natural) on a gamepad than a keyboard.
 - You can buffer all inputs. _In particular_, dashes last 10 frames and there is no iframe cooldown,
-  so you can buffer dash through a demon pack with complet immunity if necessary.
+  so you can buffer dash through a demon pack with complete immunity if necessary.
 - The cooldown from a _successful_ deflect is invulnerable and can be buffered into a dash, making
   a successful deflect extremely safe. A failed deflect will reset your wrath and the cooldown is
   _not_ invulnerable. Sitting still and repeatedly buffering deflect will kill a surprising number
@@ -53,8 +53,8 @@ read on. Don't read the following if you want to discover mechanics yourself...
 ## Building the game
 
 - `/src` contains the game source files and assets
-- `/dist` would contain the built game (not checked in)
-- `/zip` contains the built game bundled into a zip file
+- `dist/temp`, `dist/dev`, and `dist/prod` are folders used for the generated files (not checked in)
+- `/dist/final` contains the final zip file (checked in)
 
 To rebuild, `npm install && gulp build` from the project folder.
 
@@ -92,10 +92,9 @@ in TypeScript, and the naturally "hack this thing together fast" style of a game
 too much time in the first couple weeks designing perfect interfaces / types / classes, only to realize that I was way
 behind on actual features.
 
-I think I would use TypeScript for a future js13k project, but I think I would be much more conscentious about treating
-my early design as temporary (making liberal use of `:any`, for example, if I'm not sure what a property bag will
-contain yet). If you keep the tax as low as possible while still getting 70% of the benefits, I think TS can be an
-overall time saver.
+Would I use TypeScript again in a future js13k project? Yes, I think so, but I would be cautious about committing to
+any early design decisions -- keep the tax low by skimming the surface and still getting ~70% of the benefits. If
+used correctly I think TS can be an overall time saver, even for a golf project like js13k.
 
 ### Animations
 
@@ -124,6 +123,19 @@ exploring this a lot more in future games, I suspect.
 Most of my build process is inherited from last year's `gulp` file, with some tweaks and fixes for TypeScript and
 to do extra cramming (consolidating most assets into a single file). I ran out of time to explore more, I'm hoping
 next year I can get this thing back on track and have a nice clean build.
+
+### Sprites
+
+I built all the frames for this project in [aseprite](https://www.aseprite.org/), and then exported each category
+as its own sprite sheet using their Export Spritesheet feature (slick). I was able to get under the limit, but
+if I needed extra space the obvious next step is to get them all into _one_ sprite sheet. I haven't explored that
+space yet, I think I'd still want separate ase files for my own sanity, but perhaps a custom cleanup step could
+combine them for me (or I could investigate one of the sprite packers available out there on the web).
+
+Speaking of the Export Spritesheet feature - it will write out for you a data file containing the different slices.
+I didn't take advantage of that and manually added them to my `Assets` file by hand because I wanted to link some
+additional data points - like anchor point, bounding box, and hit box of each sprite - to the individual frames.
+Ideally I could find a way to do both... something to explore for next year maybe!
 
 ## Conclusions
 

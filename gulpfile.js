@@ -63,7 +63,6 @@ task('build:js:font', () => {
         .pipe(gulp.dest('dist/temp'));
 });
 task('build:js:dev', () => {
-    console.log(sources);
     return gulp.src(sources)
         .pipe(sourcemaps.init())
         .pipe(tsdev())
@@ -80,10 +79,15 @@ task('build:js:prod', () => {
         .pipe(sourcemaps.init())
         .pipe(tsprod()).js
         .pipe(stripImportExport())
-        .pipe(gulp.src('dist/temp/Font.js'))
+        //.pipe(gulp.src('dist/temp/Font.js'))
         //.pipe(ifdef({ DEBUG: false }, { extname: ['js'], verbose: false }))
         .pipe(concat('app.prod.js'))
-        .pipe(terser())
+        .pipe(terser({
+            toplevel: true,
+            mangle: {
+                properties: true
+            }
+        }))
         .pipe(sourcemaps.write('.'))
         .pipe(gulp.dest('dist/temp'));
 });
@@ -105,13 +109,18 @@ task('build:css', () => {
 // -----------------------------------------------------------------------------
 task('build:assets:dev', () => {
     return gulp.src('src/assets/*.png')
-        .pipe(imagemin())
+        .pipe(imagemin([
+            advpng({ optimizationLevel: 4, iterations: 10 })
+        ]))
         .pipe(gulp.dest('dist/dev'));
 });
 task('build:assets:prod', () => {
     return gulp.src('src/assets/*.png')
         .pipe(imagemin())
-        .pipe(gulp.dest('dist/prod'));
+        .pipe(imagemin([
+            advpng({ optimizationLevel: 4, iterations: 10 })
+        ]))
+        .pipe(gulp.dest('out'));
 });
 task('build:assets', parallel('build:assets:dev', 'build:assets:prod'));
 
@@ -138,7 +147,7 @@ task('build:html:prod', () => {
 });
 task('build:html:dev:finished', async () => {
     console.log(chalk.green('\u2714   OK   \u2714 dev build is ready'));
-    childProcess.exec('say go');
+    childProcess.exec('say ready!!');
 });
 task('build:html', parallel(series('build:html:dev', 'build:html:dev:finished'), 'build:html:prod'));
 
@@ -146,12 +155,12 @@ task('build:html', parallel(series('build:html:dev', 'build:html:dev:finished'),
 // ZIP Build
 // -----------------------------------------------------------------------------
 task('build:zip', () => {
-    return gulp.src(['dist/prod/*.html'])
+    return gulp.src(['dist/prod/*'])
         .pipe(size())
-        .pipe(zip('final.zip'))
-        .pipe(advzip({ optimizationLevel: 4, iterations: 1000 }))
+        .pipe(zip('js13k-2019-letchworth-village.zip'))
+        .pipe(advzip({ optimizationLevel: 4, iterations: 100 }))
         .pipe(size({ title: 'zip' }))
-        .pipe(gulp.dest('dist/zip'));
+        .pipe(gulp.dest('dist/final'));
 });
 
 // -----------------------------------------------------------------------------

@@ -702,46 +702,6 @@ export class Assets {
     return canvas.canvas;
   }
 
-  /**
-   * Take an existing image, draw a line through it based on the provided angle, and
-   * then return two "chunks" (one from each side of the line).
-   */
-  static cutIntoChunks(source: CanvasImageSource, angle: number): CanvasImageSource[] {
-    let width = source.width as number, height = source.height as number;
-    const canvas = [
-      new Canvas(width, height),
-      new Canvas(width, height)
-    ];
-    const ctx = [canvas[0].ctx, canvas[1].ctx];
-    angle = angle % RAD[180];
-
-    let cutLength = width + height;
-    let cut = [
-      { x: width / 2 + Math.cos(angle) * cutLength, y: height / 2 - Math.sin(angle) * cutLength },
-      { x: width / 2 - Math.cos(angle) * cutLength, y: height / 2 + Math.sin(angle) * cutLength }
-    ];
-
-    ctx[0].drawImage(source, 0, 0);
-    ctx[0].globalCompositeOperation = 'destination-in';
-    ctx[0].moveTo(cut[0].x, cut[0].y);
-    ctx[0].lineTo(cut[1].x, cut[1].y);
-    ctx[0].lineTo(width, height);
-    ctx[0].lineTo(width, 0);
-    ctx[0].closePath();
-    ctx[0].fill();
-
-    ctx[1].drawImage(source, 0, 0);
-    ctx[1].globalCompositeOperation = 'destination-out';
-    ctx[1].moveTo(cut[0].x, cut[0].y);
-    ctx[1].lineTo(cut[1].x, cut[1].y);
-    ctx[1].lineTo(width, height);
-    ctx[1].lineTo(width, 0);
-    ctx[1].closePath();
-    ctx[1].fill();
-
-    return [canvas[0].canvas, canvas[1].canvas];
-  }
-
   static grayscaleNoise(width: number, height: number): Canvas {
     const canvas = new Canvas(width, height);
     for (let y = 0; y < height; y++) {

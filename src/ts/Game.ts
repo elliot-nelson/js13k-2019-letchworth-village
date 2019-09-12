@@ -1,6 +1,5 @@
 import { Input } from './input';
 import { Player } from './player';
-import { createSplashPattern } from './Pattern';
 import { Text } from './Text';
 import { ScreenShake } from './ScreenShake';
 import { Hud } from './Hud';
@@ -24,7 +23,6 @@ export class Game {
     ctx: CanvasRenderingContext2D;
     input: Input;
     player: Player;
-    pattern: CanvasPattern;
     hud: Hud;
     frame: number;
 
@@ -75,8 +73,6 @@ export class Game {
 
         this.input = new Input();
         await this.input.init();
-
-        this.pattern = this.ctx.createPattern(createSplashPattern(300, 100), 'repeat');
 
         this.player = new Player();
 

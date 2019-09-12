@@ -38,9 +38,3 @@ export function spawnBloodSplatter(p: Point, impact: NormalVector, numParticles:
     game.particles.push(new Particle(source, { x: source.x + direction.x * f, y: source.y + direction.y * f }, Tween.easeOut4, sprite, time, bakeSplatter));
   }
 }
-
-export function nextHeartbeatAfter(frame: number) {
-  let diff = frame % HEARTBEAT;
-  if (diff === 0) return frame;
-  return frame + (HEARTBEAT - diff);
-}

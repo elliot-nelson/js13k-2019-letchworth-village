@@ -4,7 +4,7 @@ import { Assets, Sprite, Behavior, Frame, Animation2 } from './Assets';
 import { Particle, GibParticle } from './Particle';
 import { Tween } from './Tween';
 import { Point, NormalVector, vectorBetween, angleFromVector, clamp, vectorFromAngle, distance, RAD, Polygon, rotatePolygon, Circle, rotateVector } from './Geometry';
-import { nextHeartbeatAfter, spawnBloodSplatter } from './Util';
+import { spawnBloodSplatter } from './Util';
 import { HEARTBEAT, DEMON1_WALK_SPEED } from './Config';
 import { ScreenShake } from './ScreenShake';
 

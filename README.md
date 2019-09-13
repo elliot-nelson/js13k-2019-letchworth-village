@@ -2,7 +2,7 @@
 
 My 2019 entry for the js13kgames competition, "Letchworth Village".
 
-Play the game online at (coming soon).
+Play the game online at [js13kgames.com](https://js13kgames.com/games/letchworth-village/).
 
 ## Description
 

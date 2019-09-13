@@ -137,6 +137,36 @@ I didn't take advantage of that and manually added them to my `Assets` file by h
 additional data points - like anchor point, bounding box, and hit box of each sprite - to the individual frames.
 Ideally I could find a way to do both... something to explore for next year maybe!
 
+### Game mechanics
+
+This was by far the most fun of working on this game. I really wanted to treat this as a frame-by-frame game,
+like a Guilty Gear or Street Fighter, where it's not about velocity and acceleration, but about individual
+hit frames, invulnerability frames, etc.
+
+For the player, a lot of what I wanted did get into the game:
+
+- Attacks have built-in movement and stun/cooldown frames (missing stuff has consequences).
+- Player can buffer inputs while an animation is playing (dash > attack, counter > dash, etc).
+- Both player and enemies have their own "hit" frames, "stun" frames, etc.
+
+Unfortunately I couldn't tighten mechanics down as much as I would have liked -- because my collisions are
+so muddy and my AI is so unpredictable, it didn't feel good to play, so to compensate I gave Deflect/Counter
+a very generous 25 frames (Sekiro has a 30 frame non-spammed deflect, so how bad could it be?), and I ended
+up removing the cooldown from dash altogether, so dash is totally invuln spammable.
+
+(In a less rushed version of this game, where monster AI was more predictable and could be reacted to and
+collisions were more accurate, I would remove a lot of iframes and force you to time your dashes and counters
+better. Maybe next year!)
+
+I also would have liked a wider variety (and cooler looking) attacks, but it is 13k :).
+
+The combo system is a real dream of mine, I would have loved a Devil May Cry-style combo meter where pulling
+off strings of dashes, attacks, and counters would make it go up and getting hit would reset it. Again, the
+unpredictable monster AI gets in the way here, the only way to keep a combo is to play hit-and-run, which
+means there is no incentive to stay up close. For this reason I opted to modify the combo system a bit,
+it allows infinite time between attacks, but punishes you for "whiffing" attacks. It's not perfect but
+it seems like the right compromise.
+
 ## Conclusions
 
 Thanks for playing and for reading, and special thanks to Andrzej and the rest of the js13k team for setting all this up!

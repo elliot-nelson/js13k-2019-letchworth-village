@@ -1,5 +1,5 @@
 import { Canvas } from "./Canvas";
-import { game } from "./Globals";
+import { game } from "./Game";
 import { Assets, Sprite } from "./Assets";
 import { RAD } from "./Geometry";
 import { ScreenShake } from "./ScreenShake";

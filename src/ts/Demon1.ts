@@ -1,4 +1,4 @@
-import { game } from './Globals';
+import { game } from './Game';
 import { Input } from './input';
 import { Assets, Sprite, Behavior, Frame, Animation2 } from './Assets';
 import { Particle, GibParticle } from './Particle';

@@ -1,6 +1,6 @@
 import { Input } from './input';
 import { NormalVector } from './Geometry';
-import { game } from './Globals';
+import { game } from './Game';
 
 // Just some quick constants
 const A00 = 0;

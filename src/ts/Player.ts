@@ -1,4 +1,4 @@
-import { game } from './Globals';
+import { game } from './Game';
 import { Input } from './input';
 import { Assets, Behavior, Animation2, Sprite } from './Assets';
 import { Point, NormalVector, RAD, rotatePolygon, Polygon, Circle, vectorBetween, vectorFromAngle } from './Geometry';

@@ -1,5 +1,9 @@
-import { game, ZZFX } from "./Globals";
+import { game } from "./Game";
 import { RAD } from "./Geometry";
+
+declare const ZZFX: {
+  z: Function;
+};
 
 export class Audio {
   ctx: AudioContext;

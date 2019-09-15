@@ -1,13 +1,11 @@
-import { Input } from './input';
-import { Player } from './player';
-import { Text } from './Text';
+import { Input } from './Input';
+import { Player } from './Player';
 import { ScreenShake } from './ScreenShake';
 import { Hud } from './Hud';
 import { Menu, PauseMenu, IntroMenuA, IntroMenuB, OutroMenu } from './Menu';
 import { Audio } from './Audio';
 import { Assets, Sprite, drawPoly } from './Assets';
 import { Demon1 } from './Demon1';
-import { game } from './Globals';
 import { Canvas } from './Canvas';
 import { Particle, PortalParticle, SuperParticle } from './Particle';
 import { Hive } from './Hive';
@@ -476,3 +474,5 @@ export class Game {
         return str;
     }
 }
+
+export const game = new Game();

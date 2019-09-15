@@ -1,6 +1,6 @@
 import { normalizeVector, NormalVector } from './Geometry';
 import { Input } from './Input';
-import { game } from './Globals';
+import { game } from './Game';
 
 // TODO: Should these thresholds represent scale points instead of clamps?
 const MIN_STICK_THRESHOLD = 0.15;

@@ -1,6 +1,6 @@
 import { TweenFn, Tween } from './Tween';
 import { Assets, Sprite } from './Assets';
-import { game } from './Globals';
+import { game } from './Game';
 import { Point, RAD, rotateVector, vectorBetween, distance, clamp } from './Geometry';
 import { spawnBloodSplatter } from './Util';
 

@@ -1,4 +1,4 @@
-import { game } from "./Globals";
+import { game } from "./Game";
 import { RAD, NormalVector } from "./Geometry";
 
 export class Hive {

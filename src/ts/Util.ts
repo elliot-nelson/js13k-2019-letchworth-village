@@ -1,4 +1,4 @@
-import { game } from "./Globals";
+import { game } from "./Game";
 import { Particle } from "./Particle";
 import { Assets, Sprite } from "./Assets";
 import { Tween } from "./Tween";

@@ -1,4 +1,4 @@
-import { game } from "./Globals";
+import { game } from "./Game";
 import { rgba } from "./Util";
 import { Input } from "./input";
 import { ScreenShake } from "./ScreenShake";

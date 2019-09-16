@@ -1,4 +1,4 @@
-import { Input } from './input';
+import { Input } from './Input';
 import { NormalVector } from './Geometry';
 import { game } from './Game';
 

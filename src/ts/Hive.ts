@@ -18,6 +18,7 @@ export class Hive {
   }
 
   draw(ctx: CanvasRenderingContext2D) {
+    //more
     /*
     ctx.strokeStyle = 'rgba(0,0,255,0.3)';
     ctx.beginPath();

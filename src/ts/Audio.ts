@@ -3,6 +3,13 @@ import { RAD } from "./Geometry";
 
 declare const ZZFX: {
   z: Function;
+  };
+
+  declare global {
+  interface Window {
+    AudioContext: typeof AudioContext;
+    webkitAudioContext: typeof AudioContext;
+  }
 };
 
 export class Audio {

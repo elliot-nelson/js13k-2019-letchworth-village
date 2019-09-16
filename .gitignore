@@ -2,6 +2,7 @@
 node_modules
 
 # Output
+dist/build
 dist/dev
 dist/prod
 dist/temp

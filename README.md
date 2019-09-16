@@ -50,10 +50,27 @@ read on. Don't read the following if you want to discover mechanics yourself...
   wrath if used in the middle of a demon pack. It's not risk-free: if you are unlucky you could miss
   your deflect or not buffer the second dash fast enough and get hit, but it's very effective even so.
 
+## Changelog
+
+#### v1.0-submission
+
+- Early testing version (uncovered some fresh bugs).
+
+#### v1.1-submission
+
+- This is the version submitted to the js13k competition.
+
+#### v1.2
+
+- Build refactor!
+  - Cut out some custom building steps and replace with `rollup`.
+  - Using `rollup` + `typescript` adds just a few bytes but is easier to work with.
+  - Cut a bunch of unused extra files and node packages.
+
 ## Building the game
 
 - `/src` contains the game source files and assets
-- `dist/temp`, `dist/dev`, and `dist/prod` are folders used for the generated files (not checked in)
+- `dist/temp` and `dist/build` are used while generating the build
 - `/dist/final` contains the final zip file (checked in)
 
 To rebuild, `npm install && gulp build` from the project folder.
@@ -139,7 +156,7 @@ Ideally I could find a way to do both... something to explore for next year mayb
 
 ### Game mechanics
 
-This was by far the most fun of working on this game. I really wanted to treat this as a frame-by-frame game,
+This was by far the most fun of working on this Game.$. I really wanted to treat this as a frame-by-frame game,
 like a Guilty Gear or Street Fighter, where it's not about velocity and acceleration, but about individual
 hit frames, invulnerability frames, etc.
 

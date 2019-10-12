@@ -2,10 +2,9 @@
 node_modules
 
 # Output
-dist/build
-dist/dev
-dist/prod
+dist/bundle
 dist/temp
+dist/build
 
 # Misc files
 .DS_Store

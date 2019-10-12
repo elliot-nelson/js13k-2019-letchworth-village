@@ -8,6 +8,9 @@ const gulp              = require('gulp');
 const rollup            = require('rollup');
 const rollupTypescript  = require('rollup-plugin-typescript2');
 
+const AsepriteCli       = require('./tools/aseprite-cli');
+const ImageDataParser   = require('./tools/image-data-parser');
+
 // -----------------------------------------------------------------------------
 // Gulp Plugins
 // -----------------------------------------------------------------------------
@@ -80,14 +83,33 @@ function buildCss() {
 // -----------------------------------------------------------------------------
 // Assets Build
 // -----------------------------------------------------------------------------
-function buildAssets() {
-    return gulp.src('src/assets/*.png')
+async function exportSprites() {
+    let src = 'src/assets/*.aseprite';
+    let png = 'src/assets/sprites-gen.png';
+    let data = 'src/assets/sprites-gen.json';
+
+    await AsepriteCli.exec(`--batch ${src} --sheet-type rows --sheet ${png} --data ${data} --format json-array`);
+}
+
+async function generateImageData() {
+    let data = 'src/assets/sprites-gen.json';
+    let output = 'src/ts/ImageData-gen.ts';
+
+    await ImageDataParser.parse(data, output);
+}
+
+function copyAssets() {
+    return gulp.src('src/assets/sprites-gen.png')
         .pipe(imagemin())
         .pipe(imagemin([
             advpng({ optimizationLevel: 4, iterations: 50 })
         ]))
-        .pipe(gulp.dest('dist/build'));
+        .pipe(gulp.dest('dist/build'))
 }
+
+const refreshAssets = gulp.series(exportSprites, generateImageData);
+
+const buildAssets = gulp.series(refreshAssets, copyAssets);
 
 // -----------------------------------------------------------------------------
 // HTML Build
@@ -125,7 +147,8 @@ async function ready() {
 }
 
 const build = gulp.series(
-    gulp.parallel(buildCss, buildJs, buildAssets),
+    buildAssets,
+    gulp.parallel(buildCss, buildJs),
     buildHtml,
     ready,
     buildZip
@@ -136,21 +159,29 @@ const build = gulp.series(
 // -----------------------------------------------------------------------------
 function watch() {
     watching = true;
-    gulp.watch('src/**', build);
+
+    // The watch task watches for any file changes in the src/ folder, _except_ for
+    // edits to generated files (called blah-gen by convention).
+    gulp.watch(['src/**', '!src/**/*-gen*'], build);
 }
 
 // -----------------------------------------------------------------------------
 // Task List
 // -----------------------------------------------------------------------------
 module.exports = {
+    // Potentially useful subtasks
     compileBuild,
     minifyBuild,
+    refreshAssets,
 
+    // Core build steps
     buildJs,
     buildCss,
     buildAssets,
     buildHtml,
     buildZip,
+
+    // Primary entry points
     build,
     watch,
 

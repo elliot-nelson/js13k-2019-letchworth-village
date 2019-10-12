@@ -48,7 +48,7 @@ async function compileBuild() {
     });
 
     await bundle.write({
-        file: 'dist/temp/app.js',
+        file: 'dist/bundle/app.js',
         format: 'iife',
         name: 'app',
         sourcemap: true
@@ -56,7 +56,7 @@ async function compileBuild() {
 }
 
 async function minifyBuild() {
-    return gulp.src('dist/temp/app.js')
+    return gulp.src('dist/bundle/app.js')
         .pipe(sourcemaps.init())
         .pipe(terser({
             mangle: {

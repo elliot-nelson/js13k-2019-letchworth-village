@@ -1,4 +1,10 @@
-/* Image data */
+/**
+ * This module contains raw sprite sheet data, i.e. the positions of all sprites in the game
+ * in the generated PNG sprite sheet.
+ *
+ * NOTE: This module is _partially generated_ - everything within the "generated" comment blocks
+ * will be overwritten during the asset portion of the gulp build.
+ */
 
 export interface SpriteSheetEntry {
   x: number;

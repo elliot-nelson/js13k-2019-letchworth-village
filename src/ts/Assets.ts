@@ -2,7 +2,7 @@ import { Canvas } from "./Canvas";
 import { rgba} from "./Util";
 import { Box, RAD, Point, NormalVector, Polygon, Circle } from "./Geometry";
 import { PLAYER_WALK_SPEED, DEMON1_WALK_SPEED } from "./Config";
-import { SpriteSheet, SpriteSheetEntry } from './ImageData-gen';
+import { SpriteSheet, SpriteSheetEntry } from './SpriteSheet-gen';
 
 /**
  * Sprites!

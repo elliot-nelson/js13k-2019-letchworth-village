@@ -318,7 +318,7 @@
  "meta": {
   "app": "http://www.aseprite.org/",
   "version": "1.2.15",
-  "image": "sprites-gen.png",
+  "image": "spritesheet-gen.png",
   "format": "RGBA8888",
   "size": { "w": 512, "h": 300 },
   "scale": "1"

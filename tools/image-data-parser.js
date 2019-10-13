@@ -45,8 +45,8 @@ const ImageDataParser = {
       data[id] = {
         x: frame.frame.x,
         y: frame.frame.y,
-        width: frame.frame.w,
-        height: frame.frame.h
+        w: frame.frame.w,
+        h: frame.frame.h
       };
     }
 

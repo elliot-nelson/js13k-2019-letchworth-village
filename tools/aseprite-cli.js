@@ -38,11 +38,10 @@ const AsepriteCli = {
 
     for (let option of options) {
       try {
+        AsepriteCli._rawExec(option, '--version');
         AsepriteCli.asepritePath = option;
         return option;
-      } catch (e) {
-        console.log(e);
-      }
+      } catch (e) { }
     }
 
     throw new Error('Unable to find Aseprite binary. Searched in: ' + JSON.stringify(options, undefined, 2));

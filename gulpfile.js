@@ -90,7 +90,12 @@ async function exportSpriteSheet() {
     let png = 'src/assets/spritesheet-gen.png';
     let data = 'src/assets/spritesheet-gen.json';
 
-    await AsepriteCli.exec(`--batch ${src} --sheet-type rows --sheet ${png} --data ${data} --format json-array`);
+    try {
+        await AsepriteCli.exec(`--batch ${src} --sheet-type rows --sheet ${png} --data ${data} --format json-array`);
+    } catch (e) {
+        log.error(e);
+        log.warn(chalk.red('Failed to update sprite sheet, but building anyway...'));
+    }
 }
 
 async function generateSpriteSheetData() {

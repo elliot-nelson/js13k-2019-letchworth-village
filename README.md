@@ -67,6 +67,13 @@ read on. Don't read the following if you want to discover mechanics yourself...
   - Using `rollup` + `typescript` adds just a few bytes but is easier to work with.
   - Cut a bunch of unused extra files and node packages.
 
+#### v1.3
+
+- Sprite Sheet refactor!
+  - Instead of exporting individually, the build now creates a single combined spritesheet.
+  - Spritesheet position data is generated automatically instead of manually.
+  - Generated TS/PNG file is now checked in instead of individual PNG files.
+
 ## Building the game
 
 - `/src` contains the game source files and assets
@@ -74,6 +81,16 @@ read on. Don't read the following if you want to discover mechanics yourself...
 - `/dist/final` contains the final zip file (checked in)
 
 To rebuild, `npm install && gulp build` from the project folder.
+
+> NOTE: During the build, all `.aseprite` files will automatically be rolled into the single
+> `spritesheet-gen.png` file, with corresponding position data written to `SpriteSheet-gen.ts`.
+>
+> If you don't have Aseprite installed locally, this step will fail, but the game will still
+> build (you won't get updated image assets, but all the source code will still compile).
+>
+> If you'd like to modify the image assets without Aseprite, you'll need to hand-edit the
+> spritesheet image and manually update the `SpriteSheet-gen.ts` file to reflect any sprites
+> you add.
 
 ## Postmortem
 

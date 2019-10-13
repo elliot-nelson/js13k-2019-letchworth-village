@@ -2,9 +2,11 @@
 // Imports
 // -----------------------------------------------------------------------------
 const advpng            = require('imagemin-advpng');
+const chalk             = require('chalk');
 const childProcess      = require('child_process');
 const fs                = require('fs');
 const gulp              = require('gulp');
+const log               = require('fancy-log');
 const rollup            = require('rollup');
 const rollupTypescript  = require('rollup-plugin-typescript2');
 
@@ -83,31 +85,33 @@ function buildCss() {
 // -----------------------------------------------------------------------------
 // Assets Build
 // -----------------------------------------------------------------------------
-async function exportSprites() {
+async function exportSpriteSheet() {
     let src = 'src/assets/*.aseprite';
-    let png = 'src/assets/sprites-gen.png';
-    let data = 'src/assets/sprites-gen.json';
+    let png = 'src/assets/spritesheet-gen.png';
+    let data = 'src/assets/spritesheet-gen.json';
 
     await AsepriteCli.exec(`--batch ${src} --sheet-type rows --sheet ${png} --data ${data} --format json-array`);
 }
 
-async function generateImageData() {
-    let data = 'src/assets/sprites-gen.json';
-    let output = 'src/ts/ImageData-gen.ts';
+async function generateSpriteSheetData() {
+    let data = 'src/assets/spritesheet-gen.json';
+    let output = 'src/ts/SpriteSheet-gen.ts';
 
     await ImageDataParser.parse(data, output);
 }
 
 function copyAssets() {
-    return gulp.src('src/assets/sprites-gen.png')
+    return gulp.src('src/assets/spritesheet-gen.png')
+        .pipe(size({ title: 'spritesheet  pre' }))
         .pipe(imagemin())
         .pipe(imagemin([
             advpng({ optimizationLevel: 4, iterations: 50 })
         ]))
+        .pipe(size({ title: 'spritesheet post' }))
         .pipe(gulp.dest('dist/build'))
 }
 
-const refreshAssets = gulp.series(exportSprites, generateImageData);
+const refreshAssets = gulp.series(exportSpriteSheet, generateSpriteSheetData);
 
 const buildAssets = gulp.series(refreshAssets, copyAssets);
 
@@ -129,12 +133,22 @@ function buildHtml() {
 // ZIP Build
 // -----------------------------------------------------------------------------
 function buildZip() {
+    var s;
+
     return gulp.src(['dist/build/*', '!dist/build/*.map'])
         .pipe(size())
         .pipe(zip('js13k-2019-letchworth-village.zip'))
         .pipe(advzip({ optimizationLevel: 4, iterations: 100 }))
-        .pipe(size({ title: 'zip' }))
-        .pipe(gulp.dest('dist/final'));
+        .pipe(s = size({ title: 'zip' }))
+        .pipe(gulp.dest('dist/final'))
+        .on('end', () => {
+            let remaining = (13 * 1024) - s.size;
+            if (remaining < 0) {
+                log.warn(chalk.red(`${-remaining} bytes over`));
+            } else {
+                log.info(chalk.green(`${remaining} bytes remaining`));
+            }
+        });
 }
 
 // -----------------------------------------------------------------------------
@@ -148,7 +162,8 @@ async function ready() {
 
 const build = gulp.series(
     buildAssets,
-    gulp.parallel(buildCss, buildJs),
+    buildJs,
+    buildCss,
     buildHtml,
     ready,
     buildZip

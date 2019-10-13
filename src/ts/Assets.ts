@@ -2,6 +2,7 @@ import { Canvas } from "./Canvas";
 import { rgba} from "./Util";
 import { Box, RAD, Point, NormalVector, Polygon, Circle } from "./Geometry";
 import { PLAYER_WALK_SPEED, DEMON1_WALK_SPEED } from "./Config";
+import { SpriteSheet, SpriteSheetEntry } from './SpriteSheet-gen';
 
 /**
  * Sprites!
@@ -480,73 +481,75 @@ export class Assets {
   static images: { [key: string]: HTMLImageElement } = {};
 
   static async init() {
-    await this.initSprite(Sprite.player_stand,     'player.png', 0, 0, 64, 64, {
+    let file = 'sprites-gen.png';
+
+    await this.initSprite(Sprite.player_stand,     file, SpriteSheet.player_1, {
       bbox: [{ x: 21, y: 25 }, { x: 42, y: 38 }]
     });
-    await this.initSprite(Sprite.player_walk1,     'player.png', 64, 0, 64, 64, {
+    await this.initSprite(Sprite.player_walk1,     file, SpriteSheet.player_2, {
       bbox: [{ x: 21, y: 25 }, { x: 42, y: 38 }]
     });
-    await this.initSprite(Sprite.player_walk2,     'player.png', 128, 0, 64, 64, {
+    await this.initSprite(Sprite.player_walk2,     file, SpriteSheet.player_3, {
       bbox: [{ x: 21, y: 25 }, { x: 42, y: 38 }]
     });
-    await this.initSprite(Sprite.player_attack1,   'player.png', 192, 0, 64, 64, {
+    await this.initSprite(Sprite.player_attack1,   file, SpriteSheet.player_4, {
       bbox: [{ x: 21, y: 25 }, { x: 42, y: 38 }]
     });
-    await this.initSprite(Sprite.player_attack2,   'player.png', 256, 0, 64, 64, {
+    await this.initSprite(Sprite.player_attack2,   file, SpriteSheet.player_5, {
       bbox: [{ x: 21, y: 25 }, { x: 42, y: 38 }],
       hbox: [{ x: 14, y: 8 }, { x: 50, y: 35 }]
     });
-    await this.initSprite(Sprite.player_walk3,     'player.png', 320, 0, 64, 64, {
+    await this.initSprite(Sprite.player_walk3,     file, SpriteSheet.player_6, {
       bbox: [{ x: 21, y: 25 }, { x: 42, y: 38 }]
     });
-    await this.initSprite(Sprite.player_attack3,   'player.png', 384, 0, 64, 64, {
+    await this.initSprite(Sprite.player_attack3,   file, SpriteSheet.player_7, {
       bbox: [{ x: 21, y: 25 }, { x: 42, y: 38 }],
       hbox: [{ x: 14, y: 8 }, { x: 50, y: 35 }]
     });
     // same as walk2
-    await this.initSprite(Sprite.player_walk4,     'player.png', 128, 0, 64, 64, {
+    await this.initSprite(Sprite.player_walk4,     file, SpriteSheet.player_3, {
       bbox: [{ x: 21, y: 25 }, { x: 42, y: 38 }]
     });
 
     // The bouding box on the deflection frame is intentionally larger, because
     // the player usually WANTS to deflect an attack. Our enemy attacks are kind
     // of squirrelly so let's give the player a little bit of a nudge...
-    await this.initSprite(Sprite.player_deflect,   'player.png', 448, 0, 64, 64, {
+    await this.initSprite(Sprite.player_deflect,   file, SpriteSheet.player_8, {
       bbox: [{ x: 21 - 8, y: 25 - 8 }, { x: 42 + 8, y: 38 + 8 }]
     });
 
     // There were dedicated frames for countering but I had to golf them out. To
     // simplify the process, I'm importing a stand-in sprite and then "hack" something
     // different in the Player model.
-    await this.initSprite(Sprite.player_counter1,   'player.png', 512, 0, 64, 64, {
+    await this.initSprite(Sprite.player_counter1,   file, SpriteSheet.player_8, {
       bbox: [{ x: 21, y: 25 }, { x: 42, y: 38 }],
       hbox: [{ x: -12, y: -12 }, { x: 64 + 12, y: 64 + 12 }]
     });
-    await this.initSprite(Sprite.player_counter2,   'player.png', 512, 0, 64, 64, {
+    await this.initSprite(Sprite.player_counter2,   file, SpriteSheet.player_8, {
       bbox: [{ x: 21, y: 25 }, { x: 42, y: 38 }],
       hbox: [{ x: -12, y: -12 }, { x: 64 + 12, y: 64 + 12 }]
     });
-    await this.initSprite(Sprite.player_counter3,   'player.png', 512, 0, 64, 64, {
+    await this.initSprite(Sprite.player_counter3,   file, SpriteSheet.player_8, {
       bbox: [{ x: 21, y: 25 }, { x: 42, y: 38 }],
       hbox: [{ x: -12, y: -12 }, { x: 64 + 12, y: 64 + 12 }]
     });
 
-    await this.initSprite(Sprite.demon1_walk1,     'demon1.png', 0, 0, 16, 22);
-    await this.initSprite(Sprite.demon1_walk2,     'demon1.png', 16, 0, 16, 22);
-    await this.initSprite(Sprite.demon1_walk3,     'demon1.png', 32, 0, 16, 22);
-    await this.initSprite(Sprite.demon1_attack1,   'demon1.png', 48, 0, 16, 22, {
+    await this.initSprite(Sprite.demon1_walk1,     file, SpriteSheet.demon1_1);
+    await this.initSprite(Sprite.demon1_walk2,     file, SpriteSheet.demon1_2);
+    await this.initSprite(Sprite.demon1_walk3,     file, SpriteSheet.demon1_3);
+    await this.initSprite(Sprite.demon1_attack1,   file, SpriteSheet.demon1_4, {
       bbox: [{ x: 0, y: 7 }, { x: 16, y: 22 }]
     });
-    await this.initSprite(Sprite.demon1_attack2,   'demon1.png', 64, 0, 16, 22, {
+    await this.initSprite(Sprite.demon1_attack2,   file, SpriteSheet.demon1_5, {
       bbox: [{ x: 0, y: 7 }, { x: 16, y: 22 }],
       hbox: [{ x: 0, y: 0 }, { x: 16, y: 10 }]
     });
 
-    await this.initSprite(Sprite.demon1_chunk1,    'demon1.png', 80, 0, 16, 22);
-    await this.initSprite(Sprite.demon1_chunk2,    'demon1.png', 96, 0, 16, 22);
-    await this.initSprite(Sprite.demon1_chunk3,    'demon1.png', 112, 0, 16, 22);
-    await this.initSprite(Sprite.demon1_chunk4,    'demon1.png', 128, 0, 16, 22);
-    await this.initSprite(Sprite.demon1_chunk5,    'demon1.png', 144, 0, 16, 22);
+    await this.initSprite(Sprite.demon1_chunk1,    file, SpriteSheet.demon1_6);
+    await this.initSprite(Sprite.demon1_chunk2,    file, SpriteSheet.demon1_7);
+    await this.initSprite(Sprite.demon1_chunk3,    file, SpriteSheet.demon1_8);
+    await this.initSprite(Sprite.demon1_chunk4,    file, SpriteSheet.demon1_9);
+    await this.initSprite(Sprite.demon1_chunk5,    file, SpriteSheet.demon1_10);
 
     await this.initDynamicSprite(Sprite.player_stun, this.tint(Sprite.player_walk1.img, 255, 255, 255, 0.6));
     await this.initDynamicSprite(Sprite.player_dodge, this.tint(Sprite.player_attack1.img, 96, 96, 255, 0.8));
@@ -585,31 +588,31 @@ export class Assets {
     await this.initDynamicSprite(Sprite.electric2, this.createElectricity(2));
     await this.initDynamicSprite(Sprite.electric3, this.createElectricity(3));
 
-    await this.initSprite(Sprite.tiles[0], 'tiles.png', 0, 0, 32, 32);
-    await this.initSprite(Sprite.tiles[1], 'tiles.png', 32, 0, 32, 32);
-    await this.initSprite(Sprite.tiles[2], 'tiles.png', 64, 0, 32, 32);
-    await this.initSprite(Sprite.tiles[3], 'tiles.png', 96, 0, 32, 32);
-    await this.initSprite(Sprite.tiles[4], 'tiles.png', 128, 0, 32, 32);
-    await this.initSprite(Sprite.tiles[5], 'tiles.png', 160, 0, 32, 32);
-    await this.initSprite(Sprite.tiles[6], 'tiles.png', 192, 0, 32, 32);
-    await this.initSprite(Sprite.tiles[7], 'tiles.png', 224, 0, 32, 32);
-    await this.initSprite(Sprite.tiles[8], 'tiles.png', 256, 0, 32, 32);
+    await this.initSprite(Sprite.tiles[0], file, SpriteSheet.tiles_1);
+    await this.initSprite(Sprite.tiles[1], file, SpriteSheet.tiles_2);
+    await this.initSprite(Sprite.tiles[2], file, SpriteSheet.tiles_3);
+    await this.initSprite(Sprite.tiles[3], file, SpriteSheet.tiles_4);
+    await this.initSprite(Sprite.tiles[4], file, SpriteSheet.tiles_5);
+    await this.initSprite(Sprite.tiles[5], file, SpriteSheet.tiles_6);
+    await this.initSprite(Sprite.tiles[6], file, SpriteSheet.tiles_7);
+    await this.initSprite(Sprite.tiles[7], file, SpriteSheet.tiles_8);
+    await this.initSprite(Sprite.tiles[8], file, SpriteSheet.tiles_9);
 
-    await this.initSprite(Sprite.hud_sword_base, 'swordmeter.png', 0, 0, 32, 116);
-    await this.initSprite(Sprite.hud_sword_outline, 'swordmeter.png', 48, 0, 32, 116);
-    await this.initSprite(Sprite.hud_sword_hungry, 'swordmeter.png', 96, 0, 32, 116);
-    await this.initSprite(Sprite.hud_sword_charged, 'swordmeter.png', 144, 0, 32, 116);
+    await this.initSprite(Sprite.hud_sword_base,    file, SpriteSheet.swordmeter_1);
+    await this.initSprite(Sprite.hud_sword_outline, file, SpriteSheet.swordmeter_2);
+    await this.initSprite(Sprite.hud_sword_hungry,  file, SpriteSheet.swordmeter_3);
+    await this.initSprite(Sprite.hud_sword_charged, file, SpriteSheet.swordmeter_4);
 
-    await this.initSprite(Sprite.star, 'player.png', 512, 0, 11, 11);
-    await this.initSprite(Sprite.portal, 'portal.png', 0, 0, 32, 32);
+    await this.initSprite(Sprite.star, file, SpriteSheet.sparkle_1);
+    await this.initSprite(Sprite.portal, file, SpriteSheet.portal_1);
   };
 
   /**
    * Initialize a sprite by loading it from a particular slice of the given image. Provides
    * "sensible" defaults for bounding box and anchor point if not provided.
    */
-  static async initSprite(sprite: Sprite, uri: string, x: number, y: number, w: number, h: number, opts?: Partial<Sprite>) {
-    await this.initDynamicSprite(sprite, await this.loadSlice(uri, x, y, w, h), opts);
+  static async initSprite(sprite: Sprite, uri: string, data: SpriteSheetEntry, opts?: Partial<Sprite>) {
+    await this.initDynamicSprite(sprite, await this.loadSlice(uri, data.x, data.y, data.w, data.h), opts);
   }
 
   /**

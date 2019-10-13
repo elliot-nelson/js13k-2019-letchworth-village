@@ -2,11 +2,16 @@
 // Imports
 // -----------------------------------------------------------------------------
 const advpng            = require('imagemin-advpng');
+const chalk             = require('chalk');
 const childProcess      = require('child_process');
 const fs                = require('fs');
 const gulp              = require('gulp');
+const log               = require('fancy-log');
 const rollup            = require('rollup');
 const rollupTypescript  = require('rollup-plugin-typescript2');
+
+const AsepriteCli       = require('./tools/aseprite-cli');
+const ImageDataParser   = require('./tools/image-data-parser');
 
 // -----------------------------------------------------------------------------
 // Gulp Plugins
@@ -45,7 +50,7 @@ async function compileBuild() {
     });
 
     await bundle.write({
-        file: 'dist/temp/app.js',
+        file: 'dist/bundle/app.js',
         format: 'iife',
         name: 'app',
         sourcemap: true
@@ -53,7 +58,7 @@ async function compileBuild() {
 }
 
 async function minifyBuild() {
-    return gulp.src('dist/temp/app.js')
+    return gulp.src('dist/bundle/app.js')
         .pipe(sourcemaps.init())
         .pipe(terser({
             mangle: {
@@ -80,14 +85,35 @@ function buildCss() {
 // -----------------------------------------------------------------------------
 // Assets Build
 // -----------------------------------------------------------------------------
-function buildAssets() {
-    return gulp.src('src/assets/*.png')
+async function exportSpriteSheet() {
+    let src = 'src/assets/*.aseprite';
+    let png = 'src/assets/spritesheet-gen.png';
+    let data = 'src/assets/spritesheet-gen.json';
+
+    await AsepriteCli.exec(`--batch ${src} --sheet-type rows --sheet ${png} --data ${data} --format json-array`);
+}
+
+async function generateSpriteSheetData() {
+    let data = 'src/assets/spritesheet-gen.json';
+    let output = 'src/ts/SpriteSheet-gen.ts';
+
+    await ImageDataParser.parse(data, output);
+}
+
+function copyAssets() {
+    return gulp.src('src/assets/spritesheet-gen.png')
+        .pipe(size({ title: 'spritesheet  pre' }))
         .pipe(imagemin())
         .pipe(imagemin([
             advpng({ optimizationLevel: 4, iterations: 50 })
         ]))
-        .pipe(gulp.dest('dist/build'));
+        .pipe(size({ title: 'spritesheet post' }))
+        .pipe(gulp.dest('dist/build'))
 }
+
+const refreshAssets = gulp.series(exportSpriteSheet, generateSpriteSheetData);
+
+const buildAssets = gulp.series(refreshAssets, copyAssets);
 
 // -----------------------------------------------------------------------------
 // HTML Build
@@ -107,12 +133,22 @@ function buildHtml() {
 // ZIP Build
 // -----------------------------------------------------------------------------
 function buildZip() {
+    var s;
+
     return gulp.src(['dist/build/*', '!dist/build/*.map'])
         .pipe(size())
         .pipe(zip('js13k-2019-letchworth-village.zip'))
         .pipe(advzip({ optimizationLevel: 4, iterations: 100 }))
-        .pipe(size({ title: 'zip' }))
-        .pipe(gulp.dest('dist/final'));
+        .pipe(s = size({ title: 'zip' }))
+        .pipe(gulp.dest('dist/final'))
+        .on('end', () => {
+            let remaining = (13 * 1024) - s.size;
+            if (remaining < 0) {
+                log.warn(chalk.red(`${-remaining} bytes over`));
+            } else {
+                log.info(chalk.green(`${remaining} bytes remaining`));
+            }
+        });
 }
 
 // -----------------------------------------------------------------------------
@@ -125,7 +161,9 @@ async function ready() {
 }
 
 const build = gulp.series(
-    gulp.parallel(buildCss, buildJs, buildAssets),
+    buildAssets,
+    buildJs,
+    buildCss,
     buildHtml,
     ready,
     buildZip
@@ -136,21 +174,29 @@ const build = gulp.series(
 // -----------------------------------------------------------------------------
 function watch() {
     watching = true;
-    gulp.watch('src/**', build);
+
+    // The watch task watches for any file changes in the src/ folder, _except_ for
+    // edits to generated files (called blah-gen by convention).
+    gulp.watch(['src/**', '!src/**/*-gen*'], build);
 }
 
 // -----------------------------------------------------------------------------
 // Task List
 // -----------------------------------------------------------------------------
 module.exports = {
+    // Potentially useful subtasks
     compileBuild,
     minifyBuild,
+    refreshAssets,
 
+    // Core build steps
     buildJs,
     buildCss,
     buildAssets,
     buildHtml,
     buildZip,
+
+    // Primary entry points
     build,
     watch,
 

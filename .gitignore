@@ -2,7 +2,6 @@
 node_modules
 
 # Output
-dist/bundle
 dist/temp
 dist/build
 

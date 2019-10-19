@@ -50,20 +50,30 @@ async function compileBuild() {
     });
 
     await bundle.write({
-        file: 'dist/bundle/app.js',
+        file: 'dist/temp/app.js',
         format: 'iife',
         name: 'app',
         sourcemap: true
     });
 }
 
-async function minifyBuild() {
-    return gulp.src('dist/bundle/app.js')
+function minifyBuild() {
+    return gulp.src('dist/temp/app.js')
         .pipe(sourcemaps.init())
+        // Phase 1: Mangle all props except DOM & built-ins
         .pipe(terser({
             mangle: {
-                properties: true,
-                reserved: ['tomato']
+                properties: true
+            }
+        }))
+        // Phase 2: Specifically target properties we know match builtins but that
+        // we can still safely mangle (because we don't refer to the builtin).
+        .pipe(terser({
+            mangle: {
+                properties: {
+                    builtins: true,
+                    regex: /behavior|direction|frame|reset|update/
+                }
             }
         }))
         .pipe(sourcemaps.write('.'))

@@ -481,7 +481,7 @@ export class Assets {
   static images: { [key: string]: HTMLImageElement } = {};
 
   static async init() {
-    let file = 'sprites-gen.png';
+    let file = 'spritesheet-gen.png';
 
     await this.initSprite(Sprite.player_stand,     file, SpriteSheet.player_1, {
       bbox: [{ x: 21, y: 25 }, { x: 42, y: 38 }]

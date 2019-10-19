@@ -55,10 +55,12 @@ read on. Don't read the following if you want to discover mechanics yourself...
 #### v1.0-submission
 
 - Early testing version (uncovered some fresh bugs).
+- 13,304 bytes
 
 #### v1.1-submission
 
 - This is the version submitted to the js13k competition.
+- 13,282 bytes
 
 #### v1.2
 
@@ -66,6 +68,7 @@ read on. Don't read the following if you want to discover mechanics yourself...
   - Cut out some custom building steps and replace with `rollup`.
   - Using `rollup` + `typescript` adds just a few bytes but is easier to work with.
   - Cut a bunch of unused extra files and node packages.
+- 13,305 bytes
 
 #### v1.3
 
@@ -73,6 +76,13 @@ read on. Don't read the following if you want to discover mechanics yourself...
   - Instead of exporting individually, the build now creates a single combined spritesheet.
   - Spritesheet position data is generated automatically instead of manually.
   - Generated TS/PNG file is now checked in instead of individual PNG files.
+- 13,039 bytes
+
+#### v1.4
+
+- Mangle properties more aggressively
+- Bug fix for previous version
+- 12,916 bytes
 
 ## Building the game
 
